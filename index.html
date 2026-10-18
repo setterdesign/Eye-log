@@ -1,0 +1,922 @@
+<!doctype html>
+<html lang="en"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#14a697">
+<meta name="description" content="Log symptoms, pain and eye photos. Data stays on this phone.">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icons/icon-192.png">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<title>Symptom &amp; Eye Log</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;600;700&family=Nunito+Sans:opsz,wght@6..12,400;6..12,600;6..12,700&family=JetBrains+Mono:wght@500&display=swap">
+<style>
+:root { color-scheme: light; padding-top: env(safe-area-inset-top, 0px); padding-bottom: env(safe-area-inset-bottom, 0px); }
+body { margin: 0; font-size: 14px; }
+img { max-width: 100%; }
+[hidden] { display: none !important; }
+/* Layout: one-column phone app on a soft mint ground; white rounded cards float on it, teal marks what is active. */
+:root {
+  --bg: #eaf7f4;
+  --panel: #ffffff;
+  --ink: #1d3836;
+  --ink-2: #557270;
+  --ink-3: #8aa19f;
+  --line: #e1eeeb;
+  --accent: #14a697;
+  --accent-text: #0b7c70;
+  --accent-ink: #ffffff;
+  --accent-soft: #d5f2ee;
+  --hero: linear-gradient(150deg, #1bb5a5, #129c8e);
+  --shadow: 0 10px 28px rgba(18, 96, 88, .09);
+  --s1: #2a78d6;
+  --s2: #eb6834;
+  --warn: #a35a00;
+  --warn-bg: #fff2dc;
+  --crit: #b3261e;
+  --crit-bg: #fde8e6;
+  --good: #1d7a3d;
+  --overlay: rgba(255,255,255,.92);
+  --f-display: "Poppins", "Avenir Next", system-ui, sans-serif;
+  --f-body: "Nunito Sans", "Segoe UI", system-ui, sans-serif;
+  --f-data: "JetBrains Mono", ui-monospace, Menlo, monospace;
+  --r: 22px;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --bg: #0e1918; --panel: #172625; --ink: #e6f2f0; --ink-2: #a6bcb9; --ink-3: #7a908d; --line: #253837;
+  --accent: #2cc2b2; --accent-text: #5fd6c8; --accent-ink: #052421; --accent-soft: #173b38; --hero: linear-gradient(150deg, #147f74, #0f665e);
+  --shadow: 0 10px 28px rgba(0,0,0,.35); --s1: #3987e5; --s2: #d95926;
+  --warn: #f0b04a; --warn-bg: #3a2a10; --crit: #ff8a80; --crit-bg: #3d1a17; --good: #5fcf86; --overlay: rgba(255,255,255,.9);
+  color-scheme: dark; } }
+:root[data-theme="dark"] {
+  --bg: #0e1918; --panel: #172625; --ink: #e6f2f0; --ink-2: #a6bcb9; --ink-3: #7a908d; --line: #253837;
+  --accent: #2cc2b2; --accent-text: #5fd6c8; --accent-ink: #052421; --accent-soft: #173b38; --hero: linear-gradient(150deg, #147f74, #0f665e);
+  --shadow: 0 10px 28px rgba(0,0,0,.35); --s1: #3987e5; --s2: #d95926;
+  --warn: #f0b04a; --warn-bg: #3a2a10; --crit: #ff8a80; --crit-bg: #3d1a17; --good: #5fcf86; --overlay: rgba(255,255,255,.9);
+  color-scheme: dark; }
+
+html, body { height: 100%; }
+body { background: var(--bg); color: var(--ink); font: 16px/1.5 var(--f-body); }
+body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-area-inset-top, 0px); z-index: 10; background: var(--bg); }
+* { box-sizing: border-box; }
+button, input, select, textarea { font: inherit; color: inherit; }
+button { cursor: pointer; }
+:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+
+.wrap { max-width: 560px; margin: 0 auto; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); padding-block: 0 calc(96px + env(safe-area-inset-bottom, 0px)); }
+header.top { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 5; background: var(--bg); padding-block: 14px 8px; display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+header.top h1 { font: 600 1.05rem/1.1 var(--f-display); margin: 0; color: var(--accent-text); display: flex; align-items: center; gap: 8px; }
+header.top .sub { color: var(--ink-3); font-size: .85rem; }
+h2 { font: 600 1.55rem/1.2 var(--f-display); margin: 18px 0 4px; text-wrap: balance; }
+h3 { font: 600 1.02rem/1.3 var(--f-display); margin: 0; }
+.lede { color: var(--ink-2); margin: 0 0 16px; max-width: 60ch; }
+.eyebrow { font: 600 1.05rem/1.3 var(--f-display); color: var(--accent-text); display: flex; align-items: center; gap: 10px; }
+.eyebrow .ic { width: 34px; height: 34px; border-radius: 12px; background: var(--accent-soft); display: grid; place-items: center; flex-shrink: 0; }
+.eyebrow .ic svg { width: 18px; height: 18px; stroke: var(--accent-text); fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+
+.banner { display: flex; gap: 10px; align-items: flex-start; background: var(--accent-soft); border-radius: 18px; padding: 14px 16px; margin-top: 14px; font-size: .92rem; }
+.banner b { display: block; }
+
+.section { background: var(--panel); border-radius: var(--r); padding: 20px 18px; display: grid; gap: 18px; margin-top: 16px; box-shadow: var(--shadow); }
+.field { display: grid; gap: 8px; min-width: 0; }
+.field > label, .field > .lab { font-weight: 700; display: flex; justify-content: space-between; align-items: baseline; gap: 8px; }
+.hint { color: var(--ink-3); font-size: .82rem; font-weight: 400; }
+.row2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+@media (max-width: 380px) { .row2 { grid-template-columns: 1fr; } }
+
+input[type=date], input[type=number], input[type=text], textarea, select {
+  width: 100%; background: var(--panel); border: 1.5px solid var(--line); border-radius: 14px; padding: 10px 14px; min-height: 46px; }
+textarea { min-height: 76px; resize: vertical; }
+
+.chips { display: flex; flex-wrap: wrap; gap: 8px; }
+.chip { border: 1.5px solid var(--line); background: var(--panel); border-radius: 999px; padding: 8px 16px; min-height: 42px; font-size: .92rem; font-weight: 600; color: var(--ink-2); }
+.chip[aria-pressed="true"] { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); box-shadow: 0 4px 12px rgba(20,166,151,.28); }
+
+.scale { display: grid; gap: 6px; }
+.scale .val { font: 500 1.6rem/1 var(--f-data); font-variant-numeric: tabular-nums; min-width: 2.2ch; text-align: right; }
+.scale .word { color: var(--ink-2); font-size: .85rem; font-weight: 400; }
+input[type=range] { width: 100%; accent-color: var(--accent); height: 32px; }
+.ticks { display: flex; justify-content: space-between; color: var(--ink-3); font: 500 .7rem var(--f-data); padding-inline: 4px; }
+
+.yn { display: flex; justify-content: space-between; align-items: center; gap: 12px; padding-block: 4px; }
+.yn + .yn { border-top: 1px solid var(--line); padding-top: 12px; }
+.seg { display: inline-flex; background: var(--bg); border-radius: 999px; padding: 3px; flex-shrink: 0; }
+.seg button { border: 0; background: transparent; padding: 7px 18px; min-height: 38px; border-radius: 999px; font-weight: 600; color: var(--ink-2); }
+.seg button[aria-pressed="true"] { background: var(--accent); color: var(--accent-ink); box-shadow: 0 3px 10px rgba(20,166,151,.3); }
+
+.btn { border: 0; border-radius: 16px; padding: 12px 20px; min-height: 52px; background: var(--accent); color: var(--accent-ink); font: 600 1rem var(--f-display); box-shadow: 0 8px 18px rgba(20,166,151,.28); }
+.btn.ghost { background: var(--panel); color: var(--accent-text); border: 1.5px solid var(--line); box-shadow: none; }
+.btn.danger { background: var(--crit); color: #fff; }
+.btn.wide { width: 100%; }
+.btnrow { display: flex; flex-wrap: wrap; gap: 10px; }
+
+.flag { border-radius: var(--r); padding: 14px 16px; display: grid; gap: 4px; }
+.flag.warn { background: var(--warn-bg); color: var(--ink); }
+.flag.warn strong { color: var(--warn); }
+.flag.ok { background: var(--accent-soft); }
+.urgent { border: 0; background: var(--crit-bg); border-radius: 18px; padding: 12px 14px; font-size: .88rem; margin-top: 14px; }
+.urgent strong { color: var(--crit); }
+
+#f-tod { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; }
+#f-tod .chip { padding: 8px 2px; font-size: .84rem; }
+/* hero + week strip */
+.hero { background: var(--hero); color: #fff; border-radius: 28px; padding: 22px 20px 20px; margin-top: 6px; display: grid; gap: 14px; box-shadow: 0 14px 30px rgba(18,140,128,.25); }
+.hero h2 { color: #fff; margin: 0; font-size: 1.7rem; }
+.hero p { margin: 0; opacity: .9; }
+.hero .status { display: inline-flex; align-items: center; gap: 8px; background: rgba(255,255,255,.18); border-radius: 999px; padding: 6px 14px; font-weight: 600; font-size: .88rem; justify-self: start; }
+.hero .status i { width: 8px; height: 8px; border-radius: 50%; background: #fff; }
+.quick { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.quick button { border: 0; background: #fff; color: #0b7c70; border-radius: 16px; padding: 12px; font: 600 .92rem var(--f-display); display: flex; align-items: center; gap: 8px; min-height: 52px; }
+.quick button svg { width: 20px; height: 20px; stroke: currentColor; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; flex-shrink: 0; }
+.week { background: var(--bg); border-radius: 18px; padding: 10px 8px 12px; }
+.week .mon { display: flex; justify-content: space-between; align-items: center; font: 600 .9rem var(--f-display); padding: 0 6px 8px; }
+.week .mon button { border: 0; background: none; color: var(--ink-3); width: 36px; height: 36px; border-radius: 50%; font-size: 1.1rem; }
+.week .mon button:disabled { opacity: .3; }
+.week .days { display: grid; grid-template-columns: repeat(7, 1fr); text-align: center; gap: 2px; }
+.week .dow { font-size: .72rem; font-weight: 700; color: var(--ink-3); }
+.week .day { border: 0; background: none; width: 38px; height: 38px; margin: 2px auto 0; border-radius: 50%; font-weight: 600; color: var(--ink-2); }
+.week .day.has::after { content: ""; display: block; width: 4px; height: 4px; border-radius: 50%; background: var(--accent); margin: -3px auto 0; }
+.week .day[aria-pressed="true"] { background: var(--accent); color: var(--accent-ink); }
+.week .day[aria-pressed="true"]::after { background: var(--accent-ink); }
+.week .day:disabled { opacity: .3; }
+.formtitle { display: flex; justify-content: space-between; align-items: baseline; gap: 10px; margin-top: 22px; }
+.formtitle h2 { margin: 0; font-size: 1.25rem; }
+
+/* trends */
+.filters { display: grid; grid-template-columns: repeat(4, 1fr); background: var(--panel); border-radius: 999px; padding: 4px; margin-top: 12px; box-shadow: var(--shadow); }
+.filters .chip { border: 0; min-height: 40px; padding: 6px 4px; box-shadow: none; }
+.tiles { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 14px; }
+.tile { background: var(--panel); border-radius: 18px; padding: 12px 12px; min-width: 0; box-shadow: var(--shadow); }
+.tile .n { font: 500 1.45rem/1.1 var(--f-data); font-variant-numeric: tabular-nums; }
+.tile .l { font-size: .76rem; color: var(--ink-2); line-height: 1.25; }
+.tile.alert .n { color: var(--warn); }
+.chart { background: var(--panel); border-radius: var(--r); padding: 18px 16px 10px; margin-top: 16px; position: relative; box-shadow: var(--shadow); }
+.chart header { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; flex-wrap: wrap; }
+.legend { display: flex; gap: 14px; font-size: .82rem; color: var(--ink-2); }
+.legend i { display: inline-block; width: 14px; height: 3px; border-radius: 2px; vertical-align: middle; margin-right: 6px; }
+.chart svg { display: block; width: 100%; height: auto; overflow: visible; touch-action: pan-y; }
+.chart svg text { fill: var(--ink-3); font: 500 10px var(--f-data); }
+.chart .grid { stroke: var(--line); stroke-width: 1; }
+.chart .thr { stroke: var(--warn); stroke-dasharray: 4 4; stroke-width: 1.5; }
+.chart .thr-l { fill: var(--warn); }
+.chart .cross { stroke: var(--ink-3); stroke-width: 1; }
+.tip { position: absolute; pointer-events: none; background: var(--ink); color: var(--bg); border-radius: 8px; padding: 6px 9px; font-size: .78rem; line-height: 1.35; white-space: nowrap; transform: translate(-50%, -100%); z-index: 2; }
+.tip b { font-family: var(--f-data); font-weight: 500; }
+.strip-label { fill: var(--ink-2) !important; font-family: var(--f-body) !important; font-size: 11px !important; }
+
+/* history */
+.entry { background: var(--panel); border-radius: 18px; padding: 14px 16px; display: grid; gap: 6px; margin-top: 12px; box-shadow: var(--shadow); }
+.entry .top { display: flex; justify-content: space-between; gap: 8px; align-items: baseline; }
+.entry .when { font-weight: 700; }
+.entry .nums { display: flex; gap: 14px; flex-wrap: wrap; font: 500 .85rem var(--f-data); color: var(--ink-2); }
+.pill { display: inline-block; font-size: .72rem; font-weight: 700; padding: 2px 8px; border-radius: 999px; background: var(--warn-bg); color: var(--warn); }
+.pill.ex { background: var(--accent-soft); color: var(--accent-text); }
+.entry .acts { display: flex; gap: 8px; }
+.linkbtn { background: none; border: 0; color: var(--accent-text); font-weight: 700; padding: 6px 0; min-height: 36px; }
+
+/* photos */
+.frame { position: relative; width: 100%; max-width: 100%; aspect-ratio: 4 / 3; background: #1d2625; border-radius: var(--r); overflow: hidden; touch-action: none; user-select: none; }
+.frame canvas, .frame svg.guide, .frame img { position: absolute; inset: 0; width: 100%; height: 100%; }
+.frame svg.guide { pointer-events: none; }
+.guide .g { fill: none; stroke: var(--overlay); stroke-width: 2.2; }
+.guide .g.d { stroke-dasharray: 6 6; stroke-width: 1.5; }
+.guide text { fill: var(--overlay); font: 700 13px var(--f-body); }
+.frame .placeholder { position: absolute; inset: 0; display: grid; place-items: center; color: #c9d4d3; text-align: center; padding: 20px; font-size: .9rem; }
+.tips { margin: 0; padding-left: 20px; color: var(--ink-2); font-size: .9rem; display: grid; gap: 4px; }
+.gallery { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-top: 12px; }
+.thumb { position: relative; border: 2px solid transparent; border-radius: 10px; overflow: hidden; padding: 0; background: var(--line); aspect-ratio: 4/3; max-width: 100%; }
+.thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.thumb span { position: absolute; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,.55); color: #fff; font: 500 .68rem var(--f-data); padding: 2px 5px; text-align: left; }
+.thumb[aria-pressed="true"] { border-color: var(--accent); }
+.thumb[aria-pressed="true"]::after { content: attr(data-n); position: absolute; top: 4px; right: 4px; background: var(--accent); color: var(--accent-ink); width: 22px; height: 22px; border-radius: 50%; font-weight: 700; font-size: .8rem; display: grid; place-items: center; }
+.wipe { position: relative; }
+.wipe .top-img { clip-path: inset(0 calc(100% - var(--x, 50%)) 0 0); }
+.wipe .bar { position: absolute; top: 0; bottom: 0; left: var(--x, 50%); width: 2px; background: #fff; transform: translateX(-1px); pointer-events: none; }
+.wipe .tag { position: absolute; top: 8px; background: rgba(0,0,0,.6); color: #fff; font: 500 .72rem var(--f-data); padding: 3px 7px; border-radius: 6px; }
+
+/* tabs */
+nav.tabs { position: fixed; left: 0; right: 0; bottom: 0; z-index: 6; background: var(--panel); border-radius: 24px 24px 0 0; box-shadow: 0 -6px 24px rgba(18,96,88,.08); padding-bottom: env(safe-area-inset-bottom, 0px); padding-left: max(8px, env(safe-area-inset-left, 0px)); padding-right: max(8px, env(safe-area-inset-right, 0px)); }
+nav.tabs .in { max-width: 560px; margin: 0 auto; display: grid; grid-template-columns: repeat(4, 1fr); }
+nav.tabs button { background: none; border: 0; padding: 8px 4px 10px; display: grid; justify-items: center; gap: 2px; color: var(--ink-3); font-size: .75rem; min-height: 56px; }
+nav.tabs button svg { width: 24px; height: 24px; stroke: currentColor; fill: none; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+nav.tabs button svg { padding: 3px; width: 44px; height: 30px; border-radius: 999px; }
+nav.tabs button[aria-current="page"] { color: var(--accent-text); font-weight: 700; }
+nav.tabs button[aria-current="page"] svg { background: var(--accent-soft); }
+
+.toast { position: fixed; left: 50%; bottom: calc(76px + env(safe-area-inset-bottom, 0px)); transform: translateX(-50%); background: var(--ink); color: var(--bg); padding: 10px 16px; border-radius: 10px; z-index: 20; font-size: .9rem; }
+.confirm { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; font-size: .9rem; }
+details summary { cursor: pointer; font-weight: 700; padding-block: 4px; }
+.muted { color: var(--ink-3); font-size: .85rem; }
+.copybox { width: 100%; min-height: 140px; font: 500 .72rem var(--f-data); }
+@media (prefers-reduced-motion: no-preference) { .chip, .seg button, .btn { transition: background .12s; } }
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <header class="top">
+    <h1><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 12s3.5-6 10-6 10 6 10 6-3.5 6-10 6S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg>Symptom &amp; Eye Log</h1>
+    <span class="sub" id="todayLabel"></span>
+  </header>
+
+  <!-- LOG -->
+  <section id="v-log" data-view>
+    <div class="hero">
+      <div><h2 id="hello">Hello</h2><p>How are you feeling today?</p></div>
+      <span class="status" id="todayStatus"><i></i>Nothing logged today yet</span>
+      <div class="quick">
+        <button type="button" id="qPhoto"><svg viewBox="0 0 24 24"><path d="M4 8h3l2-3h6l2 3h3v11H4z"/><circle cx="12" cy="13" r="3.5"/></svg>Eye photo</button>
+        <button type="button" data-go="trends"><svg viewBox="0 0 24 24"><path d="M4 19h16M5 15l4-5 4 3 6-7"/></svg>My trends</button>
+      </div>
+    </div>
+    <div class="formtitle"><h2 id="logTitle">Today's check-in</h2><span class="hint">about 2 minutes</span></div>
+
+    <form id="logForm" autocomplete="off">
+      <div class="section">
+        <div class="eyebrow"><span class="ic"><svg viewBox="0 0 24 24"><rect x="4" y="5" width="16" height="15" rx="3"/><path d="M8 3v4M16 3v4M4 10h16"/></svg></span>When</div>
+        <input type="date" id="f-date" required hidden>
+        <div class="week" id="week"></div>
+        <div class="field"><span class="lab">Time of day</span><div class="chips" id="f-tod" data-single></div></div>
+      </div>
+
+      <div class="section">
+        <div class="eyebrow"><span class="ic"><svg viewBox="0 0 24 24"><path d="M2 12s3.5-6 10-6 10 6 10 6-3.5 6-10 6S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg></span>Eyes</div>
+        <p class="hint" style="margin:-8px 0 0;font-size:.88rem">Cover one eye, look at the same text or object as always, then switch.</p>
+        <div class="field scale" data-scale="lc" data-kind="clarity"></div>
+        <div class="field scale" data-scale="rc" data-kind="clarity"></div>
+        <div class="field"><span class="lab">Vision change</span><div class="chips" id="f-vision" data-single></div></div>
+        <div class="field"><span class="lab">Red eye <span class="hint">what you see in the mirror</span></span><div class="chips" id="f-red" data-single></div></div>
+        <div class="yn"><span>Eye pain when moving the eye</span><div class="seg" data-yn="eyeMovePain"></div></div>
+        <div class="field" id="photoLink"></div>
+      </div>
+
+      <div class="section">
+        <div class="eyebrow"><span class="ic"><svg viewBox="0 0 24 24"><path d="M12 21s-7-4.5-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 11c0 5.5-7 10-7 10z"/></svg></span>Pain</div>
+        <div class="field scale" data-scale="pain" data-kind="pain"></div>
+        <div id="painMore" style="display:grid;gap:18px">
+        <div class="field"><span class="lab">Where</span><div class="chips" id="f-loc" data-single></div></div>
+        <div class="field"><span class="lab">Type</span><div class="chips" id="f-type" data-single></div></div>
+        <div class="row2">
+          <div class="field"><label for="f-dur">Duration <span class="hint">hours</span></label><input type="number" id="f-dur" min="0" max="24" step="0.5" inputmode="decimal"></div>
+          <div class="field"><label for="f-med">Medication <span class="hint">name, dose, time</span></label><input type="text" id="f-med"></div>
+        </div>
+        </div>
+      </div>
+
+      <div class="section">
+        <div class="eyebrow"><span class="ic"><svg viewBox="0 0 24 24"><path d="M9 3h6v6h6v6h-6v6H9v-6H3V9h6z"/></svg></span>Other symptoms</div>
+        <div class="yn"><span>Dizziness</span><div class="seg" data-yn="dizzy"></div></div>
+        <div class="yn"><span>Nausea</span><div class="seg" data-yn="nausea"></div></div>
+        <div class="yn"><span>Weakness or lack of strength</span><div class="seg" data-yn="weak"></div></div>
+        <div class="yn"><span>Numbness or speech trouble</span><div class="seg" data-yn="numb"></div></div>
+        <div class="yn"><span>Memory lapses, odd smells or déjà vu</span><div class="seg" data-yn="memory"></div></div>
+      </div>
+
+      <div class="section">
+        <div class="eyebrow"><span class="ic"><svg viewBox="0 0 24 24"><path d="M20 14.5A8 8 0 1 1 9.5 4a6.5 6.5 0 0 0 10.5 10.5z"/></svg></span>Sleep, stress and notes</div>
+        <div class="row2">
+          <div class="field"><label for="f-sleep">Sleep <span class="hint">hours</span></label><input type="number" id="f-sleep" min="0" max="24" step="0.5" inputmode="decimal"></div>
+          <div class="field"></div>
+        </div>
+        <div class="field scale" data-scale="stress" data-kind="stress"></div>
+        <div class="field"><label for="f-notes">Notes</label><textarea id="f-notes" placeholder="Screen time, food, weather, anything unusual"></textarea></div>
+      </div>
+
+      <div id="flagPreview"></div>
+      <div class="btnrow" style="margin-top:14px">
+        <button class="btn" type="submit" id="saveBtn" style="flex:1">Save entry</button>
+        <button class="btn ghost" type="button" id="cancelEdit" hidden>Cancel edit</button>
+      </div>
+    </form>
+
+    <div class="urgent"><strong>Seek urgent care instead of logging</strong> if you have sudden or fast-worsening vision loss, a sudden severe headache, a seizure, weakness or numbness on one side, trouble speaking, or confusion.</div>
+  </section>
+
+  <!-- TRENDS -->
+  <section id="v-trends" data-view hidden>
+    <h2>Trends</h2>
+    <p class="lede">One point per day. When you log more than once a day, the chart shows the worst value: highest pain, lowest clarity.</p>
+    <div id="exampleBanner"></div>
+    <div class="filters" id="range"></div>
+    <div class="tiles" id="tiles"></div>
+    <div id="charts"></div>
+    <p class="muted" style="margin-top:14px">Bring these charts to your next appointment. They show what you logged; they are not a diagnosis.</p>
+  </section>
+
+  <!-- PHOTOS -->
+  <section id="v-photos" data-view hidden>
+    <div id="photoHome">
+      <h2>Eye photos</h2>
+      <p class="lede">The camera shows the guide while you take the photo. Then nudge and zoom until your eyes sit in the two ovals. Every saved photo is cropped the same way, so you can compare any two.</p>
+      <div class="frame" id="guidePreview"><div class="placeholder"><span>Brows on the top line, pupils in the ovals, nose on the centre line.</span></div></div>
+      <div class="btnrow" style="margin-top:12px">
+        <button class="btn" id="liveBtn" style="flex:1">Take photo</button>
+        <input type="file" accept="image/*" capture="user" id="camIn" hidden>
+        <label class="btn ghost" style="flex:1;text-align:center;display:grid;place-items:center">From gallery<input type="file" accept="image/*" id="galIn" hidden></label>
+      </div>
+      <details style="margin-top:12px"><summary>For photos you can compare</summary>
+        <ul class="tips">
+          <li>Same spot and same light each time, ideally daylight from a window in front of you.</li>
+          <li>No flash, no filters, no beauty mode.</li>
+          <li>Phone at eye level, about one forearm away. Look straight into the lens.</li>
+          <li>Open your eyes normally. Take one with eyes looking up if the redness is low.</li>
+        </ul>
+      </details>
+      <div style="margin-top:18px;display:flex;justify-content:space-between;align-items:baseline;gap:10px">
+        <h3>Your photos</h3>
+        <button class="linkbtn" id="compareBtn" disabled>Compare 2</button>
+      </div>
+      <p class="muted" id="galleryHint">Tap two photos to compare them.</p>
+      <div class="gallery" id="gallery"></div>
+      <div id="compareView"></div>
+    </div>
+
+    <div id="camView" hidden>
+      <h2>Line up your face</h2>
+      <p class="lede">Brows on the top line, pupils in the ovals, nose on the centre line. Hold the phone at eye level.</p>
+      <div class="frame" id="camFrame"><video id="camVideo" playsinline muted autoplay style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;transform:scaleX(-1)"></video><img id="camGhost" alt="" hidden style="opacity:.3;transform:scaleX(-1);object-fit:cover"></div>
+      <div class="btnrow" style="margin-top:14px">
+        <button class="btn" id="snap" style="flex:1">Take photo</button>
+        <button class="btn ghost" id="camFlip">Switch camera</button>
+        <button class="btn ghost" id="camCancel">Cancel</button>
+      </div>
+      <p class="muted">You can fine-tune the position on the next screen.</p>
+    </div>
+
+    <div id="alignView" hidden>
+      <h2>Line it up</h2>
+      <p class="lede">Drag to move, pinch or use the slider to zoom. Pupils in the ovals, nose on the dashed line.</p>
+      <div class="frame" id="alignFrame"><canvas id="alignCanvas" width="1200" height="900"></canvas></div>
+      <div class="section">
+        <div class="field"><label for="zoom">Zoom</label><input type="range" id="zoom" min="0.5" max="4" step="0.01" value="1"></div>
+        <div class="field"><label for="rot">Tilt <span class="hint" id="rotVal">0°</span></label><input type="range" id="rot" min="-15" max="15" step="0.5" value="0"></div>
+        <div class="yn"><span>Show last photo faintly on top</span><div class="seg" data-yn="ghost" data-local></div></div>
+        <div class="field"><span class="lab">Which eye is red</span><div class="chips" id="p-eye" data-single></div></div>
+        <div class="field"><span class="lab">How red</span><div class="chips" id="p-red" data-single></div></div>
+        <div class="field"><label for="p-note">Note</label><input type="text" id="p-note" placeholder="After screen time, woke up with it…"></div>
+      </div>
+      <div class="btnrow" style="margin-top:14px">
+        <button class="btn" id="savePhoto" style="flex:1">Save photo</button>
+        <button class="btn ghost" id="cancelPhoto">Cancel</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- HISTORY -->
+  <section id="v-history" data-view hidden>
+    <h2>History</h2>
+    <p class="lede">Every entry, newest first. Tap Edit to change one.</p>
+    <div id="historyList"></div>
+
+    <div class="section" style="margin-top:22px">
+      <h3>You</h3>
+      <div class="field"><label for="s-name">Your first name <span class="hint">for the greeting</span></label><input type="text" id="s-name" autocomplete="given-name"></div>
+    </div>
+    <div class="section">
+      <h3>Flag settings</h3>
+      <p class="muted" style="margin:0">From your spreadsheet. These are starting suggestions, not medical rules. Change them to whatever you and your doctor agree on.</p>
+      <div class="row2">
+        <div class="field"><label for="s-pain">Flag pain at or above</label><input type="number" id="s-pain" min="1" max="10"></div>
+        <div class="field"><label for="s-drop">Flag eye clarity drop of</label><input type="number" id="s-drop" min="1" max="10"></div>
+      </div>
+      <div class="field"><label for="s-pday">Count a “pain day” at or above</label><input type="number" id="s-pday" min="1" max="10"></div>
+    </div>
+
+    <div class="section">
+      <h3>Your data</h3>
+      <p class="muted" style="margin:0">Everything stays on this phone. Nothing is sent anywhere. Uninstalling the app or clearing Chrome's site data deletes it, so back up now and then.</p>
+      <div class="btnrow">
+        <button class="btn ghost" id="exportCsv">Export CSV</button>
+        <button class="btn ghost" id="exportJson">Back up (JSON)</button>
+        <label class="btn ghost" style="display:grid;place-items:center">Import spreadsheet<input type="file" id="importIn" accept=".xlsx,.json,.csv" hidden></label>
+      </div>
+      <div id="exportOut"></div>
+      <p class="muted" id="storageNote" style="margin:0"></p>
+    </div>
+  </section>
+</div>
+
+<nav class="tabs" aria-label="Sections"><div class="in">
+  <button data-tab="log" aria-current="page"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>Log</button>
+  <button data-tab="trends"><svg viewBox="0 0 24 24"><path d="M4 19h16M5 15l4-5 4 3 6-7"/></svg>Trends</button>
+  <button data-tab="photos"><svg viewBox="0 0 24 24"><path d="M2 12s3.5-6 10-6 10 6 10 6-3.5 6-10 6S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg>Photos</button>
+  <button data-tab="history"><svg viewBox="0 0 24 24"><path d="M8 6h12M8 12h12M8 18h12M4 6h.01M4 12h.01M4 18h.01"/></svg>History</button>
+</div></nav>
+
+<script>
+(() => {
+"use strict";
+const $ = (s, r = document) => r.querySelector(s);
+const $$ = (s, r = document) => [...r.querySelectorAll(s)];
+const h = (tag, attrs = {}, ...kids) => { const e = document.createElement(tag); for (const [k, v] of Object.entries(attrs)) { if (k === "class") e.className = v; else if (k.startsWith("on")) e.addEventListener(k.slice(2), v); else if (v !== false && v != null) e.setAttribute(k, v === true ? "" : v); } for (const k of kids.flat()) if (k != null) e.append(k); return e; };
+const pad = n => String(n).padStart(2, "0");
+const iso = d => `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
+const parseISO = s => { const [y, m, d] = s.split("-").map(Number); return new Date(y, m - 1, d); };
+const fmtDay = s => parseISO(s).toLocaleDateString(undefined, { weekday: "short", day: "numeric", month: "short" });
+const fmtShort = s => parseISO(s).toLocaleDateString(undefined, { day: "numeric", month: "short" });
+const uid = () => Date.now().toString(36) + Math.random().toString(36).slice(2, 7);
+
+/* ---------- vocabulary (from symptom_tracker.xlsx) ---------- */
+const TOD = ["Morning", "Afternoon", "Evening", "Night"];
+const VISION = ["None", "Blurry", "Dim or washed-out colors", "Dark or missing spot", "Flashes or floaters", "Double vision"];
+const LOC = ["None", "Right temple", "Left temple", "Behind right eye", "Behind left eye", "Forehead", "Back of head", "Whole head"];
+const PTYPE = ["None", "Throbbing", "Pressure", "Stabbing", "Dull ache"];
+const RED = ["None", "Left", "Right", "Both"];
+const REDNESS = ["Mild", "Moderate", "Strong"];
+const SCALES = {
+  lc: { label: "Left eye clarity", kind: "clarity" },
+  rc: { label: "Right eye clarity", kind: "clarity" },
+  pain: { label: "Headache / pain level", kind: "pain" },
+  stress: { label: "Stress", kind: "stress" },
+};
+const words = {
+  clarity: v => v >= 9 ? "normal" : v >= 6 ? "a little reduced" : v >= 4 ? "clearly reduced" : v >= 1 ? "very reduced" : "no useful vision",
+  pain: v => v === 0 ? "none" : v <= 3 ? "mild" : v <= 6 ? "moderate" : "severe",
+  stress: v => v <= 2 ? "calm" : v <= 5 ? "some" : v <= 8 ? "high" : "extreme",
+};
+
+/* ---------- storage: this browser only ---------- */
+const LS = { get(k, d) { try { const v = localStorage.getItem(k); return v ? JSON.parse(v) : d; } catch { return d; } },
+             set(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); return true; } catch { return false; } } };
+let persistOK = true;
+let entries = LS.get("sel.entries", []);
+let settings = Object.assign({ pain: 8, drop: 2, pday: 5 }, LS.get("sel.settings", {}));
+const saveEntries = () => { persistOK = LS.set("sel.entries", entries) && persistOK; renderStorageNote(); };
+const saveSettings = () => LS.set("sel.settings", settings);
+
+const photoDB = (() => {
+  let dbp = null, mem = [];
+  const open = () => dbp || (dbp = new Promise((res) => {
+    try { const r = indexedDB.open("sel-photos", 1);
+      r.onupgradeneeded = () => r.result.createObjectStore("photos", { keyPath: "id" });
+      r.onsuccess = () => res(r.result); r.onerror = () => res(null);
+    } catch { res(null); } }));
+  const tx = async (mode, fn) => { const db = await open(); if (!db) return null;
+    return new Promise((res) => { try { const t = db.transaction("photos", mode); const st = t.objectStore("photos"); const out = fn(st); t.oncomplete = () => res(out && out.result !== undefined ? out.result : true); t.onerror = () => res(null); } catch { res(null); } }); };
+  return {
+    async all() { const r = await tx("readonly", s => s.getAll()); return (r && r !== true ? r : mem).slice().sort((a, b) => (a.date + a.t).localeCompare(b.date + b.t)); },
+    async put(p) { const ok = await tx("readwrite", s => s.put(p)); if (!ok) { persistOK = false; mem = mem.filter(x => x.id !== p.id).concat(p); renderStorageNote(); } },
+    async del(id) { await tx("readwrite", s => s.delete(id)); mem = mem.filter(x => x.id !== id); },
+  };
+})();
+
+/* ---------- example data (shown only until the first real entry) ---------- */
+function makeExamples() {
+  let seed = 7; const rnd = () => (seed = (seed * 16807) % 2147483647) / 2147483647;
+  const out = []; const today = new Date();
+  for (let i = 27; i >= 0; i--) {
+    const d = new Date(today); d.setDate(d.getDate() - i);
+    if (i % 9 === 4) continue; // a few missed days, like real life
+    const spike = i === 18 || i === 9 || i === 3;
+    const sleep = Math.round((5 + rnd() * 3) * 2) / 2;
+    const pain = spike ? 6 + Math.round(rnd() * 3) : Math.round(rnd() * 3 + (sleep < 6 ? 1 : 0));
+    const lc = Math.max(3, Math.min(10, Math.round(7 - (spike ? 2 : 0) + rnd() * 2 - 1)));
+    const red = spike || rnd() > .8 ? "Right" : "None";
+    out.push({ id: "ex" + i, example: true, date: iso(d), tod: rnd() > .3 ? "Morning" : "Evening", lc, rc: Math.round(9 + rnd()),
+      vision: lc <= 5 ? "Blurry" : "None", red, eyeMovePain: spike ? "Yes" : "No", pain, loc: pain ? (spike ? "Behind right eye" : "Right temple") : "None",
+      type: pain ? (spike ? "Throbbing" : "Pressure") : "None", dur: pain ? Math.round(rnd() * 4 * 2) / 2 + .5 : 0, med: spike ? "Paracetamol 500 mg" : "",
+      dizzy: spike && rnd() > .4 ? "Yes" : "No", nausea: spike && rnd() > .5 ? "Yes" : "No", weak: "No", numb: "No", memory: "No", sleep, stress: Math.round(2 + rnd() * 5 + (spike ? 1 : 0)), notes: spike ? "Example: worse after long screen time." : "" });
+  }
+  return out;
+}
+const EXAMPLES = makeExamples();
+const realEntries = () => entries;
+const shownEntries = () => entries.length ? entries : EXAMPLES;
+const usingExamples = () => entries.length === 0;
+
+/* ---------- flags (spreadsheet rule, applied to both eyes) ---------- */
+const order = e => e.date + String(TOD.indexOf(e.tod)).padStart(2, "0");
+function flagsFor(e, list) {
+  const r = [];
+  if (e.numb === "Yes") r.push("numbness or speech trouble");
+  if (e.weak === "Yes") r.push("weakness");
+  if (+e.pain >= settings.pain) r.push(`pain ${e.pain}/10 (your limit is ${settings.pain})`);
+  const prev = list.filter(x => x.id !== e.id && order(x) < order(e)).sort((a, b) => order(a).localeCompare(order(b))).pop();
+  if (prev) {
+    if (prev.lc != null && e.lc != null && prev.lc - e.lc >= settings.drop) r.push(`left eye clarity fell ${prev.lc - e.lc} points since the last entry`);
+    if (prev.rc != null && e.rc != null && prev.rc - e.rc >= settings.drop) r.push(`right eye clarity fell ${prev.rc - e.rc} points since the last entry`);
+  }
+  return r;
+}
+
+/* ---------- form ---------- */
+const form = { };
+let editingId = null, pendingPhotoId = null;
+
+function chipGroup(el, opts, key, def) {
+  el.innerHTML = "";
+  for (const o of opts) el.append(h("button", { type: "button", class: "chip", "aria-pressed": "false", "data-v": o, onclick: () => { form[key] = o; syncChips(el, o); onFormChange(); } }, o));
+  form[key] = def; syncChips(el, def);
+}
+const syncChips = (el, v) => $$(".chip", el).forEach(b => b.setAttribute("aria-pressed", String(b.dataset.v === v)));
+function ynGroup(el) {
+  const key = el.dataset.yn; el.innerHTML = "";
+  for (const o of ["No", "Yes"]) el.append(h("button", { type: "button", "aria-pressed": "false", "data-v": o, onclick: () => { setYN(el, o); if (!el.hasAttribute("data-local")) onFormChange(); } }, o));
+  setYN(el, "No");
+}
+function setYN(el, v) { const key = el.dataset.yn; (el.hasAttribute("data-local") ? local : form)[key] = v; $$("button", el).forEach(b => b.setAttribute("aria-pressed", String(b.dataset.v === v))); if (el.hasAttribute("data-local")) drawAlign(); }
+const local = { ghost: "No" };
+function scaleField(el) {
+  const key = el.dataset.scale, { label, kind } = SCALES[key];
+  const id = "f-" + key;
+  const val = h("span", { class: "val" }), word = h("span", { class: "word" });
+  const input = h("input", { type: "range", id, min: 0, max: 10, step: 1 });
+  const update = () => { const v = +input.value; form[key] = v; val.textContent = v; word.textContent = words[kind](v); };
+  input.addEventListener("input", () => { update(); onFormChange(); });
+  el.innerHTML = "";
+  el.append(h("label", { for: id }, h("span", {}, label, h("br"), word), val), input, h("div", { class: "ticks" }, ...Array.from({ length: 11 }, (_, i) => h("span", {}, i))));
+  el._set = v => { input.value = v; update(); };
+}
+
+function resetForm(e) {
+  const d = e || { date: iso(new Date()), tod: guessTOD(), lc: 10, rc: 10, vision: "None", red: "None", eyeMovePain: "No", pain: 0, loc: "None", type: "None", dur: "", med: "", dizzy: "No", nausea: "No", weak: "No", numb: "No", memory: "No", sleep: "", stress: 3, notes: "" };
+  $("#f-date").value = d.date;
+  chipGroup($("#f-tod"), TOD, "tod", d.tod);
+  chipGroup($("#f-vision"), VISION, "vision", d.vision);
+  chipGroup($("#f-red"), RED, "red", d.red);
+  chipGroup($("#f-loc"), LOC, "loc", d.loc);
+  chipGroup($("#f-type"), PTYPE, "type", d.type);
+  for (const k of Object.keys(SCALES)) $(`[data-scale="${k}"]`)._set(d[k] ?? 0);
+  for (const el of $$("[data-yn]:not([data-local])", $("#logForm"))) setYN(el, d[el.dataset.yn] || "No");
+  $("#f-dur").value = d.dur ?? ""; $("#f-med").value = d.med || ""; $("#f-sleep").value = d.sleep ?? ""; $("#f-notes").value = d.notes || "";
+  pendingPhotoId = d.photoId || null;
+  editingId = e ? e.id : null;
+  $("#logTitle").textContent = e ? `Editing ${fmtDay(e.date)}` : "Today's check-in";
+  weekStart = mondayOf(parseISO(d.date)); renderWeek();
+  $("#saveBtn").textContent = e ? "Save changes" : "Save entry";
+  $("#cancelEdit").hidden = !e;
+  renderPhotoLink(); onFormChange();
+}
+const guessTOD = () => { const hr = new Date().getHours(); return hr < 12 ? "Morning" : hr < 18 ? "Afternoon" : hr < 22 ? "Evening" : "Night"; };
+function readForm() {
+  const num = v => v === "" ? null : +v;
+  return { id: editingId || uid(), date: $("#f-date").value, tod: form.tod, lc: form.lc, rc: form.rc, vision: form.vision, red: form.red, eyeMovePain: form.eyeMovePain,
+    pain: form.pain, loc: form.loc, type: form.type, dur: num($("#f-dur").value), med: $("#f-med").value.trim(), dizzy: form.dizzy, nausea: form.nausea, weak: form.weak, numb: form.numb, memory: form.memory,
+    sleep: num($("#f-sleep").value), stress: form.stress, notes: $("#f-notes").value.trim(), photoId: pendingPhotoId };
+}
+let weekStart = null;
+function mondayOf(d) { const x = new Date(d); x.setHours(0, 0, 0, 0); x.setDate(x.getDate() - ((x.getDay() + 6) % 7)); return x; }
+function renderWeek() {
+  const sel = $("#f-date").value || iso(new Date()); if (!weekStart) weekStart = mondayOf(parseISO(sel));
+  const el = $("#week"); el.innerHTML = ""; const todayS = iso(new Date());
+  const logged = new Set(realEntries().map(e => e.date));
+  const end = new Date(weekStart); end.setDate(end.getDate() + 6);
+  const next = new Date(weekStart); next.setDate(next.getDate() + 7);
+  const shift = n => { weekStart = new Date(weekStart); weekStart.setDate(weekStart.getDate() + 7 * n); renderWeek(); };
+  el.append(h("div", { class: "mon" }, h("button", { type: "button", "aria-label": "Previous week", onclick: () => shift(-1) }, "‹"),
+    h("span", {}, weekStart.toLocaleDateString(undefined, { month: "long", year: "numeric" })),
+    h("button", { type: "button", "aria-label": "Next week", disabled: iso(next) > todayS, onclick: () => shift(1) }, "›")));
+  const days = h("div", { class: "days" });
+  for (let i = 0; i < 7; i++) { const d = new Date(weekStart); d.setDate(d.getDate() + i); days.append(h("span", { class: "dow" }, d.toLocaleDateString(undefined, { weekday: "narrow" }))); }
+  for (let i = 0; i < 7; i++) {
+    const d = new Date(weekStart); d.setDate(d.getDate() + i); const ds = iso(d);
+    days.append(h("button", { type: "button", class: "day" + (logged.has(ds) ? " has" : ""), "aria-pressed": String(ds === sel), "aria-label": fmtDay(ds), disabled: ds > todayS,
+      onclick: () => { $("#f-date").value = ds; renderWeek(); onFormChange(); } }, d.getDate()));
+  }
+  el.append(days);
+}
+function renderTodayStatus() {
+  const t = realEntries().filter(e => e.date === iso(new Date()));
+  $("#todayStatus").lastChild.textContent = t.length ? `Logged today: ${t.map(e => e.tod.toLowerCase()).join(", ")}` : "Nothing logged today yet";
+}
+function onFormChange() {
+  $("#painMore").hidden = !(form.pain > 0 || (form.loc && form.loc !== "None") || $("#f-med").value);
+  const e = readForm(); const f = flagsFor(e, realEntries());
+  const box = $("#flagPreview"); box.innerHTML = "";
+  if (f.length) box.append(h("div", { class: "flag warn", style: "margin-top:14px" }, h("strong", {}, "This entry will be flagged: tell your doctor"), h("span", {}, "Because of " + f.join("; ") + ".")));
+}
+function renderPhotoLink() {
+  const el = $("#photoLink"); el.innerHTML = "";
+  if (pendingPhotoId) el.append(h("div", { class: "confirm" }, h("span", {}, "Eye photo attached."), h("button", { type: "button", class: "linkbtn", onclick: () => { pendingPhotoId = null; renderPhotoLink(); } }, "Remove")));
+  else el.append(h("button", { type: "button", class: "btn ghost", onclick: () => { returnToLog = true; show("photos"); openCamera(); } }, "Add an eye photo to this entry"));
+}
+$("#logForm").addEventListener("submit", ev => {
+  ev.preventDefault();
+  const e = readForm(); if (!e.date) return;
+  const i = entries.findIndex(x => x.id === e.id);
+  if (i >= 0) entries[i] = e; else entries.push(e);
+  saveEntries();
+  const f = flagsFor(e, entries);
+  toast(f.length ? "Saved. Flagged: tell your doctor." : "Saved.");
+  const wasEditing = !!editingId; resetForm(); renderAll(); show(wasEditing ? "history" : "trends");
+});
+$("#cancelEdit").onclick = () => { resetForm(); show("history"); };
+
+/* ---------- trends ---------- */
+let rangeDays = LS.get("sel.range", 30);
+function daySeries(list, days) {
+  const end = new Date(); const startD = new Date(end); startD.setDate(end.getDate() - (days - 1));
+  if (days === 0) { const first = list.map(e => e.date).sort()[0]; if (first) startD.setTime(parseISO(first).getTime()); }
+  const out = [];
+  for (let d = new Date(startD); iso(d) <= iso(end); d.setDate(d.getDate() + 1)) {
+    const ds = iso(d), es = list.filter(e => e.date === ds);
+    const nums = k => es.map(e => e[k]).filter(v => v != null && v !== "");
+    const max = k => nums(k).length ? Math.max(...nums(k)) : null, min = k => nums(k).length ? Math.min(...nums(k)) : null;
+    out.push({ date: ds, n: es.length, pain: max("pain"), lc: min("lc"), rc: min("rc"), sleep: max("sleep"), stress: max("stress"),
+      any: k => es.some(e => e[k] === "Yes"), red: es.some(e => e.red && e.red !== "None"), vision: es.some(e => e.vision && e.vision !== "None"),
+      flagged: es.some(e => flagsFor(e, list).length) });
+  }
+  return out;
+}
+function renderTrends() {
+  const list = shownEntries();
+  $("#exampleBanner").innerHTML = "";
+  if (usingExamples()) $("#exampleBanner").append(h("div", { class: "banner" }, h("div", {}, h("b", {}, "These are example entries, not yours."), "They show what the charts look like after a few weeks. They disappear when you save your first entry.")));
+  const r = $("#range"); r.innerHTML = "";
+  for (const [label, d] of [["7 days", 7], ["30 days", 30], ["90 days", 90], ["All", 0]]) r.append(h("button", { class: "chip", "aria-pressed": String(rangeDays === d), onclick: () => { rangeDays = d; LS.set("sel.range", d); renderTrends(); } }, label));
+  const days = daySeries(list, rangeDays);
+  const logged = days.filter(d => d.n);
+  const avg = k => { const v = logged.map(d => d[k]).filter(x => x != null); return v.length ? (v.reduce((a, b) => a + b, 0) / v.length) : null; };
+  const f1 = v => v == null ? "–" : v.toFixed(1);
+  const painDays = logged.filter(d => d.pain >= settings.pday).length, flagged = logged.filter(d => d.flagged).length;
+  const t = $("#tiles"); t.innerHTML = "";
+  const tile = (n, l, alert) => h("div", { class: "tile" + (alert ? " alert" : "") }, h("div", { class: "n" }, n), h("div", { class: "l" }, l));
+  t.append(tile(logged.length, "days logged"), tile(f1(avg("pain")), "average pain"), tile(painDays, `pain days (${settings.pday}+)`),
+           tile(f1(avg("lc")), "avg left eye clarity"), tile(f1(avg("rc")), "avg right eye clarity"), tile(flagged, "days flagged for doctor", flagged > 0));
+  const c = $("#charts"); c.innerHTML = "";
+  c.append(
+    chartCard("Headache / pain", "0 none · 10 worst", days, [{ key: "pain", name: "Pain", color: "var(--accent)" }], { max: 10, thr: settings.pain, thrLabel: `flag ${settings.pain}`, area: true }),
+    chartCard("Eye clarity", "10 = normal", days, [{ key: "lc", name: "Left eye", color: "var(--s1)" }, { key: "rc", name: "Right eye", color: "var(--s2)" }], { max: 10 }),
+    chartCard("Sleep", "hours", days, [{ key: "sleep", name: "Sleep", color: "var(--accent)" }], { max: Math.max(10, ...days.map(d => d.sleep || 0)), bars: true }),
+    chartCard("Stress", "0 calm · 10 extreme", days, [{ key: "stress", name: "Stress", color: "var(--accent)" }], { max: 10 }),
+    stripCard(days));
+}
+
+function chartCard(title, unit, days, series, o) {
+  const card = h("div", { class: "chart" });
+  const head = h("header", {}, h("h3", {}, title, " ", h("span", { class: "hint" }, unit)));
+  if (series.length > 1) head.append(h("div", { class: "legend" }, ...series.map(s => h("span", {}, h("i", { style: `background:${s.color}` }), s.name))));
+  card.append(head);
+  const W = 520, H = 170, L = 26, R = 10, T = 12, B = 22, iw = W - L - R, ih = H - T - B, n = days.length;
+  const x = i => L + (n <= 1 ? iw / 2 : (i / (n - 1)) * iw), y = v => T + ih - (v / o.max) * ih;
+  const NS = "http://www.w3.org/2000/svg", s = (tag, a = {}) => { const e = document.createElementNS(NS, tag); for (const k in a) e.setAttribute(k, a[k]); return e; };
+  const svg = s("svg", { viewBox: `0 0 ${W} ${H}`, role: "img", "aria-label": `${title} over the last ${n} days` });
+  const step = o.max > 10 ? 4 : 5;
+  for (let v = 0; v <= o.max; v += step) { svg.append(s("line", { class: "grid", x1: L, x2: W - R, y1: y(v), y2: y(v) })); const tx = s("text", { x: L - 6, y: y(v) + 3, "text-anchor": "end" }); tx.textContent = v; svg.append(tx); }
+  const every = Math.max(1, Math.ceil(n / 6));
+  days.forEach((d, i) => { if (i % every === 0 || i === n - 1) { if (i !== n - 1 && n - 1 - i < every * .6) return; const tx = s("text", { x: x(i), y: H - 6, "text-anchor": i === 0 ? "start" : i === n - 1 ? "end" : "middle" }); tx.textContent = fmtShort(d.date); svg.append(tx); } });
+  if (o.thr != null) { svg.append(s("line", { class: "thr", x1: L, x2: W - R, y1: y(o.thr), y2: y(o.thr) })); const tx = s("text", { class: "thr-l", x: W - R, y: y(o.thr) - 4, "text-anchor": "end" }); tx.textContent = o.thrLabel; svg.append(tx); }
+  const bw = Math.max(2, Math.min(14, iw / n - 2));
+  for (const se of series) {
+    if (o.bars) {
+      days.forEach((d, i) => { const v = d[se.key]; if (v == null) return; const top = y(v), hgt = T + ih - top; svg.append(s("path", { d: `M${x(i) - bw / 2},${T + ih} V${top + 3} q0,-3 3,-3 h${bw - 6} q3,0 3,3 V${T + ih} Z`, fill: se.color, opacity: .85 })); });
+      continue;
+    }
+    // split into runs so missed days show as gaps
+    const runs = []; let cur = [];
+    days.forEach((d, i) => { const v = d[se.key]; if (v == null) { if (cur.length) runs.push(cur); cur = []; } else cur.push([x(i), y(v)]); });
+    if (cur.length) runs.push(cur);
+    for (const run of runs) {
+      const dpath = run.map((p, j) => (j ? "L" : "M") + p[0].toFixed(1) + "," + p[1].toFixed(1)).join("");
+      if (o.area && run.length > 1) svg.append(s("path", { d: dpath + `L${run[run.length - 1][0]},${T + ih}L${run[0][0]},${T + ih}Z`, fill: se.color, opacity: .12 }));
+      svg.append(s("path", { d: dpath, fill: "none", stroke: se.color, "stroke-width": 2, "stroke-linejoin": "round", "stroke-linecap": "round" }));
+      if (run.length === 1 || n <= 31) for (const p of run) svg.append(s("circle", { cx: p[0], cy: p[1], r: n <= 14 ? 3.5 : 2.5, fill: se.color, stroke: "var(--panel)", "stroke-width": 1.5 }));
+    }
+    // emphasise the latest value
+    const last = [...days].reverse().find(d => d[se.key] != null);
+    if (last) { const i = days.indexOf(last); svg.append(s("circle", { cx: x(i), cy: y(last[se.key]), r: 5, fill: se.color, stroke: "var(--panel)", "stroke-width": 2 })); }
+  }
+  // hover / tap layer
+  const cross = s("line", { class: "cross", y1: T, y2: T + ih, visibility: "hidden" }); svg.append(cross);
+  const hit = s("rect", { x: L, y: 0, width: iw, height: H, fill: "transparent" }); svg.append(hit);
+  const tip = h("div", { class: "tip", hidden: true });
+  const move = ev => {
+    const rect = svg.getBoundingClientRect(); const px = (ev.clientX - rect.left) / rect.width * W;
+    const i = Math.max(0, Math.min(n - 1, Math.round((px - L) / iw * (n - 1)))); const d = days[i];
+    cross.setAttribute("x1", x(i)); cross.setAttribute("x2", x(i)); cross.setAttribute("visibility", "visible");
+    tip.innerHTML = ""; tip.append(h("div", {}, fmtDay(d.date)));
+    for (const se of series) tip.append(h("div", {}, se.name + ": ", h("b", {}, d[se.key] == null ? "not logged" : String(d[se.key]))));
+    tip.hidden = false; const cr = card.getBoundingClientRect();
+    tip.style.left = Math.max(60, Math.min(cr.width - 60, (x(i) / W) * rect.width + rect.left - cr.left)) + "px";
+    tip.style.top = (rect.top - cr.top + 6) + "px";
+  };
+  const leave = () => { tip.hidden = true; cross.setAttribute("visibility", "hidden"); };
+  hit.addEventListener("pointermove", move); hit.addEventListener("pointerdown", move); hit.addEventListener("pointerleave", leave);
+  card.append(svg, tip);
+  return card;
+}
+function stripCard(days) {
+  const rows = [["Red eye", d => d.red], ["Vision change", d => d.vision], ["Eye pain moving", d => d.any("eyeMovePain")], ["Dizziness", d => d.any("dizzy")], ["Nausea", d => d.any("nausea")], ["Weakness", d => d.any("weak")], ["Numb / speech", d => d.any("numb")], ["Memory / smells", d => d.any("memory")]];
+  const card = h("div", { class: "chart" }, h("header", {}, h("h3", {}, "Which days had what"), h("span", { class: "hint" }, "filled = yes, ring = logged without it")));
+  const W = 520, L = 104, R = 10, rh = 22, T = 6, n = days.length, iw = W - L - R, H = T + rows.length * rh + 6;
+  const NS = "http://www.w3.org/2000/svg", s = (tag, a = {}) => { const e = document.createElementNS(NS, tag); for (const k in a) e.setAttribute(k, a[k]); return e; };
+  const svg = s("svg", { viewBox: `0 0 ${W} ${H}`, role: "img", "aria-label": "Symptoms by day" });
+  const x = i => L + (n <= 1 ? iw / 2 : (i / (n - 1)) * iw), r = Math.max(2, Math.min(5, iw / n / 2 - 1));
+  rows.forEach(([label, fn], j) => {
+    const cy = T + j * rh + rh / 2; const tx = s("text", { class: "strip-label", x: 0, y: cy + 4 }); tx.textContent = label; svg.append(tx);
+    days.forEach((d, i) => { if (!d.n) return; const yes = fn(d); svg.append(s("circle", { cx: x(i), cy, r, fill: yes ? (j >= 5 && j <= 6 ? "var(--crit)" : "var(--accent)") : "none", stroke: yes ? "none" : "var(--line)", "stroke-width": 1.2 })); });
+  });
+  card.append(svg); return card;
+}
+
+/* ---------- history ---------- */
+let confirmDel = null;
+function renderHistory() {
+  const el = $("#historyList"); el.innerHTML = "";
+  const list = shownEntries().slice().sort((a, b) => order(b).localeCompare(order(a)));
+  if (usingExamples()) el.append(h("div", { class: "banner" }, h("div", {}, h("b", {}, "No entries yet."), "Below are examples so you can see the layout. Your first saved entry replaces them.")));
+  for (const e of list.slice(0, 60)) {
+    const f = flagsFor(e, shownEntries());
+    const acts = h("div", { class: "acts" });
+    if (!e.example) {
+      if (confirmDel === e.id) acts.append(h("span", { class: "confirm" }, "Delete this entry?", h("button", { class: "btn danger", style: "min-height:36px;padding:6px 12px", onclick: () => { entries = entries.filter(x => x.id !== e.id); saveEntries(); confirmDel = null; renderAll(); } }, "Delete"), h("button", { class: "linkbtn", onclick: () => { confirmDel = null; renderHistory(); } }, "Keep")));
+      else acts.append(h("button", { class: "linkbtn", onclick: () => { resetForm(e); show("log"); } }, "Edit"), h("button", { class: "linkbtn", style: "color:var(--ink-3)", onclick: () => { confirmDel = e.id; renderHistory(); } }, "Delete"));
+    }
+    const sx = [e.vision !== "None" && e.vision, e.red !== "None" && e.red && `red eye: ${e.red.toLowerCase()}`, e.eyeMovePain === "Yes" && "eye pain moving", e.dizzy === "Yes" && "dizzy", e.nausea === "Yes" && "nausea", e.weak === "Yes" && "weakness", e.numb === "Yes" && "numbness/speech", e.memory === "Yes" && "memory/smells/déjà vu", e.loc !== "None" && e.loc && `${e.type !== "None" ? e.type.toLowerCase() + ", " : ""}${e.loc.toLowerCase()}`].filter(Boolean);
+    el.append(h("div", { class: "entry" },
+      h("div", { class: "top" }, h("span", { class: "when" }, fmtDay(e.date), " · ", h("span", { class: "hint" }, e.tod)), e.example ? h("span", { class: "pill ex" }, "Example") : f.length ? h("span", { class: "pill", title: f.join("; ") }, "Tell your doctor") : null),
+      h("div", { class: "nums" }, h("span", {}, `pain ${e.pain}`), h("span", {}, `L ${e.lc} · R ${e.rc}`), e.sleep != null ? h("span", {}, `sleep ${e.sleep}h`) : null, h("span", {}, `stress ${e.stress}`), e.photoId ? h("span", {}, "📷") : null),
+      sx.length ? h("div", { class: "hint", style: "font-size:.88rem;color:var(--ink-2)" }, sx.join(" · ")) : null,
+      e.med ? h("div", { class: "hint" }, "Medication: " + e.med) : null,
+      e.notes ? h("div", { style: "font-size:.92rem" }, e.notes) : null,
+      f.length && !e.example ? h("div", { class: "hint", style: "color:var(--warn)" }, "Flagged because of " + f.join("; ") + ".") : null,
+      acts));
+  }
+}
+for (const [id, k] of [["#s-pain", "pain"], ["#s-drop", "drop"], ["#s-pday", "pday"]]) { const el = $(id); el.value = settings[k]; el.addEventListener("change", () => { const v = Math.max(1, Math.min(10, +el.value || settings[k])); el.value = v; settings[k] = v; saveSettings(); renderAll(); }); }
+const nameEl = $("#s-name"); nameEl.value = settings.name || "";
+const renderHello = () => { $("#hello").textContent = settings.name ? `Hello, ${settings.name}` : "Hello"; };
+nameEl.addEventListener("change", () => { settings.name = nameEl.value.trim(); saveSettings(); renderHello(); }); renderHello();
+function renderStorageNote() { $("#storageNote").textContent = persistOK ? "" : "This browser is not letting the page save. Entries will be lost when you close it. Try opening the page in your normal browser, not a private window."; }
+
+/* ---------- export / import ---------- */
+const COLS = [["Date", "date"], ["Time of day", "tod"], ["Left eye clarity (0-10)", "lc"], ["Right eye clarity (0-10)", "rc"], ["Vision change", "vision"], ["Eye pain when moving eye", "eyeMovePain"], ["Headache / pain level (0-10)", "pain"], ["Pain location", "loc"], ["Pain type", "type"], ["Pain duration (hours)", "dur"], ["Medication (name, dose, time)", "med"], ["Dizziness / nausea", "dizzyNausea"], ["Numbness / weakness / speech trouble", "numbWeak"], ["Memory lapses / odd smells / deja vu", "memory"], ["Sleep (hours)", "sleep"], ["Stress (0-10)", "stress"], ["Notes", "notes"], ["Red eye", "red"], ["Dizziness", "dizzy"], ["Nausea", "nausea"], ["Weakness", "weak"], ["Numbness / speech", "numb"]];
+const derived = e => Object.assign({}, e, { dizzyNausea: e.dizzy === "Yes" || e.nausea === "Yes" ? "Yes" : "No", numbWeak: e.numb === "Yes" || e.weak === "Yes" ? "Yes" : "No" });
+const csv = () => [COLS.map(c => c[0]).concat("Flag").join(","), ...entries.slice().sort((a, b) => order(a).localeCompare(order(b))).map(e => COLS.map(([, k]) => derived(e)[k] ?? "").concat(flagsFor(e, entries).length ? "Tell your doctor" : "").map(v => /[",\n]/.test(String(v)) ? `"${String(v).replace(/"/g, '""')}"` : v).join(","))].join("\n");
+async function offer(filename, data) {
+  const out = $("#exportOut"); out.innerHTML = "";
+  try { const type = filename.endsWith(".csv") ? "text/csv" : "application/json"; const file = new File([data], filename, { type });
+    if (navigator.canShare && navigator.canShare({ files: [file] })) { try { await navigator.share({ files: [file], title: filename }); return; } catch (e) { if (e.name === "AbortError") return; } }
+    const a = h("a", { href: URL.createObjectURL(file), download: filename }); document.body.append(a); a.click(); setTimeout(() => { URL.revokeObjectURL(a.href); a.remove(); }, 1000); toast("Saved to Downloads."); return; } catch {}
+  const ta = h("textarea", { class: "copybox", readonly: true }); ta.value = data;
+  out.append(h("p", { class: "muted" }, "Copy this and paste it into a file or your spreadsheet:"), ta, h("button", { class: "btn ghost", onclick: async () => { try { await navigator.clipboard.writeText(data); toast("Copied."); } catch { ta.select(); } } }, "Copy"));
+}
+$("#exportCsv").onclick = () => entries.length ? offer(`symptom-log-${iso(new Date())}.csv`, csv()) : toast("Nothing to export yet.");
+$("#exportJson").onclick = async () => offer(`symptom-log-backup-${iso(new Date())}.json`, JSON.stringify({ entries, settings, photos: await photoDB.all() }));
+$("#importIn").onchange = async ev => {
+  const file = ev.target.files[0]; ev.target.value = ""; if (!file) return;
+  try {
+    let rows = [];
+    if (/\.json$/i.test(file.name)) { const j = JSON.parse(await file.text()); merge(j.entries || []); if (j.settings) Object.assign(settings, j.settings), saveSettings(); for (const p of j.photos || []) await photoDB.put(p); renderAll(); renderGallery(); return; }
+    if (/\.csv$/i.test(file.name)) { await loadXLSX(); rows = XLSX.utils.sheet_to_json(XLSX.read(await file.text(), { type: "string" }).Sheets.Sheet1, { header: 1, raw: true }); }
+    else { await loadXLSX(); const wb = XLSX.read(await file.arrayBuffer(), { cellDates: true }); const ws = wb.Sheets["Daily log"] || wb.Sheets[wb.SheetNames[0]]; rows = XLSX.utils.sheet_to_json(ws, { header: 1, raw: true }); }
+    const hi = rows.findIndex(r => r && r[0] === "Date"); if (hi < 0) throw new Error("no header");
+    const head = rows[hi]; const idx = Object.fromEntries(COLS.map(([name, k]) => [k, head.indexOf(name)]));
+    const got = [];
+    for (const r of rows.slice(hi + 1)) {
+      if (!r || r[idx.date] == null || r[idx.date] === "") continue;
+      const v = k => idx[k] >= 0 ? r[idx[k]] : undefined;
+      if (String(v("notes") || "").startsWith("EXAMPLE ROW")) continue;
+      let d = v("date"); d = d instanceof Date ? iso(new Date(d.getTime() + d.getTimezoneOffset() * 6e4 * (d.getUTCHours() ? 0 : 1))) : typeof d === "number" ? iso(new Date(Math.round((d - 25569) * 864e5) + new Date().getTimezoneOffset() * 6e4)) : String(d).slice(0, 10);
+      const n = k => v(k) === "" || v(k) == null ? null : +v(k), s = (k, def) => v(k) ? String(v(k)) : def;
+      got.push({ id: uid(), date: d, tod: s("tod", "Morning"), lc: n("lc"), rc: n("rc"), vision: s("vision", "None"), red: s("red", "None"), eyeMovePain: s("eyeMovePain", "No"), pain: n("pain") ?? 0, loc: s("loc", "None"), type: s("type", "None"), dur: n("dur"), med: s("med", ""), dizzy: s("dizzy", s("dizzyNausea", "No")), nausea: s("nausea", "No"), weak: s("weak", "No"), numb: s("numb", s("numbWeak", "No")), memory: s("memory", "No"), sleep: n("sleep"), stress: n("stress") ?? 0, notes: s("notes", "") });
+    }
+    merge(got); toast(`Imported ${got.length} ${got.length === 1 ? "entry" : "entries"}.`);
+  } catch (e) { toast("That file did not look like your symptom tracker. Use the .xlsx with the “Daily log” sheet."); }
+};
+function merge(list) { const key = e => e.date + e.tod; const have = new Set(entries.map(key)); for (const e of list) if (!have.has(key(e))) entries.push(e); saveEntries(); renderAll(); }
+function loadXLSX() { return window.XLSX ? Promise.resolve() : new Promise((res, rej) => { const s = document.createElement("script"); s.src = "https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"; s.onload = res; s.onerror = rej; document.head.append(s); }); }
+
+/* ---------- photos ---------- */
+// Guide geometry is in the 1200x900 crop. Based on a close-up: brows to nose tip, eyes level, ~40% of the width apart.
+const G = { eyeY: 400, eyeLX: 360, eyeRX: 840, rx: 120, ry: 62, browY: 270 };
+function guideSVG(withLabels = true) {
+  const NS = "http://www.w3.org/2000/svg", s = (tag, a = {}) => { const e = document.createElementNS(NS, tag); for (const k in a) e.setAttribute(k, a[k]); return e; };
+  const svg = s("svg", { class: "guide", viewBox: "0 0 1200 900", "aria-hidden": "true" });
+  svg.append(
+    s("line", { class: "g d", x1: 140, x2: 1060, y1: G.browY, y2: G.browY }),
+    s("ellipse", { class: "g", cx: G.eyeLX, cy: G.eyeY, rx: G.rx, ry: G.ry }), s("ellipse", { class: "g", cx: G.eyeRX, cy: G.eyeY, rx: G.rx, ry: G.ry }),
+    s("circle", { class: "g", cx: G.eyeLX, cy: G.eyeY, r: 6 }), s("circle", { class: "g", cx: G.eyeRX, cy: G.eyeY, r: 6 }),
+    s("line", { class: "g d", x1: 600, x2: 600, y1: 300, y2: 860 }),
+    s("path", { class: "g d", d: "M90 120 C 90 560, 250 900, 600 900 C 950 900, 1110 560, 1110 120" }));
+  if (withLabels) { const t1 = s("text", { x: 150, y: G.browY - 12 }); t1.textContent = "brows"; const t2 = s("text", { x: G.eyeLX, y: G.eyeY + G.ry + 30, "text-anchor": "middle" }); t2.textContent = "your right eye"; const t3 = s("text", { x: G.eyeRX, y: G.eyeY + G.ry + 30, "text-anchor": "middle" }); t3.textContent = "your left eye"; svg.append(t1, t2, t3); }
+  return svg;
+}
+$("#guidePreview").append(guideSVG());
+$("#alignFrame").append(guideSVG(false));
+$("#camFrame").append(guideSVG(false));
+let stream = null, facing = "user";
+async function openCamera() {
+  if (!navigator.mediaDevices?.getUserMedia) { $("#camIn").click(); return; }
+  try {
+    stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: facing, width: { ideal: 1920 }, height: { ideal: 1440 } }, audio: false });
+  } catch { toast("Camera not available. Opening your phone's camera instead."); $("#camIn").click(); return; }
+  const v = $("#camVideo"); v.srcObject = stream; v.style.transform = facing === "user" ? "scaleX(-1)" : "none";
+  const last = photos[photos.length - 1]; const g = $("#camGhost"); g.hidden = !last; if (last) { g.src = last.data; g.style.transform = facing === "user" ? "scaleX(-1)" : "none"; }
+  $("#photoHome").hidden = true; $("#camView").hidden = false; window.scrollTo(0, 0);
+}
+function closeCamera() { if (stream) stream.getTracks().forEach(t => t.stop()); stream = null; $("#camView").hidden = true; }
+$("#liveBtn").onclick = openCamera;
+$("#camFlip").onclick = () => { closeCamera(); facing = facing === "user" ? "environment" : "user"; openCamera(); };
+$("#camCancel").onclick = () => { closeCamera(); $("#photoHome").hidden = false; if (returnToLog) { returnToLog = false; show("log"); } };
+$("#snap").onclick = () => {
+  const v = $("#camVideo"), vw = v.videoWidth, vh = v.videoHeight; if (!vw) return;
+  // crop the same 4:3 area the preview shows (object-fit: cover)
+  const fr = $("#camFrame"), ar = fr.clientWidth / fr.clientHeight; let sw = vw, sh = vw / ar; if (sh > vh) { sh = vh; sw = vh * ar; }
+  const c = document.createElement("canvas"); c.width = sw; c.height = sh; const x = c.getContext("2d");
+  x.drawImage(v, (vw - sw) / 2, (vh - sh) / 2, sw, sh, 0, 0, sw, sh);
+  closeCamera(); c.toBlob(b => startAlign(b), "image/jpeg", .92);
+};
+
+let A = null, returnToLog = false, photos = [], picked = [];
+const cvs = $("#alignCanvas"), ctx = cvs.getContext("2d");
+async function startAlign(file) {
+  const url = URL.createObjectURL(file);
+  const img = new Image(); img.decoding = "async"; img.src = url; await img.decode().catch(() => {});
+  const iw = img.naturalWidth, ih = img.naturalHeight; if (!iw) { toast("Could not open that image."); return; }
+  const base = Math.max(1200 / iw, 900 / ih);
+  const last = photos[photos.length - 1];
+  let ghost = null; if (last) { ghost = new Image(); ghost.src = last.data; ghost.onload = drawAlign; }
+  A = { img, iw, ih, base, z: 1, tx: 0, ty: 0, rot: 0, ghost, url };
+  $("#zoom").value = 1; $("#rot").value = 0; $("#rotVal").textContent = "0°"; $("#p-note").value = "";
+  chipGroup($("#p-eye"), RED, "pEye", "None"); chipGroup($("#p-red"), REDNESS, "pRed", "Mild");
+  setYN($("[data-yn=ghost]"), last ? "Yes" : "No"); $("[data-yn=ghost]").closest(".yn").hidden = !last;
+  $("#photoHome").hidden = true; $("#alignView").hidden = false; window.scrollTo(0, 0); drawAlign();
+}
+function render(c, withGhost) {
+  c.setTransform(1, 0, 0, 1, 0, 0); c.fillStyle = "#1d2625"; c.fillRect(0, 0, 1200, 900);
+  c.translate(600 + A.tx, 450 + A.ty); c.rotate(A.rot * Math.PI / 180); const sc = A.base * A.z; c.scale(sc, sc);
+  c.drawImage(A.img, -A.iw / 2, -A.ih / 2); c.setTransform(1, 0, 0, 1, 0, 0);
+  if (withGhost && A.ghost && A.ghost.complete && local.ghost === "Yes") { c.globalAlpha = .35; c.drawImage(A.ghost, 0, 0, 1200, 900); c.globalAlpha = 1; }
+}
+function drawAlign() { if (A) render(ctx, true); }
+$("#zoom").oninput = e => { if (A) { A.z = +e.target.value; drawAlign(); } };
+$("#rot").oninput = e => { if (A) { A.rot = +e.target.value; $("#rotVal").textContent = A.rot + "°"; drawAlign(); } };
+const ptrs = new Map(); let pinch0 = null;
+const frame = $("#alignFrame");
+frame.addEventListener("pointerdown", e => { frame.setPointerCapture(e.pointerId); ptrs.set(e.pointerId, { x: e.clientX, y: e.clientY }); if (ptrs.size === 2) { const [a, b] = [...ptrs.values()]; pinch0 = { d: Math.hypot(a.x - b.x, a.y - b.y), z: A?.z || 1 }; } });
+frame.addEventListener("pointermove", e => {
+  if (!A || !ptrs.has(e.pointerId)) return; const p = ptrs.get(e.pointerId); const k = 1200 / frame.clientWidth;
+  if (ptrs.size === 1) { A.tx += (e.clientX - p.x) * k; A.ty += (e.clientY - p.y) * k; }
+  ptrs.set(e.pointerId, { x: e.clientX, y: e.clientY });
+  if (ptrs.size === 2 && pinch0) { const [a, b] = [...ptrs.values()]; A.z = Math.max(.5, Math.min(4, pinch0.z * Math.hypot(a.x - b.x, a.y - b.y) / pinch0.d)); $("#zoom").value = A.z; }
+  drawAlign();
+});
+const up = e => { ptrs.delete(e.pointerId); if (ptrs.size < 2) pinch0 = null; };
+frame.addEventListener("pointerup", up); frame.addEventListener("pointercancel", up);
+frame.addEventListener("wheel", e => { if (!A) return; e.preventDefault(); A.z = Math.max(.5, Math.min(4, A.z * (e.deltaY < 0 ? 1.05 : .95))); $("#zoom").value = A.z; drawAlign(); }, { passive: false });
+
+$("#camIn").onchange = $("#galIn").onchange = e => { const f = e.target.files[0]; e.target.value = ""; if (f) startAlign(f); };
+$("#cancelPhoto").onclick = () => { endAlign(); if (returnToLog) { returnToLog = false; show("log"); } };
+function endAlign() { if (A) URL.revokeObjectURL(A.url); A = null; $("#alignView").hidden = true; $("#photoHome").hidden = false; }
+$("#savePhoto").onclick = async () => {
+  if (!A) return;
+  const out = document.createElement("canvas"); out.width = 1200; out.height = 900; render(out.getContext("2d"), false);
+  const now = new Date();
+  const p = { id: uid(), date: iso(now), t: `${pad(now.getHours())}:${pad(now.getMinutes())}`, data: out.toDataURL("image/jpeg", .85), eye: form.pEye, redness: form.pEye === "None" ? null : form.pRed, note: $("#p-note").value.trim() };
+  await photoDB.put(p); endAlign(); await renderGallery(); toast("Photo saved.");
+  if (returnToLog) { returnToLog = false; pendingPhotoId = p.id; if (p.eye !== "None") { form.red = p.eye; syncChips($("#f-red"), p.eye); } renderPhotoLink(); show("log"); }
+};
+async function renderGallery() {
+  photos = await photoDB.all();
+  const g = $("#gallery"); g.innerHTML = "";
+  $("#galleryHint").textContent = photos.length ? (photos.length > 1 ? "Tap two photos to compare them." : "Take another one tomorrow to start comparing.") : "No photos yet. Your first one will appear here.";
+  [...photos].reverse().forEach(p => {
+    const n = picked.indexOf(p.id);
+    g.append(h("button", { class: "thumb", "aria-pressed": String(n >= 0), "data-n": n >= 0 ? n + 1 : "", "aria-label": `Photo ${fmtDay(p.date)}`, onclick: () => { picked = n >= 0 ? picked.filter(x => x !== p.id) : picked.concat(p.id).slice(-2); renderGallery(); } },
+      h("img", { src: p.data, alt: "" }), h("span", {}, fmtShort(p.date) + (p.eye && p.eye !== "None" ? ` · ${p.eye[0]} ${p.redness?.toLowerCase() || ""}` : ""))));
+  });
+  $("#compareBtn").disabled = picked.length !== 2;
+}
+$("#compareBtn").onclick = () => {
+  const [a, b] = picked.map(id => photos.find(p => p.id === id)).sort((x, y) => (x.date + x.t).localeCompare(y.date + y.t));
+  const cv = $("#compareView"); cv.innerHTML = "";
+  const box = h("div", { class: "frame wipe", style: "--x:50%" }, h("img", { src: b.data, alt: `Photo from ${fmtDay(b.date)}` }), h("img", { class: "top-img", src: a.data, alt: `Photo from ${fmtDay(a.date)}` }), h("div", { class: "bar" }),
+    h("span", { class: "tag", style: "left:8px" }, fmtShort(a.date)), h("span", { class: "tag", style: "right:8px" }, fmtShort(b.date)));
+  const slider = h("input", { type: "range", id: "wipe", min: 0, max: 100, value: 50, "aria-label": "Slide between photos" });
+  slider.oninput = () => box.style.setProperty("--x", slider.value + "%");
+  const desc = p => `${fmtDay(p.date)} ${p.t}: ${p.eye && p.eye !== "None" ? `${p.eye.toLowerCase()} eye, ${p.redness?.toLowerCase()}` : "no redness noted"}${p.note ? `. ${p.note}` : ""}`;
+  const delBtn = h("button", { class: "linkbtn", style: "color:var(--ink-3)", onclick: () => { cv.innerHTML = ""; picked = []; renderGallery(); } }, "Close");
+  cv.append(h("div", { class: "section" }, h("h3", {}, "Compare"), box, slider, h("div", { class: "muted" }, desc(a), h("br"), desc(b)), delBtn));
+  cv.scrollIntoView({ behavior: "smooth", block: "start" });
+};
+
+/* ---------- shell ---------- */
+function show(tab) {
+  if (stream && tab !== "photos") { closeCamera(); $("#photoHome").hidden = false; }
+  $$("[data-view]").forEach(v => v.hidden = v.id !== "v-" + tab);
+  $$("nav.tabs button").forEach(b => b.dataset.tab === tab ? b.setAttribute("aria-current", "page") : b.removeAttribute("aria-current"));
+  try { sessionStorage.setItem("sel.tab", tab); } catch {}
+  if (tab === "trends") renderTrends();
+  window.scrollTo(0, 0);
+}
+$$("nav.tabs button").forEach(b => b.onclick = () => { if (b.dataset.tab === "photos" && A) return show("photos"); show(b.dataset.tab); });
+let tt; function toast(msg) { $$(".toast").forEach(t => t.remove()); const t = h("div", { class: "toast", role: "status" }, msg); document.body.append(t); clearTimeout(tt); tt = setTimeout(() => t.remove(), 2600); }
+function renderAll() { renderTrends(); renderHistory(); renderTodayStatus(); renderWeek(); }
+$("#qPhoto").onclick = () => show("photos");
+$$("[data-go]").forEach(b => b.onclick = () => show(b.dataset.go));
+let rz; addEventListener("resize", () => { clearTimeout(rz); rz = setTimeout(() => { if (!$("#v-trends").hidden) renderTrends(); }, 150); });
+
+$("#todayLabel").textContent = new Date().toLocaleDateString(undefined, { weekday: "long", day: "numeric", month: "long" });
+$$("[data-scale]").forEach(scaleField);
+$$("[data-yn]").forEach(ynGroup);
+if ("serviceWorker" in navigator) addEventListener("load", () => navigator.serviceWorker.register("sw.js").catch(() => {}));
+if (navigator.storage?.persist) navigator.storage.persist().catch(() => {});
+resetForm(); renderAll(); renderGallery(); renderStorageNote();
+let start = "log"; try { start = sessionStorage.getItem("sel.tab") || (usingExamples() ? "log" : "log"); } catch {}
+show(location.hash === "#trends" || location.hash === "#photos" || location.hash === "#history" ? location.hash.slice(1) : start);
+})();
+</script>
+</body></html>
