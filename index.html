@@ -121,6 +121,24 @@ input[type=range] { width: 100%; accent-color: var(--accent); height: 32px; }
 
 #f-tod { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; }
 #f-tod .chip { padding: 8px 2px; font-size: .84rem; }
+/* eye clarity: two vertical scales, laid out like your own eyes in a mirror */
+.eyepair { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.vert { background: var(--bg); border-radius: 18px; padding: 14px 8px 12px; justify-items: center; text-align: center; gap: 6px; }
+.vert .side { font: 600 1rem/1.2 var(--f-display); display: flex; align-items: center; gap: 6px; }
+.vert .side b { width: 26px; height: 26px; border-radius: 50%; display: grid; place-items: center; color: #fff; font-size: .8rem; }
+.vert[data-side="left"] .side b { background: var(--s1); }
+.vert[data-side="right"] .side b { background: var(--s2); }
+.vert .rail { display: flex; gap: 6px; align-items: stretch; height: 200px; }
+.vert input[type=range] { writing-mode: vertical-lr; direction: rtl; width: 40px; height: 200px; margin: 0; }
+.vert[data-side="left"] input[type=range] { accent-color: var(--s1); }
+.vert[data-side="right"] input[type=range] { accent-color: var(--s2); }
+.vert .vticks { display: flex; flex-direction: column; justify-content: space-between; font: 500 .68rem var(--f-data); color: var(--ink-3); padding-block: 4px; }
+.vert .val { font: 500 2rem/1 var(--f-data); text-align: center; min-width: 0; }
+.vert .word { min-height: 2.4em; line-height: 1.2; }
+.eyenote { text-align: center; }
+/* photos are stored as the camera sees them and shown mirrored, so your left eye is on the left everywhere */
+.mirror { transform: scaleX(-1); }
+
 /* hero + week strip */
 .hero { background: var(--hero); color: #fff; border-radius: 28px; padding: 22px 20px 20px; margin-top: 6px; display: grid; gap: 14px; box-shadow: 0 14px 30px rgba(18,140,128,.25); }
 .hero h2 { color: #fff; margin: 0; font-size: 1.7rem; }
@@ -243,9 +261,11 @@ details summary { cursor: pointer; font-weight: 700; padding-block: 4px; }
 
       <div class="section">
         <div class="eyebrow"><span class="ic"><svg viewBox="0 0 24 24"><path d="M2 12s3.5-6 10-6 10 6 10 6-3.5 6-10 6S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg></span>Eyes</div>
-        <p class="hint" style="margin:-8px 0 0;font-size:.88rem">Cover one eye, look at the same text or object as always, then switch.</p>
-        <div class="field scale" data-scale="lc" data-kind="clarity"></div>
-        <div class="field scale" data-scale="rc" data-kind="clarity"></div>
+        <p class="hint eyenote" style="margin:-8px 0 0;font-size:.88rem">Cover one eye, look at the same text or object as always, then switch. 10 at the top means normal.</p>
+        <div class="eyepair">
+          <div class="field scale vert" data-scale="lc" data-side="left"></div>
+          <div class="field scale vert" data-scale="rc" data-side="right"></div>
+        </div>
         <div class="field"><span class="lab">Vision change <span class="hint">pick all that apply</span></span><div class="chips" id="f-vision"></div></div>
         <div class="field"><span class="lab">Red eye <span class="hint">what you see in the mirror</span></span><div class="chips" id="f-red" data-single></div></div>
         <div class="yn"><span>Eye pain when moving the eye</span><div class="seg" data-yn="eyeMovePain"></div></div>
@@ -344,7 +364,7 @@ details summary { cursor: pointer; font-weight: 700; padding-block: 4px; }
     <div id="alignView" hidden>
       <h2>Line it up</h2>
       <p class="lede">Drag to move, pinch or use the slider to zoom. Pupils in the ovals, nose on the dashed line.</p>
-      <div class="frame" id="alignFrame"><canvas id="alignCanvas" width="1200" height="900"></canvas></div>
+      <div class="frame" id="alignFrame"><canvas id="alignCanvas" class="mirror" width="1200" height="900"></canvas></div>
       <div class="section">
         <div class="field"><label for="zoom">Zoom</label><input type="range" id="zoom" min="0.5" max="4" step="0.01" value="1"></div>
         <div class="field"><label for="rot">Tilt <span class="hint" id="rotVal">0°</span></label><input type="range" id="rot" min="-15" max="15" step="0.5" value="0"></div>
@@ -545,6 +565,14 @@ function scaleField(el) {
   const update = () => { const v = +input.value; form[key] = v; val.textContent = v; word.textContent = words[kind](v); };
   input.addEventListener("input", () => { update(); onFormChange(); });
   el.innerHTML = "";
+  el._set = v => { input.value = v; update(); };
+  if (el.dataset.side) {
+    const side = el.dataset.side === "left" ? "Left" : "Right";
+    input.setAttribute("aria-label", `${side} eye clarity, 10 is normal`);
+    el.append(h("label", { class: "side", for: id }, h("b", { "aria-hidden": "true" }, side[0]), `${side} eye`),
+      h("div", { class: "rail" }, h("div", { class: "vticks", "aria-hidden": "true" }, ...[10, 8, 6, 4, 2, 0].map(n => h("span", {}, n))), input), val, word);
+    return;
+  }
   el.append(h("label", { for: id }, h("span", {}, label, h("br"), word), val), input, h("div", { class: "ticks" }, ...Array.from({ length: 11 }, (_, i) => h("span", {}, i))));
   el._set = v => { input.value = v; update(); };
 }
@@ -811,7 +839,7 @@ function guideSVG(withLabels = true) {
     s("circle", { class: "g", cx: G.eyeLX, cy: G.eyeY, r: 6 }), s("circle", { class: "g", cx: G.eyeRX, cy: G.eyeY, r: 6 }),
     s("line", { class: "g d", x1: 600, x2: 600, y1: 300, y2: 860 }),
     s("path", { class: "g d", d: "M90 120 C 90 560, 250 900, 600 900 C 950 900, 1110 560, 1110 120" }));
-  if (withLabels) { const t1 = s("text", { x: 150, y: G.browY - 12 }); t1.textContent = "brows"; const t2 = s("text", { x: G.eyeLX, y: G.eyeY + G.ry + 30, "text-anchor": "middle" }); t2.textContent = "your right eye"; const t3 = s("text", { x: G.eyeRX, y: G.eyeY + G.ry + 30, "text-anchor": "middle" }); t3.textContent = "your left eye"; svg.append(t1, t2, t3); }
+  if (withLabels) { const t1 = s("text", { x: 150, y: G.browY - 12 }); t1.textContent = "brows"; const t2 = s("text", { x: G.eyeLX, y: G.eyeY + G.ry + 30, "text-anchor": "middle" }); t2.textContent = "your left eye"; const t3 = s("text", { x: G.eyeRX, y: G.eyeY + G.ry + 30, "text-anchor": "middle" }); t3.textContent = "your right eye"; svg.append(t1, t2, t3); }
   return svg;
 }
 $("#guidePreview").append(guideSVG());
@@ -863,13 +891,13 @@ function render(c, withGhost) {
 }
 function drawAlign() { if (A) render(ctx, true); }
 $("#zoom").oninput = e => { if (A) { A.z = +e.target.value; drawAlign(); } };
-$("#rot").oninput = e => { if (A) { A.rot = +e.target.value; $("#rotVal").textContent = A.rot + "°"; drawAlign(); } };
+$("#rot").oninput = e => { if (A) { A.rot = -e.target.value; $("#rotVal").textContent = e.target.value + "°"; drawAlign(); } };
 const ptrs = new Map(); let pinch0 = null;
 const frame = $("#alignFrame");
 frame.addEventListener("pointerdown", e => { frame.setPointerCapture(e.pointerId); ptrs.set(e.pointerId, { x: e.clientX, y: e.clientY }); if (ptrs.size === 2) { const [a, b] = [...ptrs.values()]; pinch0 = { d: Math.hypot(a.x - b.x, a.y - b.y), z: A?.z || 1 }; } });
 frame.addEventListener("pointermove", e => {
   if (!A || !ptrs.has(e.pointerId)) return; const p = ptrs.get(e.pointerId); const k = 1200 / frame.clientWidth;
-  if (ptrs.size === 1) { A.tx += (e.clientX - p.x) * k; A.ty += (e.clientY - p.y) * k; }
+  if (ptrs.size === 1) { A.tx -= (e.clientX - p.x) * k; A.ty += (e.clientY - p.y) * k; }
   ptrs.set(e.pointerId, { x: e.clientX, y: e.clientY });
   if (ptrs.size === 2 && pinch0) { const [a, b] = [...ptrs.values()]; A.z = Math.max(.5, Math.min(4, pinch0.z * Math.hypot(a.x - b.x, a.y - b.y) / pinch0.d)); $("#zoom").value = A.z; }
   drawAlign();
@@ -896,17 +924,19 @@ async function renderGallery() {
   [...photos].reverse().forEach(p => {
     const n = picked.indexOf(p.id);
     g.append(h("button", { class: "thumb", "aria-pressed": String(n >= 0), "data-n": n >= 0 ? n + 1 : "", "aria-label": `Photo ${fmtDay(p.date)}`, onclick: () => { picked = n >= 0 ? picked.filter(x => x !== p.id) : picked.concat(p.id).slice(-2); renderGallery(); } },
-      h("img", { src: p.data, alt: "" }), h("span", {}, fmtShort(p.date) + (p.eye && p.eye !== "None" ? ` · ${p.eye[0]} ${p.redness?.toLowerCase() || ""}` : ""))));
+      h("img", { class: "mirror", src: p.data, alt: "" }), h("span", {}, fmtShort(p.date) + (p.eye && p.eye !== "None" ? ` · ${p.eye[0]} ${p.redness?.toLowerCase() || ""}` : ""))));
   });
   $("#compareBtn").disabled = picked.length !== 2;
 }
 $("#compareBtn").onclick = () => {
   const [a, b] = picked.map(id => photos.find(p => p.id === id)).sort((x, y) => (x.date + x.t).localeCompare(y.date + y.t));
   const cv = $("#compareView"); cv.innerHTML = "";
-  const box = h("div", { class: "frame wipe", style: "--x:50%" }, h("img", { src: b.data, alt: `Photo from ${fmtDay(b.date)}` }), h("img", { class: "top-img", src: a.data, alt: `Photo from ${fmtDay(a.date)}` }), h("div", { class: "bar" }),
+  // the image layer is mirrored, so the newer photo sits on top and its clip reads right-to-left
+  const box = h("div", { class: "frame wipe", style: "--x:50%" }, h("div", { class: "mirror", style: "position:absolute;inset:0" }, h("img", { src: a.data, alt: `Photo from ${fmtDay(a.date)}` }), h("img", { class: "top-img", src: b.data, alt: `Photo from ${fmtDay(b.date)}` })), h("div", { class: "bar" }),
     h("span", { class: "tag", style: "left:8px" }, fmtShort(a.date)), h("span", { class: "tag", style: "right:8px" }, fmtShort(b.date)));
   const slider = h("input", { type: "range", id: "wipe", min: 0, max: 100, value: 50, "aria-label": "Slide between photos" });
   slider.oninput = () => box.style.setProperty("--x", slider.value + "%");
+  box.querySelector(".top-img").style.clipPath = "inset(0 var(--x) 0 0)";
   const desc = p => `${fmtDay(p.date)} ${p.t}: ${p.eye && p.eye !== "None" ? `${p.eye.toLowerCase()} eye, ${p.redness?.toLowerCase()}` : "no redness noted"}${p.note ? `. ${p.note}` : ""}`;
   const delBtn = h("button", { class: "linkbtn", style: "color:var(--ink-3)", onclick: () => { cv.innerHTML = ""; picked = []; renderGallery(); } }, "Close");
   cv.append(h("div", { class: "section" }, h("h3", {}, "Compare"), box, slider, h("div", { class: "muted" }, desc(a), h("br"), desc(b)), delBtn));
