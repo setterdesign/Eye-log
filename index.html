@@ -246,7 +246,7 @@ details summary { cursor: pointer; font-weight: 700; padding-block: 4px; }
         <p class="hint" style="margin:-8px 0 0;font-size:.88rem">Cover one eye, look at the same text or object as always, then switch.</p>
         <div class="field scale" data-scale="lc" data-kind="clarity"></div>
         <div class="field scale" data-scale="rc" data-kind="clarity"></div>
-        <div class="field"><span class="lab">Vision change</span><div class="chips" id="f-vision" data-single></div></div>
+        <div class="field"><span class="lab">Vision change <span class="hint">pick all that apply</span></span><div class="chips" id="f-vision"></div></div>
         <div class="field"><span class="lab">Red eye <span class="hint">what you see in the mirror</span></span><div class="chips" id="f-red" data-single></div></div>
         <div class="yn"><span>Eye pain when moving the eye</span><div class="seg" data-yn="eyeMovePain"></div></div>
         <div class="field" id="photoLink"></div>
@@ -256,8 +256,8 @@ details summary { cursor: pointer; font-weight: 700; padding-block: 4px; }
         <div class="eyebrow"><span class="ic"><svg viewBox="0 0 24 24"><path d="M12 21s-7-4.5-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 11c0 5.5-7 10-7 10z"/></svg></span>Pain</div>
         <div class="field scale" data-scale="pain" data-kind="pain"></div>
         <div id="painMore" style="display:grid;gap:18px">
-        <div class="field"><span class="lab">Where</span><div class="chips" id="f-loc" data-single></div></div>
-        <div class="field"><span class="lab">Type</span><div class="chips" id="f-type" data-single></div></div>
+        <div class="field"><span class="lab">Where <span class="hint">pick all that apply</span></span><div class="chips" id="f-loc"></div></div>
+        <div class="field"><span class="lab">Type <span class="hint">pick all that apply</span></span><div class="chips" id="f-type"></div></div>
         <div class="row2">
           <div class="field"><label for="f-dur">Duration <span class="hint">hours</span></label><input type="number" id="f-dur" min="0" max="24" step="0.5" inputmode="decimal"></div>
           <div class="field"><label for="f-med">Medication <span class="hint">name, dose, time</span></label><input type="text" id="f-med"></div>
@@ -267,11 +267,7 @@ details summary { cursor: pointer; font-weight: 700; padding-block: 4px; }
 
       <div class="section">
         <div class="eyebrow"><span class="ic"><svg viewBox="0 0 24 24"><path d="M9 3h6v6h6v6h-6v6H9v-6H3V9h6z"/></svg></span>Other symptoms</div>
-        <div class="yn"><span>Dizziness</span><div class="seg" data-yn="dizzy"></div></div>
-        <div class="yn"><span>Nausea</span><div class="seg" data-yn="nausea"></div></div>
-        <div class="yn"><span>Weakness or lack of strength</span><div class="seg" data-yn="weak"></div></div>
-        <div class="yn"><span>Numbness or speech trouble</span><div class="seg" data-yn="numb"></div></div>
-        <div class="yn"><span>Memory lapses, odd smells or déjà vu</span><div class="seg" data-yn="memory"></div></div>
+        <div class="field"><span class="lab">What did you notice? <span class="hint">pick all that apply</span></span><div class="chips" id="f-sx"></div></div>
       </div>
 
       <div class="section">
@@ -424,6 +420,11 @@ const VISION = ["None", "Blurry", "Dim or washed-out colors", "Dark or missing s
 const LOC = ["None", "Right temple", "Left temple", "Behind right eye", "Behind left eye", "Forehead", "Back of head", "Whole head"];
 const PTYPE = ["None", "Throbbing", "Pressure", "Stabbing", "Dull ache"];
 const RED = ["None", "Left", "Right", "Both"];
+// Other symptoms: each is still stored as its own Yes/No field, so charts, flags and exports keep working.
+const SX = [["dizzy", "Dizziness"], ["nausea", "Nausea"], ["weak", "Weakness / lack of strength"], ["shake", "Shaking"], ["dext", "Lack of dexterity"], ["numb", "Numbness or speech trouble"], ["memory", "Memory lapses, odd smells or déjà vu"]];
+const SX_NONE = "None of these";
+// Vision change, pain location and pain type allow several picks; older entries stored one string.
+const many = v => Array.isArray(v) ? v.filter(x => x && x !== "None") : (!v || v === "None") ? [] : String(v).split(/\s*;\s*/).filter(x => x && x !== "None");
 const REDNESS = ["Mild", "Moderate", "Strong"];
 const SCALES = {
   lc: { label: "Left eye clarity", kind: "clarity" },
@@ -475,9 +476,9 @@ function makeExamples() {
     const lc = Math.max(3, Math.min(10, Math.round(7 - (spike ? 2 : 0) + rnd() * 2 - 1)));
     const red = spike || rnd() > .8 ? "Right" : "None";
     out.push({ id: "ex" + i, example: true, date: iso(d), tod: rnd() > .3 ? "Morning" : "Evening", lc, rc: Math.round(9 + rnd()),
-      vision: lc <= 5 ? "Blurry" : "None", red, eyeMovePain: spike ? "Yes" : "No", pain, loc: pain ? (spike ? "Behind right eye" : "Right temple") : "None",
-      type: pain ? (spike ? "Throbbing" : "Pressure") : "None", dur: pain ? Math.round(rnd() * 4 * 2) / 2 + .5 : 0, med: spike ? "Paracetamol 500 mg" : "",
-      dizzy: spike && rnd() > .4 ? "Yes" : "No", nausea: spike && rnd() > .5 ? "Yes" : "No", weak: "No", numb: "No", memory: "No", sleep, stress: Math.round(2 + rnd() * 5 + (spike ? 1 : 0)), notes: spike ? "Example: worse after long screen time." : "" });
+      vision: lc <= 5 ? (spike ? ["Blurry", "Dark or missing spot"] : ["Blurry"]) : [], red, eyeMovePain: spike ? "Yes" : "No", pain, loc: pain ? (spike ? ["Behind right eye", "Right temple"] : ["Right temple"]) : [],
+      type: pain ? (spike ? ["Throbbing", "Pressure"] : ["Pressure"]) : [], dur: pain ? Math.round(rnd() * 4 * 2) / 2 + .5 : 0, med: spike ? "Paracetamol 500 mg" : "",
+      dizzy: spike && rnd() > .4 ? "Yes" : "No", nausea: spike && rnd() > .5 ? "Yes" : "No", weak: "No", shake: spike && rnd() > .6 ? "Yes" : "No", dext: "No", numb: "No", memory: "No", sleep, stress: Math.round(2 + rnd() * 5 + (spike ? 1 : 0)), notes: spike ? "Example: worse after long screen time." : "" });
   }
   return out;
 }
@@ -505,6 +506,24 @@ function flagsFor(e, list) {
 const form = { };
 let editingId = null, pendingPhotoId = null;
 
+function multiGroup(el, opts, key, vals) {
+  el.innerHTML = "";
+  for (const o of opts) el.append(h("button", { type: "button", class: "chip", "aria-pressed": "false", "data-v": o, onclick: () => {
+    const cur = form[key];
+    form[key] = o === "None" ? [] : cur.includes(o) ? cur.filter(x => x !== o) : cur.concat(o);
+    syncMulti(el, form[key]); onFormChange(); } }, o));
+  form[key] = many(vals); syncMulti(el, form[key]);
+}
+const syncMulti = (el, vals) => $$(".chip", el).forEach(b => b.setAttribute("aria-pressed", String(b.dataset.v === "None" ? vals.length === 0 : vals.includes(b.dataset.v))));
+function sxGroup(el, d) {
+  const opts = SX.map(([k, label]) => [k, label]).concat([["none", SX_NONE]]);
+  el.innerHTML = "";
+  const sync = () => $$(".chip", el).forEach(b => b.setAttribute("aria-pressed", String(b.dataset.k === "none" ? SX.every(([k]) => form[k] !== "Yes") : form[b.dataset.k] === "Yes")));
+  for (const [k, label] of opts) el.append(h("button", { type: "button", class: "chip", "aria-pressed": "false", "data-k": k, onclick: () => {
+    if (k === "none") SX.forEach(([x]) => form[x] = "No"); else form[k] = form[k] === "Yes" ? "No" : "Yes";
+    sync(); onFormChange(); } }, label));
+  SX.forEach(([k]) => form[k] = d[k] === "Yes" ? "Yes" : "No"); sync();
+}
 function chipGroup(el, opts, key, def) {
   el.innerHTML = "";
   for (const o of opts) el.append(h("button", { type: "button", class: "chip", "aria-pressed": "false", "data-v": o, onclick: () => { form[key] = o; syncChips(el, o); onFormChange(); } }, o));
@@ -531,13 +550,14 @@ function scaleField(el) {
 }
 
 function resetForm(e) {
-  const d = e || { date: iso(new Date()), tod: guessTOD(), lc: 10, rc: 10, vision: "None", red: "None", eyeMovePain: "No", pain: 0, loc: "None", type: "None", dur: "", med: "", dizzy: "No", nausea: "No", weak: "No", numb: "No", memory: "No", sleep: "", stress: 3, notes: "" };
+  const d = e || { date: iso(new Date()), tod: guessTOD(), lc: 10, rc: 10, vision: [], red: "None", eyeMovePain: "No", pain: 0, loc: [], type: [], dur: "", med: "", sleep: "", stress: 3, notes: "" };
   $("#f-date").value = d.date;
   chipGroup($("#f-tod"), TOD, "tod", d.tod);
-  chipGroup($("#f-vision"), VISION, "vision", d.vision);
+  multiGroup($("#f-vision"), VISION, "vision", d.vision);
   chipGroup($("#f-red"), RED, "red", d.red);
-  chipGroup($("#f-loc"), LOC, "loc", d.loc);
-  chipGroup($("#f-type"), PTYPE, "type", d.type);
+  multiGroup($("#f-loc"), LOC, "loc", d.loc);
+  multiGroup($("#f-type"), PTYPE, "type", d.type);
+  sxGroup($("#f-sx"), d);
   for (const k of Object.keys(SCALES)) $(`[data-scale="${k}"]`)._set(d[k] ?? 0);
   for (const el of $$("[data-yn]:not([data-local])", $("#logForm"))) setYN(el, d[el.dataset.yn] || "No");
   $("#f-dur").value = d.dur ?? ""; $("#f-med").value = d.med || ""; $("#f-sleep").value = d.sleep ?? ""; $("#f-notes").value = d.notes || "";
@@ -552,8 +572,8 @@ function resetForm(e) {
 const guessTOD = () => { const hr = new Date().getHours(); return hr < 12 ? "Morning" : hr < 18 ? "Afternoon" : hr < 22 ? "Evening" : "Night"; };
 function readForm() {
   const num = v => v === "" ? null : +v;
-  return { id: editingId || uid(), date: $("#f-date").value, tod: form.tod, lc: form.lc, rc: form.rc, vision: form.vision, red: form.red, eyeMovePain: form.eyeMovePain,
-    pain: form.pain, loc: form.loc, type: form.type, dur: num($("#f-dur").value), med: $("#f-med").value.trim(), dizzy: form.dizzy, nausea: form.nausea, weak: form.weak, numb: form.numb, memory: form.memory,
+  return { id: editingId || uid(), date: $("#f-date").value, tod: form.tod, lc: form.lc, rc: form.rc, vision: form.vision.slice(), red: form.red, eyeMovePain: form.eyeMovePain,
+    pain: form.pain, loc: form.loc.slice(), type: form.type.slice(), dur: num($("#f-dur").value), med: $("#f-med").value.trim(), ...Object.fromEntries(SX.map(([k]) => [k, form[k]])),
     sleep: num($("#f-sleep").value), stress: form.stress, notes: $("#f-notes").value.trim(), photoId: pendingPhotoId };
 }
 let weekStart = null;
@@ -582,7 +602,7 @@ function renderTodayStatus() {
   $("#todayStatus").lastChild.textContent = t.length ? `Logged today: ${t.map(e => e.tod.toLowerCase()).join(", ")}` : "Nothing logged today yet";
 }
 function onFormChange() {
-  $("#painMore").hidden = !(form.pain > 0 || (form.loc && form.loc !== "None") || $("#f-med").value);
+  $("#painMore").hidden = !(form.pain > 0 || form.loc.length || form.type.length || $("#f-med").value);
   const e = readForm(); const f = flagsFor(e, realEntries());
   const box = $("#flagPreview"); box.innerHTML = "";
   if (f.length) box.append(h("div", { class: "flag warn", style: "margin-top:14px" }, h("strong", {}, "This entry will be flagged: tell your doctor"), h("span", {}, "Because of " + f.join("; ") + ".")));
@@ -615,7 +635,7 @@ function daySeries(list, days) {
     const nums = k => es.map(e => e[k]).filter(v => v != null && v !== "");
     const max = k => nums(k).length ? Math.max(...nums(k)) : null, min = k => nums(k).length ? Math.min(...nums(k)) : null;
     out.push({ date: ds, n: es.length, pain: max("pain"), lc: min("lc"), rc: min("rc"), sleep: max("sleep"), stress: max("stress"),
-      any: k => es.some(e => e[k] === "Yes"), red: es.some(e => e.red && e.red !== "None"), vision: es.some(e => e.vision && e.vision !== "None"),
+      any: k => es.some(e => e[k] === "Yes"), red: es.some(e => e.red && e.red !== "None"), vision: es.some(e => many(e.vision).length),
       flagged: es.some(e => flagsFor(e, list).length) });
   }
   return out;
@@ -698,7 +718,7 @@ function chartCard(title, unit, days, series, o) {
   return card;
 }
 function stripCard(days) {
-  const rows = [["Red eye", d => d.red], ["Vision change", d => d.vision], ["Eye pain moving", d => d.any("eyeMovePain")], ["Dizziness", d => d.any("dizzy")], ["Nausea", d => d.any("nausea")], ["Weakness", d => d.any("weak")], ["Numb / speech", d => d.any("numb")], ["Memory / smells", d => d.any("memory")]];
+  const rows = [["Red eye", d => d.red], ["Vision change", d => d.vision], ["Eye pain moving", d => d.any("eyeMovePain")], ["Dizziness", d => d.any("dizzy")], ["Nausea", d => d.any("nausea")], ["Weakness", d => d.any("weak")], ["Shaking", d => d.any("shake")], ["Dexterity", d => d.any("dext")], ["Numb / speech", d => d.any("numb")], ["Memory / smells", d => d.any("memory")]];
   const card = h("div", { class: "chart" }, h("header", {}, h("h3", {}, "Which days had what"), h("span", { class: "hint" }, "filled = yes, ring = logged without it")));
   const W = 520, L = 104, R = 10, rh = 22, T = 6, n = days.length, iw = W - L - R, H = T + rows.length * rh + 6;
   const NS = "http://www.w3.org/2000/svg", s = (tag, a = {}) => { const e = document.createElementNS(NS, tag); for (const k in a) e.setAttribute(k, a[k]); return e; };
@@ -706,7 +726,7 @@ function stripCard(days) {
   const x = i => L + (n <= 1 ? iw / 2 : (i / (n - 1)) * iw), r = Math.max(2, Math.min(5, iw / n / 2 - 1));
   rows.forEach(([label, fn], j) => {
     const cy = T + j * rh + rh / 2; const tx = s("text", { class: "strip-label", x: 0, y: cy + 4 }); tx.textContent = label; svg.append(tx);
-    days.forEach((d, i) => { if (!d.n) return; const yes = fn(d); svg.append(s("circle", { cx: x(i), cy, r, fill: yes ? (j >= 5 && j <= 6 ? "var(--crit)" : "var(--accent)") : "none", stroke: yes ? "none" : "var(--line)", "stroke-width": 1.2 })); });
+    days.forEach((d, i) => { if (!d.n) return; const yes = fn(d); svg.append(s("circle", { cx: x(i), cy, r, fill: yes ? (label === "Weakness" || label === "Numb / speech" ? "var(--crit)" : "var(--accent)") : "none", stroke: yes ? "none" : "var(--line)", "stroke-width": 1.2 })); });
   });
   card.append(svg); return card;
 }
@@ -724,7 +744,7 @@ function renderHistory() {
       if (confirmDel === e.id) acts.append(h("span", { class: "confirm" }, "Delete this entry?", h("button", { class: "btn danger", style: "min-height:36px;padding:6px 12px", onclick: () => { entries = entries.filter(x => x.id !== e.id); saveEntries(); confirmDel = null; renderAll(); } }, "Delete"), h("button", { class: "linkbtn", onclick: () => { confirmDel = null; renderHistory(); } }, "Keep")));
       else acts.append(h("button", { class: "linkbtn", onclick: () => { resetForm(e); show("log"); } }, "Edit"), h("button", { class: "linkbtn", style: "color:var(--ink-3)", onclick: () => { confirmDel = e.id; renderHistory(); } }, "Delete"));
     }
-    const sx = [e.vision !== "None" && e.vision, e.red !== "None" && e.red && `red eye: ${e.red.toLowerCase()}`, e.eyeMovePain === "Yes" && "eye pain moving", e.dizzy === "Yes" && "dizzy", e.nausea === "Yes" && "nausea", e.weak === "Yes" && "weakness", e.numb === "Yes" && "numbness/speech", e.memory === "Yes" && "memory/smells/déjà vu", e.loc !== "None" && e.loc && `${e.type !== "None" ? e.type.toLowerCase() + ", " : ""}${e.loc.toLowerCase()}`].filter(Boolean);
+    const sx = [many(e.vision).join(", "), e.red !== "None" && e.red && `red eye: ${e.red.toLowerCase()}`, e.eyeMovePain === "Yes" && "eye pain moving", e.dizzy === "Yes" && "dizzy", e.nausea === "Yes" && "nausea", e.weak === "Yes" && "weakness", e.shake === "Yes" && "shaking", e.dext === "Yes" && "lack of dexterity", e.numb === "Yes" && "numbness/speech", e.memory === "Yes" && "memory/smells/déjà vu", many(e.loc).length && `${many(e.type).length ? many(e.type).join(", ").toLowerCase() + " · " : ""}${many(e.loc).join(", ").toLowerCase()}`].filter(Boolean);
     el.append(h("div", { class: "entry" },
       h("div", { class: "top" }, h("span", { class: "when" }, fmtDay(e.date), " · ", h("span", { class: "hint" }, e.tod)), e.example ? h("span", { class: "pill ex" }, "Example") : f.length ? h("span", { class: "pill", title: f.join("; ") }, "Tell your doctor") : null),
       h("div", { class: "nums" }, h("span", {}, `pain ${e.pain}`), h("span", {}, `L ${e.lc} · R ${e.rc}`), e.sleep != null ? h("span", {}, `sleep ${e.sleep}h`) : null, h("span", {}, `stress ${e.stress}`), e.photoId ? h("span", {}, "📷") : null),
@@ -742,8 +762,8 @@ nameEl.addEventListener("change", () => { settings.name = nameEl.value.trim(); s
 function renderStorageNote() { $("#storageNote").textContent = persistOK ? "" : "This browser is not letting the page save. Entries will be lost when you close it. Try opening the page in your normal browser, not a private window."; }
 
 /* ---------- export / import ---------- */
-const COLS = [["Date", "date"], ["Time of day", "tod"], ["Left eye clarity (0-10)", "lc"], ["Right eye clarity (0-10)", "rc"], ["Vision change", "vision"], ["Eye pain when moving eye", "eyeMovePain"], ["Headache / pain level (0-10)", "pain"], ["Pain location", "loc"], ["Pain type", "type"], ["Pain duration (hours)", "dur"], ["Medication (name, dose, time)", "med"], ["Dizziness / nausea", "dizzyNausea"], ["Numbness / weakness / speech trouble", "numbWeak"], ["Memory lapses / odd smells / deja vu", "memory"], ["Sleep (hours)", "sleep"], ["Stress (0-10)", "stress"], ["Notes", "notes"], ["Red eye", "red"], ["Dizziness", "dizzy"], ["Nausea", "nausea"], ["Weakness", "weak"], ["Numbness / speech", "numb"]];
-const derived = e => Object.assign({}, e, { dizzyNausea: e.dizzy === "Yes" || e.nausea === "Yes" ? "Yes" : "No", numbWeak: e.numb === "Yes" || e.weak === "Yes" ? "Yes" : "No" });
+const COLS = [["Date", "date"], ["Time of day", "tod"], ["Left eye clarity (0-10)", "lc"], ["Right eye clarity (0-10)", "rc"], ["Vision change", "vision"], ["Eye pain when moving eye", "eyeMovePain"], ["Headache / pain level (0-10)", "pain"], ["Pain location", "loc"], ["Pain type", "type"], ["Pain duration (hours)", "dur"], ["Medication (name, dose, time)", "med"], ["Dizziness / nausea", "dizzyNausea"], ["Numbness / weakness / speech trouble", "numbWeak"], ["Memory lapses / odd smells / deja vu", "memory"], ["Sleep (hours)", "sleep"], ["Stress (0-10)", "stress"], ["Notes", "notes"], ["Red eye", "red"], ["Dizziness", "dizzy"], ["Nausea", "nausea"], ["Weakness", "weak"], ["Shaking", "shake"], ["Lack of dexterity", "dext"], ["Numbness / speech", "numb"]];
+const derived = e => Object.assign({}, e, { vision: many(e.vision).join("; ") || "None", loc: many(e.loc).join("; ") || "None", type: many(e.type).join("; ") || "None", shake: e.shake || "No", dext: e.dext || "No", dizzyNausea: e.dizzy === "Yes" || e.nausea === "Yes" ? "Yes" : "No", numbWeak: e.numb === "Yes" || e.weak === "Yes" ? "Yes" : "No" });
 const csv = () => [COLS.map(c => c[0]).concat("Flag").join(","), ...entries.slice().sort((a, b) => order(a).localeCompare(order(b))).map(e => COLS.map(([, k]) => derived(e)[k] ?? "").concat(flagsFor(e, entries).length ? "Tell your doctor" : "").map(v => /[",\n]/.test(String(v)) ? `"${String(v).replace(/"/g, '""')}"` : v).join(","))].join("\n");
 async function offer(filename, data) {
   const out = $("#exportOut"); out.innerHTML = "";
@@ -771,7 +791,7 @@ $("#importIn").onchange = async ev => {
       if (String(v("notes") || "").startsWith("EXAMPLE ROW")) continue;
       let d = v("date"); d = d instanceof Date ? iso(new Date(d.getTime() + d.getTimezoneOffset() * 6e4 * (d.getUTCHours() ? 0 : 1))) : typeof d === "number" ? iso(new Date(Math.round((d - 25569) * 864e5) + new Date().getTimezoneOffset() * 6e4)) : String(d).slice(0, 10);
       const n = k => v(k) === "" || v(k) == null ? null : +v(k), s = (k, def) => v(k) ? String(v(k)) : def;
-      got.push({ id: uid(), date: d, tod: s("tod", "Morning"), lc: n("lc"), rc: n("rc"), vision: s("vision", "None"), red: s("red", "None"), eyeMovePain: s("eyeMovePain", "No"), pain: n("pain") ?? 0, loc: s("loc", "None"), type: s("type", "None"), dur: n("dur"), med: s("med", ""), dizzy: s("dizzy", s("dizzyNausea", "No")), nausea: s("nausea", "No"), weak: s("weak", "No"), numb: s("numb", s("numbWeak", "No")), memory: s("memory", "No"), sleep: n("sleep"), stress: n("stress") ?? 0, notes: s("notes", "") });
+      got.push({ id: uid(), date: d, tod: s("tod", "Morning"), lc: n("lc"), rc: n("rc"), vision: many(v("vision")), red: s("red", "None"), eyeMovePain: s("eyeMovePain", "No"), pain: n("pain") ?? 0, loc: many(v("loc")), type: many(v("type")), dur: n("dur"), med: s("med", ""), dizzy: s("dizzy", s("dizzyNausea", "No")), nausea: s("nausea", "No"), weak: s("weak", "No"), shake: s("shake", "No"), dext: s("dext", "No"), numb: s("numb", s("numbWeak", "No")), memory: s("memory", "No"), sleep: n("sleep"), stress: n("stress") ?? 0, notes: s("notes", "") });
     }
     merge(got); toast(`Imported ${got.length} ${got.length === 1 ? "entry" : "entries"}.`);
   } catch (e) { toast("That file did not look like your symptom tracker. Use the .xlsx with the “Daily log” sheet."); }
