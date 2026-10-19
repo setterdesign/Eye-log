@@ -139,6 +139,26 @@ input[type=range] { width: 100%; accent-color: var(--accent); height: 32px; }
 /* photos are stored as the camera sees them and shown mirrored, so your left eye is on the left everywhere */
 .mirror { transform: scaleX(-1); }
 
+/* new: small pill button, backup banner, doctor summary */
+#sumRange { grid-template-columns: repeat(3, 1fr); }
+.pillbtn { border: 1.5px solid var(--line); background: var(--panel); color: var(--accent-text); border-radius: 999px; padding: 6px 14px; min-height: 38px; font-weight: 700; font-size: .85rem; }
+.banner .btnrow { margin-top: 10px; }
+.banner .btn { min-height: 42px; padding: 8px 16px; }
+.sum-head { background: var(--panel); border-radius: var(--r); padding: 18px; margin-top: 14px; box-shadow: var(--shadow); display: grid; gap: 4px; }
+.sum-head h2 { margin: 0; }
+.sumtable { width: 100%; border-collapse: collapse; font-size: .92rem; }
+.sumtable th, .sumtable td { text-align: left; padding: 8px 4px; border-bottom: 1px solid var(--line); vertical-align: top; }
+.sumtable th { font-size: .75rem; color: var(--ink-3); font-weight: 700; letter-spacing: .04em; text-transform: uppercase; }
+.sumtable td.n { text-align: right; font-family: var(--f-data); font-variant-numeric: tabular-nums; white-space: nowrap; }
+.sumtable .barcell { width: 38%; }
+.sumtable .bar { height: 8px; border-radius: 4px; background: var(--accent); min-width: 2px; }
+@media print {
+  nav.tabs, header.top, .noprint, .toast { display: none !important; }
+  body, :root { background: #fff !important; color: #000; }
+  .wrap { padding: 0 !important; max-width: none; }
+  .chart, .section, .sum-head, .tile { box-shadow: none !important; border: 1px solid #ccc; break-inside: avoid; }
+}
+
 /* hero + week strip */
 .hero { background: var(--hero); color: #fff; border-radius: 28px; padding: 22px 20px 20px; margin-top: 6px; display: grid; gap: 14px; box-shadow: 0 14px 30px rgba(18,140,128,.25); }
 .hero h2 { color: #fff; margin: 0; font-size: 1.7rem; }
@@ -249,7 +269,8 @@ details summary { cursor: pointer; font-weight: 700; padding-block: 4px; }
         <button type="button" data-go="trends"><svg viewBox="0 0 24 24"><path d="M4 19h16M5 15l4-5 4 3 6-7"/></svg>My trends</button>
       </div>
     </div>
-    <div class="formtitle"><h2 id="logTitle">Today's check-in</h2><span class="hint">about 2 minutes</span></div>
+    <div id="backupBanner"></div>
+    <div class="formtitle"><h2 id="logTitle">Today's check-in</h2><button type="button" class="pillbtn" id="copyLast" hidden>Same as last entry</button></div>
 
     <form id="logForm" autocomplete="off">
       <div class="section">
@@ -282,6 +303,7 @@ details summary { cursor: pointer; font-weight: 700; padding-block: 4px; }
           <div class="field"><label for="f-dur">Duration <span class="hint">hours</span></label><input type="number" id="f-dur" min="0" max="24" step="0.5" inputmode="decimal"></div>
           <div class="field"><label for="f-med">Medication <span class="hint">name, dose, time</span></label><input type="text" id="f-med"></div>
         </div>
+        <div class="field" id="medPicks" hidden><span class="lab">Taken before <span class="hint">tap to fill in</span></span><div class="chips" id="medChips"></div></div>
         </div>
       </div>
 
@@ -315,10 +337,21 @@ details summary { cursor: pointer; font-weight: 700; padding-block: 4px; }
     <h2>Trends</h2>
     <p class="lede">One point per day. When you log more than once a day, the chart shows the worst value: highest pain, lowest clarity.</p>
     <div id="exampleBanner"></div>
+    <button class="btn wide" id="openSummary" style="margin-top:14px">Doctor summary</button>
     <div class="filters" id="range"></div>
     <div class="tiles" id="tiles"></div>
     <div id="charts"></div>
     <p class="muted" style="margin-top:14px">Bring these charts to your next appointment. They show what you logged; they are not a diagnosis.</p>
+  </section>
+
+  <!-- DOCTOR SUMMARY -->
+  <section id="v-summary" data-view hidden>
+    <div class="noprint" style="display:flex;justify-content:space-between;align-items:center;gap:10px;margin-top:10px">
+      <button class="linkbtn" id="sumBack">‹ Back to trends</button>
+      <button class="btn" id="sumPrint" hidden style="min-height:42px;padding:8px 16px">Save as PDF</button>
+    </div>
+    <div class="filters noprint" id="sumRange"></div>
+    <div id="summary"></div>
   </section>
 
   <!-- PHOTOS -->
@@ -577,7 +610,7 @@ function scaleField(el) {
   el._set = v => { input.value = v; update(); };
 }
 
-function resetForm(e) {
+function resetForm(e, copied) {
   const d = e || { date: iso(new Date()), tod: guessTOD(), lc: 10, rc: 10, vision: [], red: "None", eyeMovePain: "No", pain: 0, loc: [], type: [], dur: "", med: "", sleep: "", stress: 3, notes: "" };
   $("#f-date").value = d.date;
   chipGroup($("#f-tod"), TOD, "tod", d.tod);
@@ -590,11 +623,13 @@ function resetForm(e) {
   for (const el of $$("[data-yn]:not([data-local])", $("#logForm"))) setYN(el, d[el.dataset.yn] || "No");
   $("#f-dur").value = d.dur ?? ""; $("#f-med").value = d.med || ""; $("#f-sleep").value = d.sleep ?? ""; $("#f-notes").value = d.notes || "";
   pendingPhotoId = d.photoId || null;
-  editingId = e ? e.id : null;
-  $("#logTitle").textContent = e ? `Editing ${fmtDay(e.date)}` : "Today's check-in";
+  editingId = e && !copied ? e.id : null;
+  const editing = !!editingId;
+  $("#logTitle").textContent = editing ? `Editing ${fmtDay(e.date)}` : "Today's check-in";
   weekStart = mondayOf(parseISO(d.date)); renderWeek();
-  $("#saveBtn").textContent = e ? "Save changes" : "Save entry";
-  $("#cancelEdit").hidden = !e;
+  $("#saveBtn").textContent = editing ? "Save changes" : "Save entry";
+  $("#cancelEdit").hidden = !editing;
+  $("#copyLast").hidden = editing || !realEntries().length;
   renderPhotoLink(); onFormChange();
 }
 const guessTOD = () => { const hr = new Date().getHours(); return hr < 12 ? "Morning" : hr < 18 ? "Afternoon" : hr < 22 ? "Evening" : "Night"; };
@@ -651,6 +686,91 @@ $("#logForm").addEventListener("submit", ev => {
   const wasEditing = !!editingId; resetForm(); renderAll(); show(wasEditing ? "history" : "trends");
 });
 $("#cancelEdit").onclick = () => { resetForm(); show("history"); };
+
+/* same as last entry: copies everything except when, notes and photo */
+const latest = () => realEntries().slice().sort((a, b) => order(a).localeCompare(order(b))).pop();
+$("#copyLast").onclick = () => {
+  const last = latest(); if (!last) return;
+  resetForm(Object.assign({}, last, { id: null, date: iso(new Date()), tod: guessTOD(), notes: "", photoId: null }), true);
+  toast(`Copied from ${fmtDay(last.date)}. Change what's different.`);
+};
+
+/* medication shortcuts: what you typed before, most recent first */
+function renderMedPicks() {
+  const seen = new Map();
+  for (const e of realEntries().slice().sort((a, b) => order(b).localeCompare(order(a)))) { const m = (e.med || "").trim(); if (m && !seen.has(m.toLowerCase())) seen.set(m.toLowerCase(), m); }
+  const meds = [...seen.values()].slice(0, 6);
+  $("#medPicks").hidden = !meds.length;
+  const el = $("#medChips"); el.innerHTML = "";
+  for (const m of meds) el.append(h("button", { type: "button", class: "chip", onclick: () => { $("#f-med").value = m; onFormChange(); } }, m));
+}
+
+/* backup reminder: once a week, after a few entries */
+let backupSnoozed = false;
+function renderBackupBanner() {
+  const el = $("#backupBanner"); el.innerHTML = "";
+  const last = settings.lastBackup ? (Date.now() - settings.lastBackup) / 864e5 : Infinity;
+  if (backupSnoozed || realEntries().length < 3 || last < 7) return;
+  el.append(h("div", { class: "banner", style: "margin-top:16px" }, h("div", {},
+    h("b", {}, settings.lastBackup ? `Last backup ${Math.floor(last)} days ago` : "Back up your log"),
+    "Your entries and photos live only on this phone. A backup file keeps them safe if the phone is lost or reset.",
+    h("div", { class: "btnrow" }, h("button", { class: "btn", onclick: () => $("#exportJson").click() }, "Back up now"), h("button", { class: "btn ghost", onclick: () => { backupSnoozed = true; renderBackupBanner(); } }, "Later")))));
+}
+const markBackup = ok => { if (ok) { settings.lastBackup = Date.now(); saveSettings(); renderBackupBanner(); } };
+
+/* doctor summary */
+let sumDays = 30;
+const IS_APP = !!document.querySelector('link[rel="manifest"]');
+function renderSummary() {
+  const r = $("#sumRange"); r.innerHTML = "";
+  for (const [label, d] of [["14 days", 14], ["30 days", 30], ["90 days", 90]]) r.append(h("button", { class: "chip", "aria-pressed": String(sumDays === d), onclick: () => { sumDays = d; renderSummary(); } }, label));
+  const list = shownEntries(), days = daySeries(list, sumDays), logged = days.filter(d => d.n);
+  const inRange = list.filter(e => e.date >= days[0].date);
+  const nums = k => logged.map(d => d[k]).filter(v => v != null);
+  const avg = k => nums(k).length ? (nums(k).reduce((a, b) => a + b, 0) / nums(k).length).toFixed(1) : "–";
+  const ext = (k, f) => nums(k).length ? f(...nums(k)) : "–";
+  const out = $("#summary"); out.innerHTML = "";
+  out.append(h("div", { class: "sum-head" },
+    h("span", { class: "eyebrow" }, "Symptom summary"),
+    h("h2", {}, settings.name || "My symptom log"),
+    h("span", { class: "muted" }, `${fmtDay(days[0].date)} to ${fmtDay(days[days.length - 1].date)} · logged ${logged.length} of ${days.length} days`),
+    usingExamples() ? h("span", { class: "pill ex", style: "justify-self:start" }, "Example data") : null));
+  const tile = (n, l, alert) => h("div", { class: "tile" + (alert ? " alert" : "") }, h("div", { class: "n" }, n), h("div", { class: "l" }, l));
+  const flaggedEntries = inRange.filter(e => flagsFor(e, list).length).sort((a, b) => order(a).localeCompare(order(b)));
+  out.append(h("div", { class: "tiles" },
+    tile(avg("pain"), "average pain"), tile(ext("pain", Math.max), "worst pain"), tile(logged.filter(d => d.pain >= settings.pday).length, `pain days (${settings.pday}+)`),
+    tile(avg("lc"), `avg left eye (low ${ext("lc", Math.min)})`), tile(avg("rc"), `avg right eye (low ${ext("rc", Math.min)})`), tile(avg("sleep"), "average sleep, h")));
+  out.append(
+    chartCard("Headache / pain", "0 none · 10 worst", days, [{ key: "pain", name: "Pain", color: "var(--accent)" }], { max: 10, thr: settings.pain, thrLabel: `flag ${settings.pain}`, area: true }),
+    chartCard("Eye clarity", "10 = normal", days, [{ key: "lc", name: "Left eye", color: "var(--s1)" }, { key: "rc", name: "Right eye", color: "var(--s2)" }], { max: 10 }));
+  // how often each symptom showed up
+  const count = fn => logged.filter(fn).length;
+  const byDay = d => inRange.filter(e => e.date === d.date);
+  const rows = [["Red eye", d => byDay(d).some(e => e.red && e.red !== "None")], ["Eye pain when moving", d => d.any("eyeMovePain")],
+    ...VISION.slice(1).map(v => [v, d => byDay(d).some(e => many(e.vision).includes(v))]),
+    ...SX.map(([k, label]) => [label, d => d.any(k)])].map(([l, fn]) => [l, count(fn)]).filter(([, n]) => n > 0).sort((a, b) => b[1] - a[1]);
+  const tbl = h("table", { class: "sumtable" }, h("tr", {}, h("th", {}, "Symptom"), h("th", { class: "barcell" }, ""), h("th", { style: "text-align:right" }, "Days")),
+    ...rows.map(([l, n]) => h("tr", {}, h("td", {}, l), h("td", { class: "barcell" }, h("div", { class: "bar", style: `width:${logged.length ? n / logged.length * 100 : 0}%` })), h("td", { class: "n" }, `${n} / ${logged.length}`))));
+  out.append(h("div", { class: "section" }, h("h3", {}, "How often"), rows.length ? tbl : h("p", { class: "muted", style: "margin:0" }, "No symptoms logged in this period.")));
+  // pain pattern
+  const tally = key => { const m = {}; inRange.filter(e => +e.pain > 0).forEach(e => many(e[key]).forEach(v => m[v] = (m[v] || 0) + 1)); return Object.entries(m).sort((a, b) => b[1] - a[1]).map(([v, n]) => `${v} (${n})`).join(", ") || "–"; };
+  out.append(h("div", { class: "section" }, h("h3", {}, "Pain pattern"),
+    h("table", { class: "sumtable" }, h("tr", {}, h("td", {}, "Where"), h("td", {}, tally("loc"))), h("tr", {}, h("td", {}, "Type"), h("td", {}, tally("type"))))));
+  // medications
+  const meds = {}; inRange.forEach(e => { const m = (e.med || "").trim(); if (m) { meds[m] = meds[m] || { n: 0, last: e.date }; meds[m].n++; if (e.date > meds[m].last) meds[m].last = e.date; } });
+  const medRows = Object.entries(meds).sort((a, b) => b[1].n - a[1].n);
+  out.append(h("div", { class: "section" }, h("h3", {}, "Medication"), medRows.length ? h("table", { class: "sumtable" }, h("tr", {}, h("th", {}, "As logged"), h("th", { style: "text-align:right" }, "Times"), h("th", { style: "text-align:right" }, "Last")),
+    ...medRows.map(([m, v]) => h("tr", {}, h("td", {}, m), h("td", { class: "n" }, v.n), h("td", { class: "n" }, fmtShort(v.last))))) : h("p", { class: "muted", style: "margin:0" }, "No medication logged in this period.")));
+  // flagged entries
+  out.append(h("div", { class: "section" }, h("h3", {}, `Flagged entries (${flaggedEntries.length})`),
+    flaggedEntries.length ? h("table", { class: "sumtable" }, ...flaggedEntries.map(e => h("tr", {}, h("td", { style: "white-space:nowrap" }, fmtShort(e.date)), h("td", {}, flagsFor(e, list).join("; ") + (e.notes ? `. Note: ${e.notes}` : ""))))) : h("p", { class: "muted", style: "margin:0" }, "Nothing flagged in this period."),
+    h("p", { class: "muted", style: "margin:0" }, `Flag rules: pain ${settings.pain}+, eye clarity drop of ${settings.drop}+ points, numbness, speech trouble or weakness.`)));
+  out.append(h("p", { class: "muted", style: "margin-top:14px" }, "Self-reported log kept by the patient. Not a diagnosis."));
+}
+$("#openSummary").onclick = () => show("summary");
+$("#sumBack").onclick = () => show("trends");
+$("#sumPrint").hidden = !IS_APP;
+$("#sumPrint").onclick = () => window.print();
 
 /* ---------- trends ---------- */
 let rangeDays = LS.get("sel.range", 30);
@@ -796,13 +916,13 @@ const csv = () => [COLS.map(c => c[0]).concat("Flag").join(","), ...entries.slic
 async function offer(filename, data) {
   const out = $("#exportOut"); out.innerHTML = "";
   try { const type = filename.endsWith(".csv") ? "text/csv" : "application/json"; const file = new File([data], filename, { type });
-    if (navigator.canShare && navigator.canShare({ files: [file] })) { try { await navigator.share({ files: [file], title: filename }); return; } catch (e) { if (e.name === "AbortError") return; } }
-    const a = h("a", { href: URL.createObjectURL(file), download: filename }); document.body.append(a); a.click(); setTimeout(() => { URL.revokeObjectURL(a.href); a.remove(); }, 1000); toast("Saved to Downloads."); return; } catch {}
+    if (navigator.canShare && navigator.canShare({ files: [file] })) { try { await navigator.share({ files: [file], title: filename }); return true; } catch (e) { if (e.name === "AbortError") return false; } }
+    const a = h("a", { href: URL.createObjectURL(file), download: filename }); document.body.append(a); a.click(); setTimeout(() => { URL.revokeObjectURL(a.href); a.remove(); }, 1000); toast("Saved to Downloads."); return true; } catch {}
   const ta = h("textarea", { class: "copybox", readonly: true }); ta.value = data;
-  out.append(h("p", { class: "muted" }, "Copy this and paste it into a file or your spreadsheet:"), ta, h("button", { class: "btn ghost", onclick: async () => { try { await navigator.clipboard.writeText(data); toast("Copied."); } catch { ta.select(); } } }, "Copy"));
+  out.append(h("p", { class: "muted" }, "Copy this and paste it into a file or your spreadsheet:"), ta, h("button", { class: "btn ghost", onclick: async () => { try { await navigator.clipboard.writeText(data); toast("Copied."); markBackup(true); } catch { ta.select(); } } }, "Copy"));
 }
-$("#exportCsv").onclick = () => entries.length ? offer(`symptom-log-${iso(new Date())}.csv`, csv()) : toast("Nothing to export yet.");
-$("#exportJson").onclick = async () => offer(`symptom-log-backup-${iso(new Date())}.json`, JSON.stringify({ entries, settings, photos: await photoDB.all() }));
+$("#exportCsv").onclick = async () => entries.length ? markBackup(await offer(`symptom-log-${iso(new Date())}.csv`, csv())) : toast("Nothing to export yet.");
+$("#exportJson").onclick = async () => markBackup(await offer(`symptom-log-backup-${iso(new Date())}.json`, JSON.stringify({ entries, settings, photos: await photoDB.all() })));
 $("#importIn").onchange = async ev => {
   const file = ev.target.files[0]; ev.target.value = ""; if (!file) return;
   try {
@@ -950,11 +1070,12 @@ function show(tab) {
   $$("nav.tabs button").forEach(b => b.dataset.tab === tab ? b.setAttribute("aria-current", "page") : b.removeAttribute("aria-current"));
   try { sessionStorage.setItem("sel.tab", tab); } catch {}
   if (tab === "trends") renderTrends();
+  if (tab === "summary") renderSummary();
   window.scrollTo(0, 0);
 }
 $$("nav.tabs button").forEach(b => b.onclick = () => { if (b.dataset.tab === "photos" && A) return show("photos"); show(b.dataset.tab); });
 let tt; function toast(msg) { $$(".toast").forEach(t => t.remove()); const t = h("div", { class: "toast", role: "status" }, msg); document.body.append(t); clearTimeout(tt); tt = setTimeout(() => t.remove(), 2600); }
-function renderAll() { renderTrends(); renderHistory(); renderTodayStatus(); renderWeek(); }
+function renderAll() { renderTrends(); renderHistory(); renderTodayStatus(); renderWeek(); renderMedPicks(); renderBackupBanner(); $("#copyLast").hidden = !!editingId || !realEntries().length; }
 $("#qPhoto").onclick = () => show("photos");
 $$("[data-go]").forEach(b => b.onclick = () => show(b.dataset.go));
 let rz; addEventListener("resize", () => { clearTimeout(rz); rz = setTimeout(() => { if (!$("#v-trends").hidden) renderTrends(); }, 150); });
