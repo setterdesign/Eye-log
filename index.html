@@ -2,7 +2,7 @@
 <html lang="en"><head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="theme-color" content="#14a697">
+<meta name="theme-color" content="#e9eeed">
 <meta name="description" content="Log symptoms, pain and eye photos. Data stays on this phone.">
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="icon" href="icons/icon-192.png">
@@ -17,44 +17,50 @@
 body { margin: 0; font-size: 14px; }
 img { max-width: 100%; }
 [hidden] { display: none !important; }
-/* Layout: one-column phone app on a soft mint ground; white rounded cards float on it, teal marks what is active. */
+/* Layout: one-column phone app in a soft raised ("neumorphic") style: every surface is the background colour, lifted by a light and a dark shadow; pressed things sink in. Teal marks what is active, dark green carries text, ochre marks streaks and warnings. */
 :root {
-  --bg: #eaf7f4;
-  --panel: #ffffff;
-  --ink: #1d3836;
-  --ink-2: #557270;
-  --ink-3: #8aa19f;
-  --line: #e1eeeb;
-  --accent: #14a697;
-  --accent-text: #0b7c70;
+  --bg: #e9eeed;
+  --panel: #e9eeed;
+  --ink: #1e4b43;
+  --ink-2: #4c6c66;
+  --ink-3: #7f9691;
+  --line: #d4dedb;
+  --accent: #149e90;
+  --accent-text: #0e7568;
   --accent-ink: #ffffff;
-  --accent-soft: #d5f2ee;
-  --hero: linear-gradient(150deg, #1bb5a5, #129c8e);
-  --shadow: 0 10px 28px rgba(18, 96, 88, .09);
+  --accent-soft: #d2eae6;
+  --ochre: #c4912b;
+  --ochre-text: #8a6213;
+  --hero: var(--panel);
+  --sh-d: rgba(146, 168, 163, .55);
+  --sh-l: rgba(255, 255, 255, .95);
+  --shadow: 8px 8px 18px var(--sh-d), -8px -8px 18px var(--sh-l);
+  --shadow-sm: 4px 4px 9px var(--sh-d), -4px -4px 9px var(--sh-l);
+  --inset: inset 4px 4px 9px var(--sh-d), inset -4px -4px 9px var(--sh-l);
   --s1: #2a78d6;
   --s2: #eb6834;
-  --warn: #a35a00;
-  --warn-bg: #fff2dc;
+  --warn: #8a6213;
+  --warn-bg: #f1e4c4;
   --crit: #b3261e;
-  --crit-bg: #fde8e6;
-  --good: #1d7a3d;
+  --crit-bg: #f6dedb;
+  --good: #2f8f5b;
   --overlay: rgba(255,255,255,.92);
   --f-display: "Poppins", "Avenir Next", system-ui, sans-serif;
   --f-body: "Nunito Sans", "Segoe UI", system-ui, sans-serif;
   --f-data: "JetBrains Mono", ui-monospace, Menlo, monospace;
-  --r: 22px;
+  --r: 26px;
 }
 @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
-  --bg: #0e1918; --panel: #172625; --ink: #e6f2f0; --ink-2: #a6bcb9; --ink-3: #7a908d; --line: #253837;
-  --accent: #2cc2b2; --accent-text: #5fd6c8; --accent-ink: #052421; --accent-soft: #173b38; --hero: linear-gradient(150deg, #147f74, #0f665e);
-  --shadow: 0 10px 28px rgba(0,0,0,.35); --s1: #3987e5; --s2: #d95926;
-  --warn: #f0b04a; --warn-bg: #3a2a10; --crit: #ff8a80; --crit-bg: #3d1a17; --good: #5fcf86; --overlay: rgba(255,255,255,.9);
+  --bg: #1c2422; --panel: #1c2422; --ink: #dcebe7; --ink-2: #a3b9b4; --ink-3: #748985; --line: #2b3633;
+  --accent: #2cc2b2; --accent-text: #5fd6c8; --accent-ink: #052421; --accent-soft: #1f3b37; --ochre: #d9a640; --ochre-text: #e3b65a;
+  --sh-d: rgba(0,0,0,.55); --sh-l: rgba(255,255,255,.05); --s1: #3987e5; --s2: #d95926;
+  --warn: #e7b85a; --warn-bg: #3a2e14; --crit: #ff8a80; --crit-bg: #3d1a17; --good: #5fcf86; --overlay: rgba(255,255,255,.9);
   color-scheme: dark; } }
 :root[data-theme="dark"] {
-  --bg: #0e1918; --panel: #172625; --ink: #e6f2f0; --ink-2: #a6bcb9; --ink-3: #7a908d; --line: #253837;
-  --accent: #2cc2b2; --accent-text: #5fd6c8; --accent-ink: #052421; --accent-soft: #173b38; --hero: linear-gradient(150deg, #147f74, #0f665e);
-  --shadow: 0 10px 28px rgba(0,0,0,.35); --s1: #3987e5; --s2: #d95926;
-  --warn: #f0b04a; --warn-bg: #3a2a10; --crit: #ff8a80; --crit-bg: #3d1a17; --good: #5fcf86; --overlay: rgba(255,255,255,.9);
+  --bg: #1c2422; --panel: #1c2422; --ink: #dcebe7; --ink-2: #a3b9b4; --ink-3: #748985; --line: #2b3633;
+  --accent: #2cc2b2; --accent-text: #5fd6c8; --accent-ink: #052421; --accent-soft: #1f3b37; --ochre: #d9a640; --ochre-text: #e3b65a;
+  --sh-d: rgba(0,0,0,.55); --sh-l: rgba(255,255,255,.05); --s1: #3987e5; --s2: #d95926;
+  --warn: #e7b85a; --warn-bg: #3a2e14; --crit: #ff8a80; --crit-bg: #3d1a17; --good: #5fcf86; --overlay: rgba(255,255,255,.9);
   color-scheme: dark; }
 
 html, body { height: 100%; }
@@ -152,6 +158,7 @@ input[type=range] { width: 100%; accent-color: var(--accent); height: 32px; }
 .sumtable td.n { text-align: right; font-family: var(--f-data); font-variant-numeric: tabular-nums; white-space: nowrap; }
 .sumtable .barcell { width: 38%; }
 .sumtable .bar { height: 8px; border-radius: 4px; background: var(--accent); min-width: 2px; }
+
 @media print {
   nav.tabs, header.top, .noprint, .toast { display: none !important; }
   body, :root { background: #fff !important; color: #000; }
@@ -249,13 +256,83 @@ details summary { cursor: pointer; font-weight: 700; padding-block: 4px; }
 .muted { color: var(--ink-3); font-size: .85rem; }
 .copybox { width: 100%; min-height: 140px; font: 500 .72rem var(--f-data); }
 @media (prefers-reduced-motion: no-preference) { .chip, .seg button, .btn { transition: background .12s; } }
+
+/* ===== soft raised style ===== */
+header.top { padding-block: 18px 12px; z-index: 20; }
+.formtitle, .stepper, .navtiles, .hero { position: relative; z-index: 0; }
+header.top h1 { flex-direction: column; align-items: flex-start; gap: 0; color: var(--ink); font: 700 1.3rem/1 var(--f-display); text-transform: uppercase; letter-spacing: .01em; }
+header.top h1 small { font: 500 .78rem/1.3 var(--f-display); letter-spacing: .08em; color: var(--ink-2); }
+h2, h3, .eyebrow { color: var(--ink); }
+.section, .chart, .tile, .entry, .sum-head { border: 0; box-shadow: var(--shadow); background: var(--panel); }
+.eyebrow .ic { background: var(--panel); box-shadow: var(--shadow-sm); border-radius: 12px; }
+.eyebrow .ic svg { stroke: var(--accent-text); }
+.banner { background: var(--panel); box-shadow: var(--inset); }
+input[type=date], input[type=number], input[type=text], textarea, select { border: 0; background: var(--panel); box-shadow: var(--inset); border-radius: 16px; }
+.chip { border: 0; background: var(--panel); box-shadow: var(--shadow-sm); color: var(--ink-2); }
+.chip[aria-pressed="true"] { background: var(--accent); color: var(--accent-ink); box-shadow: var(--shadow-sm); }
+.chip .ico { width: 18px; height: 18px; vertical-align: -4px; margin-right: 6px; stroke: currentColor; fill: none; stroke-width: 1.9; stroke-linecap: round; stroke-linejoin: round; }
+.seg, .filters { background: var(--panel); box-shadow: var(--inset); }
+.filters .chip, .seg button { box-shadow: none; background: transparent; }
+.filters .chip[aria-pressed="true"], .seg button[aria-pressed="true"] { background: var(--accent); color: var(--accent-ink); box-shadow: var(--shadow-sm); }
+.btn { box-shadow: var(--shadow-sm); border-radius: 999px; }
+.btn.ghost, .pillbtn { background: var(--panel); border: 0; color: var(--accent-text); box-shadow: var(--shadow-sm); }
+.btn:active, .chip:active, .pillbtn:active, .navtile:active { box-shadow: var(--inset); }
+.week, .vert { background: var(--panel); box-shadow: var(--inset); }
+.week .day.has::after { width: 6px; height: 6px; margin-top: -2px; }
+.week .day[data-lvl="low"]::after { background: var(--good); }
+.week .day[data-lvl="mid"]::after { background: var(--ochre); }
+.week .day[data-lvl="high"]::after { background: var(--crit); }
+.week .day[aria-pressed="true"]::after { box-shadow: 0 0 0 2px var(--accent-ink); }
+.week .day[aria-pressed="true"] { box-shadow: var(--shadow-sm); }
+.daykey { display: flex; justify-content: center; gap: 14px; font-size: .74rem; color: var(--ink-3); padding-top: 8px; }
+.daykey i { display: inline-block; width: 7px; height: 7px; border-radius: 50%; margin-right: 5px; vertical-align: 1px; }
+.thumb { box-shadow: var(--shadow-sm); border-color: transparent; }
+nav.tabs { background: var(--bg); border-radius: 0; box-shadow: none; padding-top: 8px; }
+nav.tabs button { gap: 6px; padding-top: 4px; }
+nav.tabs button svg { width: 48px; height: 48px; padding: 12px; border-radius: 16px; background: var(--panel); box-shadow: var(--shadow-sm); }
+nav.tabs button[aria-current="page"] svg { background: var(--panel); box-shadow: var(--inset); color: var(--accent); }
+.urgent { box-shadow: none; }
+.toast { border-radius: 999px; }
+
+/* hero: greeting, today status and streak */
+.hero { background: var(--panel); color: var(--ink); box-shadow: var(--shadow); }
+.hero h2 { color: var(--ink); }
+.hero p { color: var(--ink-2); opacity: 1; }
+.hero .meta { display: flex; flex-wrap: wrap; gap: 10px; }
+.hero .status { background: var(--panel); box-shadow: var(--inset); color: var(--accent-text); }
+.hero .status i { background: var(--accent); }
+.streak { display: inline-flex; align-items: center; gap: 6px; border-radius: 999px; padding: 6px 14px; font-weight: 700; font-size: .88rem; color: var(--ochre-text); background: var(--panel); box-shadow: var(--inset); }
+.streak svg { width: 16px; height: 16px; fill: var(--ochre); }
+
+/* home tiles, like app shortcuts */
+.navtiles { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; margin-top: 22px; }
+.navtile { border: 0; background: var(--panel); box-shadow: var(--shadow); border-radius: 26px; aspect-ratio: 1.15; padding: 16px 16px 18px; display: grid; align-content: space-between; text-align: left; color: var(--ink); font: 600 1rem/1.25 var(--f-display); max-width: 100%; }
+.navtile svg { justify-self: end; width: 34px; height: 34px; stroke: var(--accent-text); fill: none; stroke-width: 1.7; stroke-linecap: round; stroke-linejoin: round; }
+.navtile small { display: block; font: 400 .78rem/1.3 var(--f-body); color: var(--ink-3); margin-top: 2px; }
+
+/* step-by-step check-in */
+.stepper { display: grid; grid-template-columns: repeat(5, 1fr); gap: 4px; margin-top: 14px; }
+.stepper button { border: 0; background: none; display: grid; justify-items: center; gap: 6px; color: var(--ink-3); font-size: .7rem; font-weight: 700; padding: 0; }
+.stepper button span { width: 38px; height: 38px; border-radius: 50%; display: grid; place-items: center; background: var(--panel); box-shadow: var(--shadow-sm); font: 600 .9rem var(--f-display); color: var(--ink-2); }
+.stepper button.done span { color: var(--accent-text); }
+.stepper button[aria-current="step"] { color: var(--accent-text); }
+.stepper button[aria-current="step"] span { background: var(--accent); color: var(--accent-ink); }
+.stepbar { height: 8px; border-radius: 999px; box-shadow: var(--inset); margin-top: 14px; overflow: hidden; }
+.stepbar i { display: block; height: 100%; background: var(--accent); border-radius: 999px; transition: width .2s; }
+
+/* horizontal scales: inset track, raised teal knob */
+.scale:not(.vert) input[type=range] { -webkit-appearance: none; appearance: none; background: transparent; height: 32px; }
+.scale:not(.vert) input[type=range]::-webkit-slider-runnable-track { height: 10px; border-radius: 999px; background: linear-gradient(to right, var(--accent) var(--p, 0%), transparent var(--p, 0%)); box-shadow: var(--inset); }
+.scale:not(.vert) input[type=range]::-webkit-slider-thumb { -webkit-appearance: none; width: 28px; height: 28px; margin-top: -9px; border-radius: 50%; background: var(--accent); border: 5px solid var(--panel); box-shadow: var(--shadow-sm); }
+.scale:not(.vert) input[type=range]::-moz-range-track { height: 10px; border-radius: 999px; background: linear-gradient(to right, var(--accent) var(--p, 0%), transparent var(--p, 0%)); box-shadow: var(--inset); }
+.scale:not(.vert) input[type=range]::-moz-range-thumb { width: 18px; height: 18px; border-radius: 50%; background: var(--accent); border: 5px solid var(--panel); box-shadow: var(--shadow-sm); }
 </style>
 </head>
 <body>
 
 <div class="wrap">
   <header class="top">
-    <h1><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 12s3.5-6 10-6 10 6 10 6-3.5 6-10 6S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg>Symptom &amp; Eye Log</h1>
+    <h1><svg hidden viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 12s3.5-6 10-6 10 6 10 6-3.5 6-10 6S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg>Eye Log<small>Symptom tracker</small></h1>
     <span class="sub" id="todayLabel"></span>
   </header>
 
@@ -263,14 +340,18 @@ details summary { cursor: pointer; font-weight: 700; padding-block: 4px; }
   <section id="v-log" data-view>
     <div class="hero">
       <div><h2 id="hello">Hello</h2><p>How are you feeling today?</p></div>
-      <span class="status" id="todayStatus"><i></i>Nothing logged today yet</span>
-      <div class="quick">
-        <button type="button" id="qPhoto"><svg viewBox="0 0 24 24"><path d="M4 8h3l2-3h6l2 3h3v11H4z"/><circle cx="12" cy="13" r="3.5"/></svg>Eye photo</button>
-        <button type="button" data-go="trends"><svg viewBox="0 0 24 24"><path d="M4 19h16M5 15l4-5 4 3 6-7"/></svg>My trends</button>
-      </div>
+      <div class="meta"><span class="status" id="todayStatus"><i></i>Nothing logged today yet</span><span class="streak" id="streak"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2c1 4 5 6 5 11a5 5 0 0 1-10 0c0-2.5 1.2-4 2.5-5 0 2 1 3 2 3 0-3-1.5-5.5.5-9z"/></svg><span></span></span></div>
+    </div>
+    <div class="navtiles">
+      <button type="button" class="navtile" id="qPhoto"><svg viewBox="0 0 24 24"><path d="M4 8h3l2-3h6l2 3h3v11H4z"/><circle cx="12" cy="13" r="3.5"/></svg><span>Eye photo<small>Guided, same framing</small></span></button>
+      <button type="button" class="navtile" data-go="trends"><svg viewBox="0 0 24 24"><path d="M4 19h16M5 15l4-5 4 3 6-7"/></svg><span>My trends<small>Charts by day</small></span></button>
+      <button type="button" class="navtile" data-go="summary"><svg viewBox="0 0 24 24"><rect x="5" y="4" width="14" height="17" rx="2"/><path d="M9 4V3h6v1M9 10h6M9 14h6M9 18h3"/></svg><span>Doctor summary<small>For appointments</small></span></button>
+      <button type="button" class="navtile" data-go="history"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5"/><path d="M12 7.5V12l3 2"/></svg><span>History<small>Edit and back up</small></span></button>
     </div>
     <div id="backupBanner"></div>
     <div class="formtitle"><h2 id="logTitle">Today's check-in</h2><button type="button" class="pillbtn" id="copyLast" hidden>Same as last entry</button></div>
+    <div class="stepper" id="stepper"></div>
+    <div class="stepbar"><i id="stepFill"></i></div>
 
     <form id="logForm" autocomplete="off">
       <div class="section">
@@ -324,6 +405,8 @@ details summary { cursor: pointer; font-weight: 700; padding-block: 4px; }
 
       <div id="flagPreview"></div>
       <div class="btnrow" style="margin-top:14px">
+        <button class="btn ghost" type="button" id="prevStep">Back</button>
+        <button class="btn" type="button" id="nextStep" style="flex:1">Next</button>
         <button class="btn" type="submit" id="saveBtn" style="flex:1">Save entry</button>
         <button class="btn ghost" type="button" id="cancelEdit" hidden>Cancel edit</button>
       </div>
@@ -476,6 +559,17 @@ const RED = ["None", "Left", "Right", "Both"];
 // Other symptoms: each is still stored as its own Yes/No field, so charts, flags and exports keep working.
 const SX = [["dizzy", "Dizziness"], ["nausea", "Nausea"], ["weak", "Weakness / lack of strength"], ["shake", "Shaking"], ["dext", "Lack of dexterity"], ["numb", "Numbness or speech trouble"], ["memory", "Memory lapses, odd smells or déjà vu"]];
 const SX_NONE = "None of these";
+const SX_ICON = {
+  dizzy: "M12 12a1 1 0 1 0 2 0 3 3 0 1 0-6 0 5 5 0 1 0 10 0 7 7 0 1 0-14 0",
+  nausea: "M3 9c2-2 4 2 6 0s4 2 6 0 4 2 6 0M3 15c2-2 4 2 6 0s4 2 6 0 4 2 6 0",
+  weak: "M3 8h15v8H3zM21 11v2M6 11v2",
+  shake: "M9 4h6v16H9zM5 8v8M19 8v8M2 10v4M22 10v4",
+  dext: "M8 13V5a1.5 1.5 0 0 1 3 0v6M11 11V4a1.5 1.5 0 0 1 3 0v7M14 11V5.5a1.5 1.5 0 0 1 3 0V14a6 6 0 0 1-6 6h-1a5 5 0 0 1-4-2l-3-4a1.5 1.5 0 0 1 2.4-1.8L8 14",
+  numb: "M4 5h16v11H9l-5 4zM9 10h.01M12 10h.01M15 10h.01",
+  memory: "M12 3a9 9 0 1 0 0 18 9 9 0 0 0 0-18zM9.5 9.5a2.5 2.5 0 1 1 3.5 2.3c-.6.3-1 .9-1 1.5V14M12 17h.01",
+  none: "M12 3a9 9 0 1 0 0 18 9 9 0 0 0 0-18zM8 12l3 3 5-6",
+};
+const icon = d => { const NS = "http://www.w3.org/2000/svg", sv = document.createElementNS(NS, "svg"), p = document.createElementNS(NS, "path"); sv.setAttribute("viewBox", "0 0 24 24"); sv.setAttribute("class", "ico"); sv.setAttribute("aria-hidden", "true"); p.setAttribute("d", d); sv.append(p); return sv; };
 // Vision change, pain location and pain type allow several picks; older entries stored one string.
 const many = v => Array.isArray(v) ? v.filter(x => x && x !== "None") : (!v || v === "None") ? [] : String(v).split(/\s*;\s*/).filter(x => x && x !== "None");
 const REDNESS = ["Mild", "Moderate", "Strong"];
@@ -574,7 +668,7 @@ function sxGroup(el, d) {
   const sync = () => $$(".chip", el).forEach(b => b.setAttribute("aria-pressed", String(b.dataset.k === "none" ? SX.every(([k]) => form[k] !== "Yes") : form[b.dataset.k] === "Yes")));
   for (const [k, label] of opts) el.append(h("button", { type: "button", class: "chip", "aria-pressed": "false", "data-k": k, onclick: () => {
     if (k === "none") SX.forEach(([x]) => form[x] = "No"); else form[k] = form[k] === "Yes" ? "No" : "Yes";
-    sync(); onFormChange(); } }, label));
+    sync(); onFormChange(); } }, icon(SX_ICON[k]), label));
   SX.forEach(([k]) => form[k] = d[k] === "Yes" ? "Yes" : "No"); sync();
 }
 function chipGroup(el, opts, key, def) {
@@ -595,7 +689,7 @@ function scaleField(el) {
   const id = "f-" + key;
   const val = h("span", { class: "val" }), word = h("span", { class: "word" });
   const input = h("input", { type: "range", id, min: 0, max: 10, step: 1 });
-  const update = () => { const v = +input.value; form[key] = v; val.textContent = v; word.textContent = words[kind](v); };
+  const update = () => { const v = +input.value; form[key] = v; val.textContent = v; word.textContent = words[kind](v); input.style.setProperty("--p", v * 10 + "%"); };
   input.addEventListener("input", () => { update(); onFormChange(); });
   el.innerHTML = "";
   el._set = v => { input.value = v; update(); };
@@ -630,6 +724,7 @@ function resetForm(e, copied) {
   $("#saveBtn").textContent = editing ? "Save changes" : "Save entry";
   $("#cancelEdit").hidden = !editing;
   $("#copyLast").hidden = editing || !realEntries().length;
+  goStep(0);
   renderPhotoLink(); onFormChange();
 }
 const guessTOD = () => { const hr = new Date().getHours(); return hr < 12 ? "Morning" : hr < 18 ? "Afternoon" : hr < 22 ? "Evening" : "Night"; };
@@ -639,12 +734,40 @@ function readForm() {
     pain: form.pain, loc: form.loc.slice(), type: form.type.slice(), dur: num($("#f-dur").value), med: $("#f-med").value.trim(), ...Object.fromEntries(SX.map(([k]) => [k, form[k]])),
     sleep: num($("#f-sleep").value), stress: form.stress, notes: $("#f-notes").value.trim(), photoId: pendingPhotoId };
 }
+/* steps */
+const STEPS = ["When", "Eyes", "Pain", "Symptoms", "Sleep"];
+let step = 0;
+function goStep(i) {
+  step = Math.max(0, Math.min(STEPS.length - 1, i));
+  $$("#logForm > .section").forEach((sec, j) => sec.hidden = j !== step);
+  const st = $("#stepper"); st.innerHTML = "";
+  STEPS.forEach((label, j) => st.append(h("button", { type: "button", class: j < step ? "done" : "", "aria-current": j === step ? "step" : false, "aria-label": `Step ${j + 1}: ${label}`, onclick: () => goStep(j) }, h("span", {}, j < step ? "✓" : String(j + 1)), label)));
+  $("#stepFill").style.width = ((step + 1) / STEPS.length * 100) + "%";
+  const last = step === STEPS.length - 1;
+  $("#prevStep").hidden = step === 0;
+  $("#nextStep").hidden = last;
+  $("#saveBtn").hidden = !last && !editingId;
+  $("#flagPreview").hidden = !last;
+  $("#copyLast").hidden = step > 0 || !!editingId || !realEntries().length;
+}
+$("#nextStep").onclick = () => { goStep(step + 1); $("#logTitle").scrollIntoView({ block: "start", behavior: "smooth" }); };
+$("#prevStep").onclick = () => goStep(step - 1);
+
+/* streak: days in a row with at least one entry, counting back from today (or yesterday) */
+function renderStreak() {
+  const have = new Set(realEntries().map(e => e.date)); const d = new Date();
+  if (!have.has(iso(d))) d.setDate(d.getDate() - 1);
+  let n = 0; while (have.has(iso(d))) { n++; d.setDate(d.getDate() - 1); }
+  $("#streak").lastChild.textContent = n ? `${n}-day streak` : "Start a streak today";
+}
+
 let weekStart = null;
 function mondayOf(d) { const x = new Date(d); x.setHours(0, 0, 0, 0); x.setDate(x.getDate() - ((x.getDay() + 6) % 7)); return x; }
 function renderWeek() {
   const sel = $("#f-date").value || iso(new Date()); if (!weekStart) weekStart = mondayOf(parseISO(sel));
   const el = $("#week"); el.innerHTML = ""; const todayS = iso(new Date());
-  const logged = new Set(realEntries().map(e => e.date));
+  const painBy = {}; realEntries().forEach(e => painBy[e.date] = Math.max(painBy[e.date] ?? 0, +e.pain || 0));
+  const lvl = p => p >= 7 ? "high" : p >= 4 ? "mid" : "low";
   const end = new Date(weekStart); end.setDate(end.getDate() + 6);
   const next = new Date(weekStart); next.setDate(next.getDate() + 7);
   const shift = n => { weekStart = new Date(weekStart); weekStart.setDate(weekStart.getDate() + 7 * n); renderWeek(); };
@@ -655,10 +778,10 @@ function renderWeek() {
   for (let i = 0; i < 7; i++) { const d = new Date(weekStart); d.setDate(d.getDate() + i); days.append(h("span", { class: "dow" }, d.toLocaleDateString(undefined, { weekday: "narrow" }))); }
   for (let i = 0; i < 7; i++) {
     const d = new Date(weekStart); d.setDate(d.getDate() + i); const ds = iso(d);
-    days.append(h("button", { type: "button", class: "day" + (logged.has(ds) ? " has" : ""), "aria-pressed": String(ds === sel), "aria-label": fmtDay(ds), disabled: ds > todayS,
+    days.append(h("button", { type: "button", class: "day" + (ds in painBy ? " has" : ""), "data-lvl": ds in painBy ? lvl(painBy[ds]) : false, "aria-pressed": String(ds === sel), "aria-label": fmtDay(ds), disabled: ds > todayS,
       onclick: () => { $("#f-date").value = ds; renderWeek(); onFormChange(); } }, d.getDate()));
   }
-  el.append(days);
+  el.append(days, h("div", { class: "daykey", "aria-hidden": "true" }, h("span", {}, h("i", { style: "background:var(--good)" }), "pain 0–3"), h("span", {}, h("i", { style: "background:var(--ochre)" }), "4–6"), h("span", {}, h("i", { style: "background:var(--crit)" }), "7–10")));
 }
 function renderTodayStatus() {
   const t = realEntries().filter(e => e.date === iso(new Date()));
@@ -768,7 +891,7 @@ function renderSummary() {
   out.append(h("p", { class: "muted", style: "margin-top:14px" }, "Self-reported log kept by the patient. Not a diagnosis."));
 }
 $("#openSummary").onclick = () => show("summary");
-$("#sumBack").onclick = () => show("trends");
+$("#sumBack").onclick = () => history.length && prevTab ? show(prevTab) : show("trends");
 $("#sumPrint").hidden = !IS_APP;
 $("#sumPrint").onclick = () => window.print();
 
@@ -1064,18 +1187,21 @@ $("#compareBtn").onclick = () => {
 };
 
 /* ---------- shell ---------- */
+let prevTab = null, curTab = "log";
 function show(tab) {
+  if (tab !== curTab) { prevTab = curTab; curTab = tab; }
   if (stream && tab !== "photos") { closeCamera(); $("#photoHome").hidden = false; }
   $$("[data-view]").forEach(v => v.hidden = v.id !== "v-" + tab);
   $$("nav.tabs button").forEach(b => b.dataset.tab === tab ? b.setAttribute("aria-current", "page") : b.removeAttribute("aria-current"));
   try { sessionStorage.setItem("sel.tab", tab); } catch {}
   if (tab === "trends") renderTrends();
   if (tab === "summary") renderSummary();
+  if (tab === "summary") $("#sumBack").textContent = "‹ Back";
   window.scrollTo(0, 0);
 }
 $$("nav.tabs button").forEach(b => b.onclick = () => { if (b.dataset.tab === "photos" && A) return show("photos"); show(b.dataset.tab); });
 let tt; function toast(msg) { $$(".toast").forEach(t => t.remove()); const t = h("div", { class: "toast", role: "status" }, msg); document.body.append(t); clearTimeout(tt); tt = setTimeout(() => t.remove(), 2600); }
-function renderAll() { renderTrends(); renderHistory(); renderTodayStatus(); renderWeek(); renderMedPicks(); renderBackupBanner(); $("#copyLast").hidden = !!editingId || !realEntries().length; }
+function renderAll() { renderStreak(); renderTrends(); renderHistory(); renderTodayStatus(); renderWeek(); renderMedPicks(); renderBackupBanner(); $("#copyLast").hidden = !!editingId || !realEntries().length; }
 $("#qPhoto").onclick = () => show("photos");
 $$("[data-go]").forEach(b => b.onclick = () => show(b.dataset.go));
 let rz; addEventListener("resize", () => { clearTimeout(rz); rz = setTimeout(() => { if (!$("#v-trends").hidden) renderTrends(); }, 150); });
