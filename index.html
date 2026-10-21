@@ -1,15 +1,15 @@
 <!doctype html>
-<html lang="en"><head>
+<html lang="es"><head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#e9eeed">
-<meta name="description" content="Log symptoms, pain and eye photos. Data stays on this phone.">
+<meta name="description" content="Registra síntomas, dolor y fotos de los ojos. Los datos se quedan en este teléfono.">
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="icon" href="icons/icon-192.png">
 <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
-<title>Symptom &amp; Eye Log</title>
+<title>Diario de síntomas y ojos</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;600;700&family=Nunito+Sans:opsz,wght@6..12,400;6..12,600;6..12,700&family=JetBrains+Mono:wght@500&display=swap">
 <style>
@@ -332,106 +332,106 @@ nav.tabs button[aria-current="page"] svg { background: var(--panel); box-shadow:
 
 <div class="wrap">
   <header class="top">
-    <h1><svg hidden viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 12s3.5-6 10-6 10 6 10 6-3.5 6-10 6S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg>Eye Log<small>Symptom tracker</small></h1>
+    <h1><svg hidden viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 12s3.5-6 10-6 10 6 10 6-3.5 6-10 6S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg>Mi diario<small>Registro de síntomas</small></h1>
     <span class="sub" id="todayLabel"></span>
   </header>
 
   <!-- LOG -->
   <section id="v-log" data-view>
     <div class="hero">
-      <div><h2 id="hello">Hello</h2><p>How are you feeling today?</p></div>
-      <div class="meta"><span class="status" id="todayStatus"><i></i>Nothing logged today yet</span><span class="streak" id="streak"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2c1 4 5 6 5 11a5 5 0 0 1-10 0c0-2.5 1.2-4 2.5-5 0 2 1 3 2 3 0-3-1.5-5.5.5-9z"/></svg><span></span></span></div>
+      <div><h2 id="hello">Hola</h2><p>¿Cómo te sientes hoy?</p></div>
+      <div class="meta"><span class="status" id="todayStatus"><i></i>Nada registrado hoy</span><span class="streak" id="streak"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2c1 4 5 6 5 11a5 5 0 0 1-10 0c0-2.5 1.2-4 2.5-5 0 2 1 3 2 3 0-3-1.5-5.5.5-9z"/></svg><span></span></span></div>
     </div>
     <div class="navtiles">
-      <button type="button" class="navtile" id="qPhoto"><svg viewBox="0 0 24 24"><path d="M4 8h3l2-3h6l2 3h3v11H4z"/><circle cx="12" cy="13" r="3.5"/></svg><span>Eye photo<small>Guided, same framing</small></span></button>
-      <button type="button" class="navtile" data-go="trends"><svg viewBox="0 0 24 24"><path d="M4 19h16M5 15l4-5 4 3 6-7"/></svg><span>My trends<small>Charts by day</small></span></button>
-      <button type="button" class="navtile" data-go="summary"><svg viewBox="0 0 24 24"><rect x="5" y="4" width="14" height="17" rx="2"/><path d="M9 4V3h6v1M9 10h6M9 14h6M9 18h3"/></svg><span>Doctor summary<small>For appointments</small></span></button>
-      <button type="button" class="navtile" data-go="history"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5"/><path d="M12 7.5V12l3 2"/></svg><span>History<small>Edit and back up</small></span></button>
+      <button type="button" class="navtile" id="qPhoto"><svg viewBox="0 0 24 24"><path d="M4 8h3l2-3h6l2 3h3v11H4z"/><circle cx="12" cy="13" r="3.5"/></svg><span>Foto de ojos<small>Guiada, mismo encuadre</small></span></button>
+      <button type="button" class="navtile" data-go="trends"><svg viewBox="0 0 24 24"><path d="M4 19h16M5 15l4-5 4 3 6-7"/></svg><span>Mis tendencias<small>Gráficas por día</small></span></button>
+      <button type="button" class="navtile" data-go="summary"><svg viewBox="0 0 24 24"><rect x="5" y="4" width="14" height="17" rx="2"/><path d="M9 4V3h6v1M9 10h6M9 14h6M9 18h3"/></svg><span>Resumen médico<small>Para tus citas</small></span></button>
+      <button type="button" class="navtile" data-go="history"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5"/><path d="M12 7.5V12l3 2"/></svg><span>Historial<small>Editar y respaldar</small></span></button>
     </div>
     <div id="backupBanner"></div>
-    <div class="formtitle"><h2 id="logTitle">Today's check-in</h2><button type="button" class="pillbtn" id="copyLast" hidden>Same as last entry</button></div>
+    <div class="formtitle"><h2 id="logTitle">Registro de hoy</h2><button type="button" class="pillbtn" id="copyLast" hidden>Igual que la última</button></div>
     <div class="stepper" id="stepper"></div>
     <div class="stepbar"><i id="stepFill"></i></div>
 
     <form id="logForm" autocomplete="off">
       <div class="section">
-        <div class="eyebrow"><span class="ic"><svg viewBox="0 0 24 24"><rect x="4" y="5" width="16" height="15" rx="3"/><path d="M8 3v4M16 3v4M4 10h16"/></svg></span>When</div>
+        <div class="eyebrow"><span class="ic"><svg viewBox="0 0 24 24"><rect x="4" y="5" width="16" height="15" rx="3"/><path d="M8 3v4M16 3v4M4 10h16"/></svg></span>Cuándo</div>
         <input type="date" id="f-date" required hidden>
         <div class="week" id="week"></div>
-        <div class="field"><span class="lab">Time of day</span><div class="chips" id="f-tod" data-single></div></div>
+        <div class="field"><span class="lab">Momento del día</span><div class="chips" id="f-tod" data-single></div></div>
       </div>
 
       <div class="section">
-        <div class="eyebrow"><span class="ic"><svg viewBox="0 0 24 24"><path d="M2 12s3.5-6 10-6 10 6 10 6-3.5 6-10 6S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg></span>Eyes</div>
-        <p class="hint eyenote" style="margin:-8px 0 0;font-size:.88rem">Cover one eye, look at the same text or object as always, then switch. 10 at the top means normal.</p>
+        <div class="eyebrow"><span class="ic"><svg viewBox="0 0 24 24"><path d="M2 12s3.5-6 10-6 10 6 10 6-3.5 6-10 6S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg></span>Ojos</div>
+        <p class="hint eyenote" style="margin:-8px 0 0;font-size:.88rem">Tápate un ojo, mira el mismo texto u objeto de siempre y luego cambia. 10 arriba es visión normal.</p>
         <div class="eyepair">
           <div class="field scale vert" data-scale="lc" data-side="left"></div>
           <div class="field scale vert" data-scale="rc" data-side="right"></div>
         </div>
-        <div class="field"><span class="lab">Vision change <span class="hint">pick all that apply</span></span><div class="chips" id="f-vision"></div></div>
-        <div class="field"><span class="lab">Red eye <span class="hint">what you see in the mirror</span></span><div class="chips" id="f-red" data-single></div></div>
-        <div class="yn"><span>Eye pain when moving the eye</span><div class="seg" data-yn="eyeMovePain"></div></div>
+        <div class="field"><span class="lab">Cambios en la visión <span class="hint">elige todos los que apliquen</span></span><div class="chips" id="f-vision"></div></div>
+        <div class="field"><span class="lab">Ojo rojo <span class="hint">lo que ves en el espejo</span></span><div class="chips" id="f-red" data-single></div></div>
+        <div class="yn"><span>Dolor al mover el ojo</span><div class="seg" data-yn="eyeMovePain"></div></div>
         <div class="field" id="photoLink"></div>
       </div>
 
       <div class="section">
-        <div class="eyebrow"><span class="ic"><svg viewBox="0 0 24 24"><path d="M12 21s-7-4.5-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 11c0 5.5-7 10-7 10z"/></svg></span>Pain</div>
+        <div class="eyebrow"><span class="ic"><svg viewBox="0 0 24 24"><path d="M12 21s-7-4.5-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 11c0 5.5-7 10-7 10z"/></svg></span>Dolor</div>
         <div class="field scale" data-scale="pain" data-kind="pain"></div>
         <div id="painMore" style="display:grid;gap:18px">
-        <div class="field"><span class="lab">Where <span class="hint">pick all that apply</span></span><div class="chips" id="f-loc"></div></div>
-        <div class="field"><span class="lab">Type <span class="hint">pick all that apply</span></span><div class="chips" id="f-type"></div></div>
+        <div class="field"><span class="lab">Dónde <span class="hint">elige todos los que apliquen</span></span><div class="chips" id="f-loc"></div></div>
+        <div class="field"><span class="lab">Tipo <span class="hint">elige todos los que apliquen</span></span><div class="chips" id="f-type"></div></div>
         <div class="row2">
-          <div class="field"><label for="f-dur">Duration <span class="hint">hours</span></label><input type="number" id="f-dur" min="0" max="24" step="0.5" inputmode="decimal"></div>
-          <div class="field"><label for="f-med">Medication <span class="hint">name, dose, time</span></label><input type="text" id="f-med"></div>
+          <div class="field"><label for="f-dur">Duración <span class="hint">horas</span></label><input type="number" id="f-dur" min="0" max="24" step="0.5" inputmode="decimal"></div>
+          <div class="field"><label for="f-med">Medicamento <span class="hint">nombre, dosis, hora</span></label><input type="text" id="f-med"></div>
         </div>
-        <div class="field" id="medPicks" hidden><span class="lab">Taken before <span class="hint">tap to fill in</span></span><div class="chips" id="medChips"></div></div>
+        <div class="field" id="medPicks" hidden><span class="lab">Tomados antes <span class="hint">toca para llenar</span></span><div class="chips" id="medChips"></div></div>
         </div>
       </div>
 
       <div class="section">
-        <div class="eyebrow"><span class="ic"><svg viewBox="0 0 24 24"><path d="M9 3h6v6h6v6h-6v6H9v-6H3V9h6z"/></svg></span>Other symptoms</div>
-        <div class="field"><span class="lab">What did you notice? <span class="hint">pick all that apply</span></span><div class="chips" id="f-sx"></div></div>
+        <div class="eyebrow"><span class="ic"><svg viewBox="0 0 24 24"><path d="M9 3h6v6h6v6h-6v6H9v-6H3V9h6z"/></svg></span>Otros síntomas</div>
+        <div class="field"><span class="lab">¿Qué notaste? <span class="hint">elige todos los que apliquen</span></span><div class="chips" id="f-sx"></div></div>
       </div>
 
       <div class="section">
-        <div class="eyebrow"><span class="ic"><svg viewBox="0 0 24 24"><path d="M20 14.5A8 8 0 1 1 9.5 4a6.5 6.5 0 0 0 10.5 10.5z"/></svg></span>Sleep, stress and notes</div>
+        <div class="eyebrow"><span class="ic"><svg viewBox="0 0 24 24"><path d="M20 14.5A8 8 0 1 1 9.5 4a6.5 6.5 0 0 0 10.5 10.5z"/></svg></span>Sueño, estrés y notas</div>
         <div class="row2">
-          <div class="field"><label for="f-sleep">Sleep <span class="hint">hours</span></label><input type="number" id="f-sleep" min="0" max="24" step="0.5" inputmode="decimal"></div>
+          <div class="field"><label for="f-sleep">Sueño <span class="hint">horas</span></label><input type="number" id="f-sleep" min="0" max="24" step="0.5" inputmode="decimal"></div>
           <div class="field"></div>
         </div>
         <div class="field scale" data-scale="stress" data-kind="stress"></div>
-        <div class="field"><label for="f-notes">Notes</label><textarea id="f-notes" placeholder="Screen time, food, weather, anything unusual"></textarea></div>
+        <div class="field"><label for="f-notes">Notas</label><textarea id="f-notes" placeholder="Tiempo de pantalla, comida, clima, algo fuera de lo normal"></textarea></div>
       </div>
 
       <div id="flagPreview"></div>
       <div class="btnrow" style="margin-top:14px">
-        <button class="btn ghost" type="button" id="prevStep">Back</button>
-        <button class="btn" type="button" id="nextStep" style="flex:1">Next</button>
-        <button class="btn" type="submit" id="saveBtn" style="flex:1">Save entry</button>
-        <button class="btn ghost" type="button" id="cancelEdit" hidden>Cancel edit</button>
+        <button class="btn ghost" type="button" id="prevStep">Atrás</button>
+        <button class="btn" type="button" id="nextStep" style="flex:1">Siguiente</button>
+        <button class="btn" type="submit" id="saveBtn" style="flex:1">Guardar registro</button>
+        <button class="btn ghost" type="button" id="cancelEdit" hidden>Cancelar edición</button>
       </div>
     </form>
 
-    <div class="urgent"><strong>Seek urgent care instead of logging</strong> if you have sudden or fast-worsening vision loss, a sudden severe headache, a seizure, weakness or numbness on one side, trouble speaking, or confusion.</div>
+    <div class="urgent"><strong>Busca atención de urgencias en lugar de registrar</strong> si tienes pérdida de visión repentina o que empeora rápido, un dolor de cabeza fuerte y repentino, una convulsión, debilidad o entumecimiento en un lado del cuerpo, dificultad para hablar o confusión.</div>
   </section>
 
   <!-- TRENDS -->
   <section id="v-trends" data-view hidden>
-    <h2>Trends</h2>
-    <p class="lede">One point per day. When you log more than once a day, the chart shows the worst value: highest pain, lowest clarity.</p>
+    <h2>Tendencias</h2>
+    <p class="lede">Un punto por día. Si registras más de una vez al día, la gráfica muestra el peor valor: el dolor más alto y la claridad más baja.</p>
     <div id="exampleBanner"></div>
-    <button class="btn wide" id="openSummary" style="margin-top:14px">Doctor summary</button>
+    <button class="btn wide" id="openSummary" style="margin-top:14px">Resumen médico</button>
     <div class="filters" id="range"></div>
     <div class="tiles" id="tiles"></div>
     <div id="charts"></div>
-    <p class="muted" style="margin-top:14px">Bring these charts to your next appointment. They show what you logged; they are not a diagnosis.</p>
+    <p class="muted" style="margin-top:14px">Lleva estas gráficas a tu próxima cita. Muestran lo que registraste; no son un diagnóstico.</p>
   </section>
 
   <!-- DOCTOR SUMMARY -->
   <section id="v-summary" data-view hidden>
     <div class="noprint" style="display:flex;justify-content:space-between;align-items:center;gap:10px;margin-top:10px">
-      <button class="linkbtn" id="sumBack">‹ Back to trends</button>
-      <button class="btn" id="sumPrint" hidden style="min-height:42px;padding:8px 16px">Save as PDF</button>
+      <button class="linkbtn" id="sumBack">‹ Volver a tendencias</button>
+      <button class="btn" id="sumPrint" hidden style="min-height:42px;padding:8px 16px">Guardar como PDF</button>
     </div>
     <div class="filters noprint" id="sumRange"></div>
     <div id="summary"></div>
@@ -440,89 +440,89 @@ nav.tabs button[aria-current="page"] svg { background: var(--panel); box-shadow:
   <!-- PHOTOS -->
   <section id="v-photos" data-view hidden>
     <div id="photoHome">
-      <h2>Eye photos</h2>
-      <p class="lede">The camera shows the guide while you take the photo. Then nudge and zoom until your eyes sit in the two ovals. Every saved photo is cropped the same way, so you can compare any two.</p>
-      <div class="frame" id="guidePreview"><div class="placeholder"><span>Brows on the top line, pupils in the ovals, nose on the centre line.</span></div></div>
+      <h2>Fotos de ojos</h2>
+      <p class="lede">La cámara muestra la guía mientras tomas la foto. Luego ajusta y haz zoom hasta que tus ojos queden en los dos óvalos. Todas las fotos se recortan igual, así puedes comparar cualquier par.</p>
+      <div class="frame" id="guidePreview"><div class="placeholder"><span>Cejas en la línea de arriba, pupilas en los óvalos, nariz en la línea del centro.</span></div></div>
       <div class="btnrow" style="margin-top:12px">
-        <button class="btn" id="liveBtn" style="flex:1">Take photo</button>
+        <button class="btn" id="liveBtn" style="flex:1">Tomar foto</button>
         <input type="file" accept="image/*" capture="user" id="camIn" hidden>
-        <label class="btn ghost" style="flex:1;text-align:center;display:grid;place-items:center">From gallery<input type="file" accept="image/*" id="galIn" hidden></label>
+        <label class="btn ghost" style="flex:1;text-align:center;display:grid;place-items:center">Desde la galería<input type="file" accept="image/*" id="galIn" hidden></label>
       </div>
-      <details style="margin-top:12px"><summary>For photos you can compare</summary>
+      <details style="margin-top:12px"><summary>Para fotos comparables</summary>
         <ul class="tips">
-          <li>Same spot and same light each time, ideally daylight from a window in front of you.</li>
-          <li>No flash, no filters, no beauty mode.</li>
-          <li>Phone at eye level, about one forearm away. Look straight into the lens.</li>
-          <li>Open your eyes normally. Take one with eyes looking up if the redness is low.</li>
+          <li>Mismo lugar y misma luz cada vez, idealmente luz de día de una ventana frente a ti.</li>
+          <li>Sin flash, sin filtros, sin modo belleza.</li>
+          <li>Celular a la altura de los ojos, a un antebrazo de distancia. Mira directo al lente.</li>
+          <li>Abre los ojos normalmente. Si el enrojecimiento está abajo, toma otra mirando hacia arriba.</li>
         </ul>
       </details>
       <div style="margin-top:18px;display:flex;justify-content:space-between;align-items:baseline;gap:10px">
-        <h3>Your photos</h3>
-        <button class="linkbtn" id="compareBtn" disabled>Compare 2</button>
+        <h3>Tus fotos</h3>
+        <button class="linkbtn" id="compareBtn" disabled>Comparar 2</button>
       </div>
-      <p class="muted" id="galleryHint">Tap two photos to compare them.</p>
+      <p class="muted" id="galleryHint">Toca dos fotos para compararlas.</p>
       <div class="gallery" id="gallery"></div>
       <div id="compareView"></div>
     </div>
 
     <div id="camView" hidden>
-      <h2>Line up your face</h2>
-      <p class="lede">Brows on the top line, pupils in the ovals, nose on the centre line. Hold the phone at eye level.</p>
+      <h2>Alinea tu cara</h2>
+      <p class="lede">Cejas en la línea de arriba, pupilas en los óvalos, nariz en la línea del centro. Sostén el celular a la altura de los ojos.</p>
       <div class="frame" id="camFrame"><video id="camVideo" playsinline muted autoplay style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;transform:scaleX(-1)"></video><img id="camGhost" alt="" hidden style="opacity:.3;transform:scaleX(-1);object-fit:cover"></div>
       <div class="btnrow" style="margin-top:14px">
-        <button class="btn" id="snap" style="flex:1">Take photo</button>
-        <button class="btn ghost" id="camFlip">Switch camera</button>
-        <button class="btn ghost" id="camCancel">Cancel</button>
+        <button class="btn" id="snap" style="flex:1">Tomar foto</button>
+        <button class="btn ghost" id="camFlip">Cambiar cámara</button>
+        <button class="btn ghost" id="camCancel">Cancelar</button>
       </div>
-      <p class="muted">You can fine-tune the position on the next screen.</p>
+      <p class="muted">En la siguiente pantalla puedes ajustar la posición.</p>
     </div>
 
     <div id="alignView" hidden>
-      <h2>Line it up</h2>
-      <p class="lede">Drag to move, pinch or use the slider to zoom. Pupils in the ovals, nose on the dashed line.</p>
+      <h2>Alinéala</h2>
+      <p class="lede">Arrastra para mover, pellizca o usa la barra para hacer zoom. Pupilas en los óvalos, nariz en la línea punteada.</p>
       <div class="frame" id="alignFrame"><canvas id="alignCanvas" class="mirror" width="1200" height="900"></canvas></div>
       <div class="section">
         <div class="field"><label for="zoom">Zoom</label><input type="range" id="zoom" min="0.5" max="4" step="0.01" value="1"></div>
-        <div class="field"><label for="rot">Tilt <span class="hint" id="rotVal">0°</span></label><input type="range" id="rot" min="-15" max="15" step="0.5" value="0"></div>
-        <div class="yn"><span>Show last photo faintly on top</span><div class="seg" data-yn="ghost" data-local></div></div>
-        <div class="field"><span class="lab">Which eye is red</span><div class="chips" id="p-eye" data-single></div></div>
-        <div class="field"><span class="lab">How red</span><div class="chips" id="p-red" data-single></div></div>
-        <div class="field"><label for="p-note">Note</label><input type="text" id="p-note" placeholder="After screen time, woke up with it…"></div>
+        <div class="field"><label for="rot">Inclinación <span class="hint" id="rotVal">0°</span></label><input type="range" id="rot" min="-15" max="15" step="0.5" value="0"></div>
+        <div class="yn"><span>Mostrar la foto anterior encima, tenue</span><div class="seg" data-yn="ghost" data-local></div></div>
+        <div class="field"><span class="lab">Qué ojo está rojo</span><div class="chips" id="p-eye" data-single></div></div>
+        <div class="field"><span class="lab">Qué tan rojo</span><div class="chips" id="p-red" data-single></div></div>
+        <div class="field"><label for="p-note">Nota</label><input type="text" id="p-note" placeholder="Después de pantalla, amanecí así…"></div>
       </div>
       <div class="btnrow" style="margin-top:14px">
-        <button class="btn" id="savePhoto" style="flex:1">Save photo</button>
-        <button class="btn ghost" id="cancelPhoto">Cancel</button>
+        <button class="btn" id="savePhoto" style="flex:1">Guardar foto</button>
+        <button class="btn ghost" id="cancelPhoto">Cancelar</button>
       </div>
     </div>
   </section>
 
   <!-- HISTORY -->
   <section id="v-history" data-view hidden>
-    <h2>History</h2>
-    <p class="lede">Every entry, newest first. Tap Edit to change one.</p>
+    <h2>Historial</h2>
+    <p class="lede">Todos tus registros, del más reciente al más antiguo. Toca Editar para cambiar uno.</p>
     <div id="historyList"></div>
 
     <div class="section" style="margin-top:22px">
-      <h3>You</h3>
-      <div class="field"><label for="s-name">Your first name <span class="hint">for the greeting</span></label><input type="text" id="s-name" autocomplete="given-name"></div>
+      <h3>Tú</h3>
+      <div class="field"><label for="s-name">Tu nombre <span class="hint">para el saludo</span></label><input type="text" id="s-name" autocomplete="given-name"></div>
     </div>
     <div class="section">
-      <h3>Flag settings</h3>
-      <p class="muted" style="margin:0">From your spreadsheet. These are starting suggestions, not medical rules. Change them to whatever you and your doctor agree on.</p>
+      <h3>Ajustes de alertas</h3>
+      <p class="muted" style="margin:0">Vienen de tu hoja de cálculo. Son sugerencias iniciales, no reglas médicas. Cámbialas según lo que acuerdes con tu médico.</p>
       <div class="row2">
-        <div class="field"><label for="s-pain">Flag pain at or above</label><input type="number" id="s-pain" min="1" max="10"></div>
-        <div class="field"><label for="s-drop">Flag eye clarity drop of</label><input type="number" id="s-drop" min="1" max="10"></div>
+        <div class="field"><label for="s-pain">Alerta si el dolor llega a</label><input type="number" id="s-pain" min="1" max="10"></div>
+        <div class="field"><label for="s-drop">Alerta si la claridad baja</label><input type="number" id="s-drop" min="1" max="10"></div>
       </div>
-      <div class="field"><label for="s-pday">Count a “pain day” at or above</label><input type="number" id="s-pday" min="1" max="10"></div>
+      <div class="field"><label for="s-pday">Contar un “día con dolor” desde</label><input type="number" id="s-pday" min="1" max="10"></div>
     </div>
 
     <div class="section">
-      <h3>Your data</h3>
-      <p class="muted" style="margin:0">Everything stays on this phone. Nothing is sent anywhere. Uninstalling the app or clearing Chrome's site data deletes it, so back up now and then.</p>
+      <h3>Tus datos</h3>
+      <p class="muted" style="margin:0">Todo se queda en este celular. Nada se envía a ningún lado. Si desinstalas la app o borras los datos del sitio en Chrome se pierde, así que respalda de vez en cuando.</p>
       <div class="btnrow">
-        <button class="btn ghost" id="exportCsv">Export CSV</button>
-        <button class="btn ghost" id="exportJson">Back up (JSON)</button>
-        <label class="btn ghost" style="display:grid;place-items:center">Import spreadsheet<input type="file" id="importIn" accept=".xlsx,.json,.csv" hidden></label>
+        <button class="btn ghost" id="exportCsv">Exportar CSV</button>
+        <button class="btn ghost" id="exportJson">Respaldar (JSON)</button>
+        <label class="btn ghost" style="display:grid;place-items:center">Importar hoja de cálculo<input type="file" id="importIn" accept=".xlsx,.json,.csv" hidden></label>
       </div>
       <div id="exportOut"></div>
       <p class="muted" id="storageNote" style="margin:0"></p>
@@ -530,11 +530,11 @@ nav.tabs button[aria-current="page"] svg { background: var(--panel); box-shadow:
   </section>
 </div>
 
-<nav class="tabs" aria-label="Sections"><div class="in">
-  <button data-tab="log" aria-current="page"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>Log</button>
-  <button data-tab="trends"><svg viewBox="0 0 24 24"><path d="M4 19h16M5 15l4-5 4 3 6-7"/></svg>Trends</button>
-  <button data-tab="photos"><svg viewBox="0 0 24 24"><path d="M2 12s3.5-6 10-6 10 6 10 6-3.5 6-10 6S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg>Photos</button>
-  <button data-tab="history"><svg viewBox="0 0 24 24"><path d="M8 6h12M8 12h12M8 18h12M4 6h.01M4 12h.01M4 18h.01"/></svg>History</button>
+<nav class="tabs" aria-label="Secciones"><div class="in">
+  <button data-tab="log" aria-current="page"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>Registrar</button>
+  <button data-tab="trends"><svg viewBox="0 0 24 24"><path d="M4 19h16M5 15l4-5 4 3 6-7"/></svg>Tendencias</button>
+  <button data-tab="photos"><svg viewBox="0 0 24 24"><path d="M2 12s3.5-6 10-6 10 6 10 6-3.5 6-10 6S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg>Fotos</button>
+  <button data-tab="history"><svg viewBox="0 0 24 24"><path d="M8 6h12M8 12h12M8 18h12M4 6h.01M4 12h.01M4 18h.01"/></svg>Historial</button>
 </div></nav>
 
 <script>
@@ -546,8 +546,8 @@ const h = (tag, attrs = {}, ...kids) => { const e = document.createElement(tag);
 const pad = n => String(n).padStart(2, "0");
 const iso = d => `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
 const parseISO = s => { const [y, m, d] = s.split("-").map(Number); return new Date(y, m - 1, d); };
-const fmtDay = s => parseISO(s).toLocaleDateString(undefined, { weekday: "short", day: "numeric", month: "short" });
-const fmtShort = s => parseISO(s).toLocaleDateString(undefined, { day: "numeric", month: "short" });
+const fmtDay = s => parseISO(s).toLocaleDateString("es", { weekday: "short", day: "numeric", month: "short" });
+const fmtShort = s => parseISO(s).toLocaleDateString("es", { day: "numeric", month: "short" });
 const uid = () => Date.now().toString(36) + Math.random().toString(36).slice(2, 7);
 
 /* ---------- vocabulary (from symptom_tracker.xlsx) ---------- */
@@ -557,8 +557,8 @@ const LOC = ["None", "Right temple", "Left temple", "Behind right eye", "Behind 
 const PTYPE = ["None", "Throbbing", "Pressure", "Stabbing", "Dull ache"];
 const RED = ["None", "Left", "Right", "Both"];
 // Other symptoms: each is still stored as its own Yes/No field, so charts, flags and exports keep working.
-const SX = [["dizzy", "Dizziness"], ["nausea", "Nausea"], ["weak", "Weakness / lack of strength"], ["shake", "Shaking"], ["dext", "Lack of dexterity"], ["numb", "Numbness or speech trouble"], ["memory", "Memory lapses, odd smells or déjà vu"]];
-const SX_NONE = "None of these";
+const SX = [["dizzy", "Mareo"], ["nausea", "Náuseas"], ["weak", "Debilidad / falta de fuerza"], ["shake", "Temblor"], ["dext", "Falta de destreza"], ["numb", "Entumecimiento o problemas para hablar"], ["memory", "Lapsos de memoria, olores extraños o déjà vu"]];
+const SX_NONE = "Ninguno de estos";
 const SX_ICON = {
   dizzy: "M12 12a1 1 0 1 0 2 0 3 3 0 1 0-6 0 5 5 0 1 0 10 0 7 7 0 1 0-14 0",
   nausea: "M3 9c2-2 4 2 6 0s4 2 6 0 4 2 6 0M3 15c2-2 4 2 6 0s4 2 6 0 4 2 6 0",
@@ -573,16 +573,25 @@ const icon = d => { const NS = "http://www.w3.org/2000/svg", sv = document.creat
 // Vision change, pain location and pain type allow several picks; older entries stored one string.
 const many = v => Array.isArray(v) ? v.filter(x => x && x !== "None") : (!v || v === "None") ? [] : String(v).split(/\s*;\s*/).filter(x => x && x !== "None");
 const REDNESS = ["Mild", "Moderate", "Strong"];
+// Stored values stay in English (older entries and the spreadsheet use them); this is how they read on screen.
+const ES = { None: "Ninguno", Morning: "Mañana", Afternoon: "Tarde", Evening: "Atardecer", Night: "Noche",
+  Blurry: "Borrosa", "Dim or washed-out colors": "Colores apagados", "Dark or missing spot": "Mancha oscura o zona sin visión", "Flashes or floaters": "Destellos o moscas volantes", "Double vision": "Visión doble",
+  "Right temple": "Sien derecha", "Left temple": "Sien izquierda", "Behind right eye": "Detrás del ojo derecho", "Behind left eye": "Detrás del ojo izquierdo", Forehead: "Frente", "Back of head": "Nuca", "Whole head": "Toda la cabeza",
+  Throbbing: "Pulsátil", Pressure: "Presión", Stabbing: "Punzante", "Dull ache": "Sordo",
+  Left: "Izquierdo", Right: "Derecho", Both: "Ambos", Mild: "Leve", Moderate: "Moderado", Strong: "Fuerte", Yes: "Sí", No: "No" };
+const L = v => ES[v] || v;
+const REV = Object.fromEntries(Object.entries(ES).map(([en, es]) => [es, en]));
+const UNL = v => REV[v] || v;
 const SCALES = {
-  lc: { label: "Left eye clarity", kind: "clarity" },
-  rc: { label: "Right eye clarity", kind: "clarity" },
-  pain: { label: "Headache / pain level", kind: "pain" },
-  stress: { label: "Stress", kind: "stress" },
+  lc: { label: "Claridad ojo izquierdo", kind: "clarity" },
+  rc: { label: "Claridad ojo derecho", kind: "clarity" },
+  pain: { label: "Dolor de cabeza / nivel de dolor", kind: "pain" },
+  stress: { label: "Estrés", kind: "stress" },
 };
 const words = {
-  clarity: v => v >= 9 ? "normal" : v >= 6 ? "a little reduced" : v >= 4 ? "clearly reduced" : v >= 1 ? "very reduced" : "no useful vision",
-  pain: v => v === 0 ? "none" : v <= 3 ? "mild" : v <= 6 ? "moderate" : "severe",
-  stress: v => v <= 2 ? "calm" : v <= 5 ? "some" : v <= 8 ? "high" : "extreme",
+  clarity: v => v >= 9 ? "normal" : v >= 6 ? "un poco reducida" : v >= 4 ? "claramente reducida" : v >= 1 ? "muy reducida" : "sin visión útil",
+  pain: v => v === 0 ? "nada" : v <= 3 ? "leve" : v <= 6 ? "moderado" : "fuerte",
+  stress: v => v <= 2 ? "calma" : v <= 5 ? "algo" : v <= 8 ? "alto" : "extremo",
 };
 
 /* ---------- storage: this browser only ---------- */
@@ -625,7 +634,7 @@ function makeExamples() {
     out.push({ id: "ex" + i, example: true, date: iso(d), tod: rnd() > .3 ? "Morning" : "Evening", lc, rc: Math.round(9 + rnd()),
       vision: lc <= 5 ? (spike ? ["Blurry", "Dark or missing spot"] : ["Blurry"]) : [], red, eyeMovePain: spike ? "Yes" : "No", pain, loc: pain ? (spike ? ["Behind right eye", "Right temple"] : ["Right temple"]) : [],
       type: pain ? (spike ? ["Throbbing", "Pressure"] : ["Pressure"]) : [], dur: pain ? Math.round(rnd() * 4 * 2) / 2 + .5 : 0, med: spike ? "Paracetamol 500 mg" : "",
-      dizzy: spike && rnd() > .4 ? "Yes" : "No", nausea: spike && rnd() > .5 ? "Yes" : "No", weak: "No", shake: spike && rnd() > .6 ? "Yes" : "No", dext: "No", numb: "No", memory: "No", sleep, stress: Math.round(2 + rnd() * 5 + (spike ? 1 : 0)), notes: spike ? "Example: worse after long screen time." : "" });
+      dizzy: spike && rnd() > .4 ? "Yes" : "No", nausea: spike && rnd() > .5 ? "Yes" : "No", weak: "No", shake: spike && rnd() > .6 ? "Yes" : "No", dext: "No", numb: "No", memory: "No", sleep, stress: Math.round(2 + rnd() * 5 + (spike ? 1 : 0)), notes: spike ? "Ejemplo: peor después de mucho tiempo frente a la pantalla." : "" });
   }
   return out;
 }
@@ -638,13 +647,13 @@ const usingExamples = () => entries.length === 0;
 const order = e => e.date + String(TOD.indexOf(e.tod)).padStart(2, "0");
 function flagsFor(e, list) {
   const r = [];
-  if (e.numb === "Yes") r.push("numbness or speech trouble");
-  if (e.weak === "Yes") r.push("weakness");
-  if (+e.pain >= settings.pain) r.push(`pain ${e.pain}/10 (your limit is ${settings.pain})`);
+  if (e.numb === "Yes") r.push("entumecimiento o problemas para hablar");
+  if (e.weak === "Yes") r.push("debilidad");
+  if (+e.pain >= settings.pain) r.push(`dolor ${e.pain}/10 (tu límite es ${settings.pain})`);
   const prev = list.filter(x => x.id !== e.id && order(x) < order(e)).sort((a, b) => order(a).localeCompare(order(b))).pop();
   if (prev) {
-    if (prev.lc != null && e.lc != null && prev.lc - e.lc >= settings.drop) r.push(`left eye clarity fell ${prev.lc - e.lc} points since the last entry`);
-    if (prev.rc != null && e.rc != null && prev.rc - e.rc >= settings.drop) r.push(`right eye clarity fell ${prev.rc - e.rc} points since the last entry`);
+    if (prev.lc != null && e.lc != null && prev.lc - e.lc >= settings.drop) r.push(`la claridad del ojo izquierdo bajó ${prev.lc - e.lc} puntos desde el registro anterior`);
+    if (prev.rc != null && e.rc != null && prev.rc - e.rc >= settings.drop) r.push(`la claridad del ojo derecho bajó ${prev.rc - e.rc} puntos desde el registro anterior`);
   }
   return r;
 }
@@ -658,7 +667,7 @@ function multiGroup(el, opts, key, vals) {
   for (const o of opts) el.append(h("button", { type: "button", class: "chip", "aria-pressed": "false", "data-v": o, onclick: () => {
     const cur = form[key];
     form[key] = o === "None" ? [] : cur.includes(o) ? cur.filter(x => x !== o) : cur.concat(o);
-    syncMulti(el, form[key]); onFormChange(); } }, o));
+    syncMulti(el, form[key]); onFormChange(); } }, L(o)));
   form[key] = many(vals); syncMulti(el, form[key]);
 }
 const syncMulti = (el, vals) => $$(".chip", el).forEach(b => b.setAttribute("aria-pressed", String(b.dataset.v === "None" ? vals.length === 0 : vals.includes(b.dataset.v))));
@@ -673,13 +682,13 @@ function sxGroup(el, d) {
 }
 function chipGroup(el, opts, key, def) {
   el.innerHTML = "";
-  for (const o of opts) el.append(h("button", { type: "button", class: "chip", "aria-pressed": "false", "data-v": o, onclick: () => { form[key] = o; syncChips(el, o); onFormChange(); } }, o));
+  for (const o of opts) el.append(h("button", { type: "button", class: "chip", "aria-pressed": "false", "data-v": o, onclick: () => { form[key] = o; syncChips(el, o); onFormChange(); } }, L(o)));
   form[key] = def; syncChips(el, def);
 }
 const syncChips = (el, v) => $$(".chip", el).forEach(b => b.setAttribute("aria-pressed", String(b.dataset.v === v)));
 function ynGroup(el) {
   const key = el.dataset.yn; el.innerHTML = "";
-  for (const o of ["No", "Yes"]) el.append(h("button", { type: "button", "aria-pressed": "false", "data-v": o, onclick: () => { setYN(el, o); if (!el.hasAttribute("data-local")) onFormChange(); } }, o));
+  for (const o of ["No", "Yes"]) el.append(h("button", { type: "button", "aria-pressed": "false", "data-v": o, onclick: () => { setYN(el, o); if (!el.hasAttribute("data-local")) onFormChange(); } }, L(o)));
   setYN(el, "No");
 }
 function setYN(el, v) { const key = el.dataset.yn; (el.hasAttribute("data-local") ? local : form)[key] = v; $$("button", el).forEach(b => b.setAttribute("aria-pressed", String(b.dataset.v === v))); if (el.hasAttribute("data-local")) drawAlign(); }
@@ -694,9 +703,9 @@ function scaleField(el) {
   el.innerHTML = "";
   el._set = v => { input.value = v; update(); };
   if (el.dataset.side) {
-    const side = el.dataset.side === "left" ? "Left" : "Right";
-    input.setAttribute("aria-label", `${side} eye clarity, 10 is normal`);
-    el.append(h("label", { class: "side", for: id }, h("b", { "aria-hidden": "true" }, side[0]), `${side} eye`),
+    const side = el.dataset.side === "left" ? "izquierdo" : "derecho";
+    input.setAttribute("aria-label", `Claridad del ojo ${side}, 10 es normal`);
+    el.append(h("label", { class: "side", for: id }, h("b", { "aria-hidden": "true" }, side[0].toUpperCase()), `Ojo ${side}`),
       h("div", { class: "rail" }, h("div", { class: "vticks", "aria-hidden": "true" }, ...[10, 8, 6, 4, 2, 0].map(n => h("span", {}, n))), input), val, word);
     return;
   }
@@ -719,9 +728,9 @@ function resetForm(e, copied) {
   pendingPhotoId = d.photoId || null;
   editingId = e && !copied ? e.id : null;
   const editing = !!editingId;
-  $("#logTitle").textContent = editing ? `Editing ${fmtDay(e.date)}` : "Today's check-in";
+  $("#logTitle").textContent = editing ? `Editando ${fmtDay(e.date)}` : "Registro de hoy";
   weekStart = mondayOf(parseISO(d.date)); renderWeek();
-  $("#saveBtn").textContent = editing ? "Save changes" : "Save entry";
+  $("#saveBtn").textContent = editing ? "Guardar cambios" : "Guardar registro";
   $("#cancelEdit").hidden = !editing;
   $("#copyLast").hidden = editing || !realEntries().length;
   goStep(0);
@@ -735,13 +744,13 @@ function readForm() {
     sleep: num($("#f-sleep").value), stress: form.stress, notes: $("#f-notes").value.trim(), photoId: pendingPhotoId };
 }
 /* steps */
-const STEPS = ["When", "Eyes", "Pain", "Symptoms", "Sleep"];
+const STEPS = ["Cuándo", "Ojos", "Dolor", "Síntomas", "Sueño"];
 let step = 0;
 function goStep(i) {
   step = Math.max(0, Math.min(STEPS.length - 1, i));
   $$("#logForm > .section").forEach((sec, j) => sec.hidden = j !== step);
   const st = $("#stepper"); st.innerHTML = "";
-  STEPS.forEach((label, j) => st.append(h("button", { type: "button", class: j < step ? "done" : "", "aria-current": j === step ? "step" : false, "aria-label": `Step ${j + 1}: ${label}`, onclick: () => goStep(j) }, h("span", {}, j < step ? "✓" : String(j + 1)), label)));
+  STEPS.forEach((label, j) => st.append(h("button", { type: "button", class: j < step ? "done" : "", "aria-current": j === step ? "step" : false, "aria-label": `Paso ${j + 1}: ${label}`, onclick: () => goStep(j) }, h("span", {}, j < step ? "✓" : String(j + 1)), label)));
   $("#stepFill").style.width = ((step + 1) / STEPS.length * 100) + "%";
   const last = step === STEPS.length - 1;
   $("#prevStep").hidden = step === 0;
@@ -758,7 +767,7 @@ function renderStreak() {
   const have = new Set(realEntries().map(e => e.date)); const d = new Date();
   if (!have.has(iso(d))) d.setDate(d.getDate() - 1);
   let n = 0; while (have.has(iso(d))) { n++; d.setDate(d.getDate() - 1); }
-  $("#streak").lastChild.textContent = n ? `${n}-day streak` : "Start a streak today";
+  $("#streak").lastChild.textContent = n ? `Racha de ${n} ${n === 1 ? "día" : "días"}` : "Empieza tu racha hoy";
 }
 
 let weekStart = null;
@@ -771,32 +780,32 @@ function renderWeek() {
   const end = new Date(weekStart); end.setDate(end.getDate() + 6);
   const next = new Date(weekStart); next.setDate(next.getDate() + 7);
   const shift = n => { weekStart = new Date(weekStart); weekStart.setDate(weekStart.getDate() + 7 * n); renderWeek(); };
-  el.append(h("div", { class: "mon" }, h("button", { type: "button", "aria-label": "Previous week", onclick: () => shift(-1) }, "‹"),
-    h("span", {}, weekStart.toLocaleDateString(undefined, { month: "long", year: "numeric" })),
-    h("button", { type: "button", "aria-label": "Next week", disabled: iso(next) > todayS, onclick: () => shift(1) }, "›")));
+  el.append(h("div", { class: "mon" }, h("button", { type: "button", "aria-label": "Semana anterior", onclick: () => shift(-1) }, "‹"),
+    h("span", {}, weekStart.toLocaleDateString("es", { month: "long", year: "numeric" })),
+    h("button", { type: "button", "aria-label": "Semana siguiente", disabled: iso(next) > todayS, onclick: () => shift(1) }, "›")));
   const days = h("div", { class: "days" });
-  for (let i = 0; i < 7; i++) { const d = new Date(weekStart); d.setDate(d.getDate() + i); days.append(h("span", { class: "dow" }, d.toLocaleDateString(undefined, { weekday: "narrow" }))); }
+  for (let i = 0; i < 7; i++) { const d = new Date(weekStart); d.setDate(d.getDate() + i); days.append(h("span", { class: "dow" }, d.toLocaleDateString("es", { weekday: "narrow" }))); }
   for (let i = 0; i < 7; i++) {
     const d = new Date(weekStart); d.setDate(d.getDate() + i); const ds = iso(d);
     days.append(h("button", { type: "button", class: "day" + (ds in painBy ? " has" : ""), "data-lvl": ds in painBy ? lvl(painBy[ds]) : false, "aria-pressed": String(ds === sel), "aria-label": fmtDay(ds), disabled: ds > todayS,
       onclick: () => { $("#f-date").value = ds; renderWeek(); onFormChange(); } }, d.getDate()));
   }
-  el.append(days, h("div", { class: "daykey", "aria-hidden": "true" }, h("span", {}, h("i", { style: "background:var(--good)" }), "pain 0–3"), h("span", {}, h("i", { style: "background:var(--ochre)" }), "4–6"), h("span", {}, h("i", { style: "background:var(--crit)" }), "7–10")));
+  el.append(days, h("div", { class: "daykey", "aria-hidden": "true" }, h("span", {}, h("i", { style: "background:var(--good)" }), "dolor 0–3"), h("span", {}, h("i", { style: "background:var(--ochre)" }), "4–6"), h("span", {}, h("i", { style: "background:var(--crit)" }), "7–10")));
 }
 function renderTodayStatus() {
   const t = realEntries().filter(e => e.date === iso(new Date()));
-  $("#todayStatus").lastChild.textContent = t.length ? `Logged today: ${t.map(e => e.tod.toLowerCase()).join(", ")}` : "Nothing logged today yet";
+  $("#todayStatus").lastChild.textContent = t.length ? `Registrado hoy: ${t.map(e => L(e.tod).toLowerCase()).join(", ")}` : "Nada registrado hoy";
 }
 function onFormChange() {
   $("#painMore").hidden = !(form.pain > 0 || form.loc.length || form.type.length || $("#f-med").value);
   const e = readForm(); const f = flagsFor(e, realEntries());
   const box = $("#flagPreview"); box.innerHTML = "";
-  if (f.length) box.append(h("div", { class: "flag warn", style: "margin-top:14px" }, h("strong", {}, "This entry will be flagged: tell your doctor"), h("span", {}, "Because of " + f.join("; ") + ".")));
+  if (f.length) box.append(h("div", { class: "flag warn", style: "margin-top:14px" }, h("strong", {}, "Este registro tendrá alerta: avísale a tu médico"), h("span", {}, "Por " + f.join("; ") + ".")));
 }
 function renderPhotoLink() {
   const el = $("#photoLink"); el.innerHTML = "";
-  if (pendingPhotoId) el.append(h("div", { class: "confirm" }, h("span", {}, "Eye photo attached."), h("button", { type: "button", class: "linkbtn", onclick: () => { pendingPhotoId = null; renderPhotoLink(); } }, "Remove")));
-  else el.append(h("button", { type: "button", class: "btn ghost", onclick: () => { returnToLog = true; show("photos"); openCamera(); } }, "Add an eye photo to this entry"));
+  if (pendingPhotoId) el.append(h("div", { class: "confirm" }, h("span", {}, "Foto de ojos adjunta."), h("button", { type: "button", class: "linkbtn", onclick: () => { pendingPhotoId = null; renderPhotoLink(); } }, "Quitar")));
+  else el.append(h("button", { type: "button", class: "btn ghost", onclick: () => { returnToLog = true; show("photos"); openCamera(); } }, "Agregar una foto de ojos a este registro"));
 }
 $("#logForm").addEventListener("submit", ev => {
   ev.preventDefault();
@@ -805,7 +814,7 @@ $("#logForm").addEventListener("submit", ev => {
   if (i >= 0) entries[i] = e; else entries.push(e);
   saveEntries();
   const f = flagsFor(e, entries);
-  toast(f.length ? "Saved. Flagged: tell your doctor." : "Saved.");
+  toast(f.length ? "Guardado. Con alerta: avísale a tu médico." : "Guardado.");
   const wasEditing = !!editingId; resetForm(); renderAll(); show(wasEditing ? "history" : "trends");
 });
 $("#cancelEdit").onclick = () => { resetForm(); show("history"); };
@@ -815,7 +824,7 @@ const latest = () => realEntries().slice().sort((a, b) => order(a).localeCompare
 $("#copyLast").onclick = () => {
   const last = latest(); if (!last) return;
   resetForm(Object.assign({}, last, { id: null, date: iso(new Date()), tod: guessTOD(), notes: "", photoId: null }), true);
-  toast(`Copied from ${fmtDay(last.date)}. Change what's different.`);
+  toast(`Copiado del ${fmtDay(last.date)}. Cambia lo que sea diferente.`);
 };
 
 /* medication shortcuts: what you typed before, most recent first */
@@ -835,9 +844,9 @@ function renderBackupBanner() {
   const last = settings.lastBackup ? (Date.now() - settings.lastBackup) / 864e5 : Infinity;
   if (backupSnoozed || realEntries().length < 3 || last < 7) return;
   el.append(h("div", { class: "banner", style: "margin-top:16px" }, h("div", {},
-    h("b", {}, settings.lastBackup ? `Last backup ${Math.floor(last)} days ago` : "Back up your log"),
-    "Your entries and photos live only on this phone. A backup file keeps them safe if the phone is lost or reset.",
-    h("div", { class: "btnrow" }, h("button", { class: "btn", onclick: () => $("#exportJson").click() }, "Back up now"), h("button", { class: "btn ghost", onclick: () => { backupSnoozed = true; renderBackupBanner(); } }, "Later")))));
+    h("b", {}, settings.lastBackup ? `Último respaldo hace ${Math.floor(last)} días` : "Respalda tu registro"),
+    "Tus registros y fotos solo están en este celular. Un archivo de respaldo los protege si pierdes o reinicias el celular.",
+    h("div", { class: "btnrow" }, h("button", { class: "btn", onclick: () => $("#exportJson").click() }, "Respaldar ahora"), h("button", { class: "btn ghost", onclick: () => { backupSnoozed = true; renderBackupBanner(); } }, "Más tarde")))));
 }
 const markBackup = ok => { if (ok) { settings.lastBackup = Date.now(); saveSettings(); renderBackupBanner(); } };
 
@@ -846,7 +855,7 @@ let sumDays = 30;
 const IS_APP = !!document.querySelector('link[rel="manifest"]');
 function renderSummary() {
   const r = $("#sumRange"); r.innerHTML = "";
-  for (const [label, d] of [["14 days", 14], ["30 days", 30], ["90 days", 90]]) r.append(h("button", { class: "chip", "aria-pressed": String(sumDays === d), onclick: () => { sumDays = d; renderSummary(); } }, label));
+  for (const [label, d] of [["14 días", 14], ["30 días", 30], ["90 días", 90]]) r.append(h("button", { class: "chip", "aria-pressed": String(sumDays === d), onclick: () => { sumDays = d; renderSummary(); } }, label));
   const list = shownEntries(), days = daySeries(list, sumDays), logged = days.filter(d => d.n);
   const inRange = list.filter(e => e.date >= days[0].date);
   const nums = k => logged.map(d => d[k]).filter(v => v != null);
@@ -854,41 +863,41 @@ function renderSummary() {
   const ext = (k, f) => nums(k).length ? f(...nums(k)) : "–";
   const out = $("#summary"); out.innerHTML = "";
   out.append(h("div", { class: "sum-head" },
-    h("span", { class: "eyebrow" }, "Symptom summary"),
-    h("h2", {}, settings.name || "My symptom log"),
-    h("span", { class: "muted" }, `${fmtDay(days[0].date)} to ${fmtDay(days[days.length - 1].date)} · logged ${logged.length} of ${days.length} days`),
-    usingExamples() ? h("span", { class: "pill ex", style: "justify-self:start" }, "Example data") : null));
+    h("span", { class: "eyebrow" }, "Resumen de síntomas"),
+    h("h2", {}, settings.name || "Mi registro de síntomas"),
+    h("span", { class: "muted" }, `${fmtDay(days[0].date)} a ${fmtDay(days[days.length - 1].date)} · registró ${logged.length} de ${days.length} días`),
+    usingExamples() ? h("span", { class: "pill ex", style: "justify-self:start" }, "Datos de ejemplo") : null));
   const tile = (n, l, alert) => h("div", { class: "tile" + (alert ? " alert" : "") }, h("div", { class: "n" }, n), h("div", { class: "l" }, l));
   const flaggedEntries = inRange.filter(e => flagsFor(e, list).length).sort((a, b) => order(a).localeCompare(order(b)));
   out.append(h("div", { class: "tiles" },
-    tile(avg("pain"), "average pain"), tile(ext("pain", Math.max), "worst pain"), tile(logged.filter(d => d.pain >= settings.pday).length, `pain days (${settings.pday}+)`),
-    tile(avg("lc"), `avg left eye (low ${ext("lc", Math.min)})`), tile(avg("rc"), `avg right eye (low ${ext("rc", Math.min)})`), tile(avg("sleep"), "average sleep, h")));
+    tile(avg("pain"), "dolor promedio"), tile(ext("pain", Math.max), "dolor máximo"), tile(logged.filter(d => d.pain >= settings.pday).length, `días con dolor (${settings.pday}+)`),
+    tile(avg("lc"), `ojo izq. promedio (mín. ${ext("lc", Math.min)})`), tile(avg("rc"), `ojo der. promedio (mín. ${ext("rc", Math.min)})`), tile(avg("sleep"), "sueño promedio, h")));
   out.append(
-    chartCard("Headache / pain", "0 none · 10 worst", days, [{ key: "pain", name: "Pain", color: "var(--accent)" }], { max: 10, thr: settings.pain, thrLabel: `flag ${settings.pain}`, area: true }),
-    chartCard("Eye clarity", "10 = normal", days, [{ key: "lc", name: "Left eye", color: "var(--s1)" }, { key: "rc", name: "Right eye", color: "var(--s2)" }], { max: 10 }));
+    chartCard("Dolor de cabeza / dolor", "0 nada · 10 peor", days, [{ key: "pain", name: "Dolor", color: "var(--accent)" }], { max: 10, thr: settings.pain, thrLabel: `alerta ${settings.pain}`, area: true }),
+    chartCard("Claridad de los ojos", "10 = normal", days, [{ key: "lc", name: "Ojo izquierdo", color: "var(--s1)" }, { key: "rc", name: "Ojo derecho", color: "var(--s2)" }], { max: 10 }));
   // how often each symptom showed up
   const count = fn => logged.filter(fn).length;
   const byDay = d => inRange.filter(e => e.date === d.date);
-  const rows = [["Red eye", d => byDay(d).some(e => e.red && e.red !== "None")], ["Eye pain when moving", d => d.any("eyeMovePain")],
-    ...VISION.slice(1).map(v => [v, d => byDay(d).some(e => many(e.vision).includes(v))]),
+  const rows = [["Ojo rojo", d => byDay(d).some(e => e.red && e.red !== "None")], ["Dolor al mover el ojo", d => d.any("eyeMovePain")],
+    ...VISION.slice(1).map(v => [L(v), d => byDay(d).some(e => many(e.vision).includes(v))]),
     ...SX.map(([k, label]) => [label, d => d.any(k)])].map(([l, fn]) => [l, count(fn)]).filter(([, n]) => n > 0).sort((a, b) => b[1] - a[1]);
-  const tbl = h("table", { class: "sumtable" }, h("tr", {}, h("th", {}, "Symptom"), h("th", { class: "barcell" }, ""), h("th", { style: "text-align:right" }, "Days")),
+  const tbl = h("table", { class: "sumtable" }, h("tr", {}, h("th", {}, "Síntoma"), h("th", { class: "barcell" }, ""), h("th", { style: "text-align:right" }, "Días")),
     ...rows.map(([l, n]) => h("tr", {}, h("td", {}, l), h("td", { class: "barcell" }, h("div", { class: "bar", style: `width:${logged.length ? n / logged.length * 100 : 0}%` })), h("td", { class: "n" }, `${n} / ${logged.length}`))));
-  out.append(h("div", { class: "section" }, h("h3", {}, "How often"), rows.length ? tbl : h("p", { class: "muted", style: "margin:0" }, "No symptoms logged in this period.")));
+  out.append(h("div", { class: "section" }, h("h3", {}, "Con qué frecuencia"), rows.length ? tbl : h("p", { class: "muted", style: "margin:0" }, "No hay síntomas registrados en este periodo.")));
   // pain pattern
-  const tally = key => { const m = {}; inRange.filter(e => +e.pain > 0).forEach(e => many(e[key]).forEach(v => m[v] = (m[v] || 0) + 1)); return Object.entries(m).sort((a, b) => b[1] - a[1]).map(([v, n]) => `${v} (${n})`).join(", ") || "–"; };
-  out.append(h("div", { class: "section" }, h("h3", {}, "Pain pattern"),
-    h("table", { class: "sumtable" }, h("tr", {}, h("td", {}, "Where"), h("td", {}, tally("loc"))), h("tr", {}, h("td", {}, "Type"), h("td", {}, tally("type"))))));
+  const tally = key => { const m = {}; inRange.filter(e => +e.pain > 0).forEach(e => many(e[key]).forEach(v => m[v] = (m[v] || 0) + 1)); return Object.entries(m).sort((a, b) => b[1] - a[1]).map(([v, n]) => `${L(v)} (${n})`).join(", ") || "–"; };
+  out.append(h("div", { class: "section" }, h("h3", {}, "Patrón del dolor"),
+    h("table", { class: "sumtable" }, h("tr", {}, h("td", {}, "Dónde"), h("td", {}, tally("loc"))), h("tr", {}, h("td", {}, "Tipo"), h("td", {}, tally("type"))))));
   // medications
   const meds = {}; inRange.forEach(e => { const m = (e.med || "").trim(); if (m) { meds[m] = meds[m] || { n: 0, last: e.date }; meds[m].n++; if (e.date > meds[m].last) meds[m].last = e.date; } });
   const medRows = Object.entries(meds).sort((a, b) => b[1].n - a[1].n);
-  out.append(h("div", { class: "section" }, h("h3", {}, "Medication"), medRows.length ? h("table", { class: "sumtable" }, h("tr", {}, h("th", {}, "As logged"), h("th", { style: "text-align:right" }, "Times"), h("th", { style: "text-align:right" }, "Last")),
-    ...medRows.map(([m, v]) => h("tr", {}, h("td", {}, m), h("td", { class: "n" }, v.n), h("td", { class: "n" }, fmtShort(v.last))))) : h("p", { class: "muted", style: "margin:0" }, "No medication logged in this period.")));
+  out.append(h("div", { class: "section" }, h("h3", {}, "Medicamentos"), medRows.length ? h("table", { class: "sumtable" }, h("tr", {}, h("th", {}, "Como se registró"), h("th", { style: "text-align:right" }, "Veces"), h("th", { style: "text-align:right" }, "Última")),
+    ...medRows.map(([m, v]) => h("tr", {}, h("td", {}, m), h("td", { class: "n" }, v.n), h("td", { class: "n" }, fmtShort(v.last))))) : h("p", { class: "muted", style: "margin:0" }, "No hay medicamentos registrados en este periodo.")));
   // flagged entries
-  out.append(h("div", { class: "section" }, h("h3", {}, `Flagged entries (${flaggedEntries.length})`),
-    flaggedEntries.length ? h("table", { class: "sumtable" }, ...flaggedEntries.map(e => h("tr", {}, h("td", { style: "white-space:nowrap" }, fmtShort(e.date)), h("td", {}, flagsFor(e, list).join("; ") + (e.notes ? `. Note: ${e.notes}` : ""))))) : h("p", { class: "muted", style: "margin:0" }, "Nothing flagged in this period."),
-    h("p", { class: "muted", style: "margin:0" }, `Flag rules: pain ${settings.pain}+, eye clarity drop of ${settings.drop}+ points, numbness, speech trouble or weakness.`)));
-  out.append(h("p", { class: "muted", style: "margin-top:14px" }, "Self-reported log kept by the patient. Not a diagnosis."));
+  out.append(h("div", { class: "section" }, h("h3", {}, `Registros con alerta (${flaggedEntries.length})`),
+    flaggedEntries.length ? h("table", { class: "sumtable" }, ...flaggedEntries.map(e => h("tr", {}, h("td", { style: "white-space:nowrap" }, fmtShort(e.date)), h("td", {}, flagsFor(e, list).join("; ") + (e.notes ? `. Nota: ${e.notes}` : ""))))) : h("p", { class: "muted", style: "margin:0" }, "Ningún registro con alerta en este periodo."),
+    h("p", { class: "muted", style: "margin:0" }, `Reglas de alerta: dolor ${settings.pain}+, baja de claridad de ${settings.drop}+ puntos, entumecimiento, problemas para hablar o debilidad.`)));
+  out.append(h("p", { class: "muted", style: "margin-top:14px" }, "Registro hecho por el paciente. No es un diagnóstico."));
 }
 $("#openSummary").onclick = () => show("summary");
 $("#sumBack").onclick = () => history.length && prevTab ? show(prevTab) : show("trends");
@@ -914,9 +923,9 @@ function daySeries(list, days) {
 function renderTrends() {
   const list = shownEntries();
   $("#exampleBanner").innerHTML = "";
-  if (usingExamples()) $("#exampleBanner").append(h("div", { class: "banner" }, h("div", {}, h("b", {}, "These are example entries, not yours."), "They show what the charts look like after a few weeks. They disappear when you save your first entry.")));
+  if (usingExamples()) $("#exampleBanner").append(h("div", { class: "banner" }, h("div", {}, h("b", {}, "Estos son registros de ejemplo, no tuyos."), "Muestran cómo se ven las gráficas después de unas semanas. Desaparecen cuando guardes tu primer registro.")));
   const r = $("#range"); r.innerHTML = "";
-  for (const [label, d] of [["7 days", 7], ["30 days", 30], ["90 days", 90], ["All", 0]]) r.append(h("button", { class: "chip", "aria-pressed": String(rangeDays === d), onclick: () => { rangeDays = d; LS.set("sel.range", d); renderTrends(); } }, label));
+  for (const [label, d] of [["7 días", 7], ["30 días", 30], ["90 días", 90], ["Todo", 0]]) r.append(h("button", { class: "chip", "aria-pressed": String(rangeDays === d), onclick: () => { rangeDays = d; LS.set("sel.range", d); renderTrends(); } }, label));
   const days = daySeries(list, rangeDays);
   const logged = days.filter(d => d.n);
   const avg = k => { const v = logged.map(d => d[k]).filter(x => x != null); return v.length ? (v.reduce((a, b) => a + b, 0) / v.length) : null; };
@@ -924,14 +933,14 @@ function renderTrends() {
   const painDays = logged.filter(d => d.pain >= settings.pday).length, flagged = logged.filter(d => d.flagged).length;
   const t = $("#tiles"); t.innerHTML = "";
   const tile = (n, l, alert) => h("div", { class: "tile" + (alert ? " alert" : "") }, h("div", { class: "n" }, n), h("div", { class: "l" }, l));
-  t.append(tile(logged.length, "days logged"), tile(f1(avg("pain")), "average pain"), tile(painDays, `pain days (${settings.pday}+)`),
-           tile(f1(avg("lc")), "avg left eye clarity"), tile(f1(avg("rc")), "avg right eye clarity"), tile(flagged, "days flagged for doctor", flagged > 0));
+  t.append(tile(logged.length, "días registrados"), tile(f1(avg("pain")), "dolor promedio"), tile(painDays, `días con dolor (${settings.pday}+)`),
+           tile(f1(avg("lc")), "claridad ojo izq. promedio"), tile(f1(avg("rc")), "claridad ojo der. promedio"), tile(flagged, "días con alerta para el médico", flagged > 0));
   const c = $("#charts"); c.innerHTML = "";
   c.append(
-    chartCard("Headache / pain", "0 none · 10 worst", days, [{ key: "pain", name: "Pain", color: "var(--accent)" }], { max: 10, thr: settings.pain, thrLabel: `flag ${settings.pain}`, area: true }),
-    chartCard("Eye clarity", "10 = normal", days, [{ key: "lc", name: "Left eye", color: "var(--s1)" }, { key: "rc", name: "Right eye", color: "var(--s2)" }], { max: 10 }),
-    chartCard("Sleep", "hours", days, [{ key: "sleep", name: "Sleep", color: "var(--accent)" }], { max: Math.max(10, ...days.map(d => d.sleep || 0)), bars: true }),
-    chartCard("Stress", "0 calm · 10 extreme", days, [{ key: "stress", name: "Stress", color: "var(--accent)" }], { max: 10 }),
+    chartCard("Dolor de cabeza / dolor", "0 nada · 10 peor", days, [{ key: "pain", name: "Dolor", color: "var(--accent)" }], { max: 10, thr: settings.pain, thrLabel: `alerta ${settings.pain}`, area: true }),
+    chartCard("Claridad de los ojos", "10 = normal", days, [{ key: "lc", name: "Ojo izquierdo", color: "var(--s1)" }, { key: "rc", name: "Ojo derecho", color: "var(--s2)" }], { max: 10 }),
+    chartCard("Sueño", "horas", days, [{ key: "sleep", name: "Sueño", color: "var(--accent)" }], { max: Math.max(10, ...days.map(d => d.sleep || 0)), bars: true }),
+    chartCard("Estrés", "0 calma · 10 extremo", days, [{ key: "stress", name: "Estrés", color: "var(--accent)" }], { max: 10 }),
     stripCard(days));
 }
 
@@ -943,7 +952,7 @@ function chartCard(title, unit, days, series, o) {
   const W = 520, H = 170, L = 26, R = 10, T = 12, B = 22, iw = W - L - R, ih = H - T - B, n = days.length;
   const x = i => L + (n <= 1 ? iw / 2 : (i / (n - 1)) * iw), y = v => T + ih - (v / o.max) * ih;
   const NS = "http://www.w3.org/2000/svg", s = (tag, a = {}) => { const e = document.createElementNS(NS, tag); for (const k in a) e.setAttribute(k, a[k]); return e; };
-  const svg = s("svg", { viewBox: `0 0 ${W} ${H}`, role: "img", "aria-label": `${title} over the last ${n} days` });
+  const svg = s("svg", { viewBox: `0 0 ${W} ${H}`, role: "img", "aria-label": `${title} en los últimos ${n} días` });
   const step = o.max > 10 ? 4 : 5;
   for (let v = 0; v <= o.max; v += step) { svg.append(s("line", { class: "grid", x1: L, x2: W - R, y1: y(v), y2: y(v) })); const tx = s("text", { x: L - 6, y: y(v) + 3, "text-anchor": "end" }); tx.textContent = v; svg.append(tx); }
   const every = Math.max(1, Math.ceil(n / 6));
@@ -978,7 +987,7 @@ function chartCard(title, unit, days, series, o) {
     const i = Math.max(0, Math.min(n - 1, Math.round((px - L) / iw * (n - 1)))); const d = days[i];
     cross.setAttribute("x1", x(i)); cross.setAttribute("x2", x(i)); cross.setAttribute("visibility", "visible");
     tip.innerHTML = ""; tip.append(h("div", {}, fmtDay(d.date)));
-    for (const se of series) tip.append(h("div", {}, se.name + ": ", h("b", {}, d[se.key] == null ? "not logged" : String(d[se.key]))));
+    for (const se of series) tip.append(h("div", {}, se.name + ": ", h("b", {}, d[se.key] == null ? "sin registro" : String(d[se.key]))));
     tip.hidden = false; const cr = card.getBoundingClientRect();
     tip.style.left = Math.max(60, Math.min(cr.width - 60, (x(i) / W) * rect.width + rect.left - cr.left)) + "px";
     tip.style.top = (rect.top - cr.top + 6) + "px";
@@ -989,15 +998,15 @@ function chartCard(title, unit, days, series, o) {
   return card;
 }
 function stripCard(days) {
-  const rows = [["Red eye", d => d.red], ["Vision change", d => d.vision], ["Eye pain moving", d => d.any("eyeMovePain")], ["Dizziness", d => d.any("dizzy")], ["Nausea", d => d.any("nausea")], ["Weakness", d => d.any("weak")], ["Shaking", d => d.any("shake")], ["Dexterity", d => d.any("dext")], ["Numb / speech", d => d.any("numb")], ["Memory / smells", d => d.any("memory")]];
-  const card = h("div", { class: "chart" }, h("header", {}, h("h3", {}, "Which days had what"), h("span", { class: "hint" }, "filled = yes, ring = logged without it")));
+  const rows = [["Ojo rojo", d => d.red], ["Visión", d => d.vision], ["Dolor al mover", d => d.any("eyeMovePain")], ["Mareo", d => d.any("dizzy")], ["Náuseas", d => d.any("nausea")], ["Debilidad", d => d.any("weak")], ["Temblor", d => d.any("shake")], ["Destreza", d => d.any("dext")], ["Entumec. / habla", d => d.any("numb")], ["Memoria / olores", d => d.any("memory")]];
+  const card = h("div", { class: "chart" }, h("header", {}, h("h3", {}, "Qué hubo cada día"), h("span", { class: "hint" }, "relleno = sí, anillo = registrado sin eso")));
   const W = 520, L = 104, R = 10, rh = 22, T = 6, n = days.length, iw = W - L - R, H = T + rows.length * rh + 6;
   const NS = "http://www.w3.org/2000/svg", s = (tag, a = {}) => { const e = document.createElementNS(NS, tag); for (const k in a) e.setAttribute(k, a[k]); return e; };
-  const svg = s("svg", { viewBox: `0 0 ${W} ${H}`, role: "img", "aria-label": "Symptoms by day" });
+  const svg = s("svg", { viewBox: `0 0 ${W} ${H}`, role: "img", "aria-label": "Síntomas por día" });
   const x = i => L + (n <= 1 ? iw / 2 : (i / (n - 1)) * iw), r = Math.max(2, Math.min(5, iw / n / 2 - 1));
   rows.forEach(([label, fn], j) => {
     const cy = T + j * rh + rh / 2; const tx = s("text", { class: "strip-label", x: 0, y: cy + 4 }); tx.textContent = label; svg.append(tx);
-    days.forEach((d, i) => { if (!d.n) return; const yes = fn(d); svg.append(s("circle", { cx: x(i), cy, r, fill: yes ? (label === "Weakness" || label === "Numb / speech" ? "var(--crit)" : "var(--accent)") : "none", stroke: yes ? "none" : "var(--line)", "stroke-width": 1.2 })); });
+    days.forEach((d, i) => { if (!d.n) return; const yes = fn(d); svg.append(s("circle", { cx: x(i), cy, r, fill: yes ? (label === "Debilidad" || label === "Entumec. / habla" ? "var(--crit)" : "var(--accent)") : "none", stroke: yes ? "none" : "var(--line)", "stroke-width": 1.2 })); });
   });
   card.append(svg); return card;
 }
@@ -1007,65 +1016,69 @@ let confirmDel = null;
 function renderHistory() {
   const el = $("#historyList"); el.innerHTML = "";
   const list = shownEntries().slice().sort((a, b) => order(b).localeCompare(order(a)));
-  if (usingExamples()) el.append(h("div", { class: "banner" }, h("div", {}, h("b", {}, "No entries yet."), "Below are examples so you can see the layout. Your first saved entry replaces them.")));
+  if (usingExamples()) el.append(h("div", { class: "banner" }, h("div", {}, h("b", {}, "Todavía no hay registros."), "Abajo hay ejemplos para que veas cómo se ve. Tu primer registro los reemplaza.")));
   for (const e of list.slice(0, 60)) {
     const f = flagsFor(e, shownEntries());
     const acts = h("div", { class: "acts" });
     if (!e.example) {
-      if (confirmDel === e.id) acts.append(h("span", { class: "confirm" }, "Delete this entry?", h("button", { class: "btn danger", style: "min-height:36px;padding:6px 12px", onclick: () => { entries = entries.filter(x => x.id !== e.id); saveEntries(); confirmDel = null; renderAll(); } }, "Delete"), h("button", { class: "linkbtn", onclick: () => { confirmDel = null; renderHistory(); } }, "Keep")));
-      else acts.append(h("button", { class: "linkbtn", onclick: () => { resetForm(e); show("log"); } }, "Edit"), h("button", { class: "linkbtn", style: "color:var(--ink-3)", onclick: () => { confirmDel = e.id; renderHistory(); } }, "Delete"));
+      if (confirmDel === e.id) acts.append(h("span", { class: "confirm" }, "¿Borrar este registro?", h("button", { class: "btn danger", style: "min-height:36px;padding:6px 12px", onclick: () => { entries = entries.filter(x => x.id !== e.id); saveEntries(); confirmDel = null; renderAll(); } }, "Borrar"), h("button", { class: "linkbtn", onclick: () => { confirmDel = null; renderHistory(); } }, "Conservar")));
+      else acts.append(h("button", { class: "linkbtn", onclick: () => { resetForm(e); show("log"); } }, "Editar"), h("button", { class: "linkbtn", style: "color:var(--ink-3)", onclick: () => { confirmDel = e.id; renderHistory(); } }, "Borrar"));
     }
-    const sx = [many(e.vision).join(", "), e.red !== "None" && e.red && `red eye: ${e.red.toLowerCase()}`, e.eyeMovePain === "Yes" && "eye pain moving", e.dizzy === "Yes" && "dizzy", e.nausea === "Yes" && "nausea", e.weak === "Yes" && "weakness", e.shake === "Yes" && "shaking", e.dext === "Yes" && "lack of dexterity", e.numb === "Yes" && "numbness/speech", e.memory === "Yes" && "memory/smells/déjà vu", many(e.loc).length && `${many(e.type).length ? many(e.type).join(", ").toLowerCase() + " · " : ""}${many(e.loc).join(", ").toLowerCase()}`].filter(Boolean);
+    const sx = [many(e.vision).map(L).join(", "), e.red !== "None" && e.red && `ojo rojo: ${L(e.red).toLowerCase()}`, e.eyeMovePain === "Yes" && "dolor al mover el ojo", e.dizzy === "Yes" && "mareo", e.nausea === "Yes" && "náuseas", e.weak === "Yes" && "debilidad", e.shake === "Yes" && "temblor", e.dext === "Yes" && "falta de destreza", e.numb === "Yes" && "entumecimiento/habla", e.memory === "Yes" && "memoria/olores/déjà vu", many(e.loc).length && `${many(e.type).length ? many(e.type).map(L).join(", ").toLowerCase() + " · " : ""}${many(e.loc).map(L).join(", ").toLowerCase()}`].filter(Boolean);
     el.append(h("div", { class: "entry" },
-      h("div", { class: "top" }, h("span", { class: "when" }, fmtDay(e.date), " · ", h("span", { class: "hint" }, e.tod)), e.example ? h("span", { class: "pill ex" }, "Example") : f.length ? h("span", { class: "pill", title: f.join("; ") }, "Tell your doctor") : null),
-      h("div", { class: "nums" }, h("span", {}, `pain ${e.pain}`), h("span", {}, `L ${e.lc} · R ${e.rc}`), e.sleep != null ? h("span", {}, `sleep ${e.sleep}h`) : null, h("span", {}, `stress ${e.stress}`), e.photoId ? h("span", {}, "📷") : null),
+      h("div", { class: "top" }, h("span", { class: "when" }, fmtDay(e.date), " · ", h("span", { class: "hint" }, L(e.tod))), e.example ? h("span", { class: "pill ex" }, "Ejemplo") : f.length ? h("span", { class: "pill", title: f.join("; ") }, "Avisar al médico") : null),
+      h("div", { class: "nums" }, h("span", {}, `dolor ${e.pain}`), h("span", {}, `I ${e.lc} · D ${e.rc}`), e.sleep != null ? h("span", {}, `sueño ${e.sleep}h`) : null, h("span", {}, `estrés ${e.stress}`), e.photoId ? h("span", {}, "📷") : null),
       sx.length ? h("div", { class: "hint", style: "font-size:.88rem;color:var(--ink-2)" }, sx.join(" · ")) : null,
-      e.med ? h("div", { class: "hint" }, "Medication: " + e.med) : null,
+      e.med ? h("div", { class: "hint" }, "Medicamento: " + e.med) : null,
       e.notes ? h("div", { style: "font-size:.92rem" }, e.notes) : null,
-      f.length && !e.example ? h("div", { class: "hint", style: "color:var(--warn)" }, "Flagged because of " + f.join("; ") + ".") : null,
+      f.length && !e.example ? h("div", { class: "hint", style: "color:var(--warn)" }, "Alerta por " + f.join("; ") + ".") : null,
       acts));
   }
 }
 for (const [id, k] of [["#s-pain", "pain"], ["#s-drop", "drop"], ["#s-pday", "pday"]]) { const el = $(id); el.value = settings[k]; el.addEventListener("change", () => { const v = Math.max(1, Math.min(10, +el.value || settings[k])); el.value = v; settings[k] = v; saveSettings(); renderAll(); }); }
 const nameEl = $("#s-name"); nameEl.value = settings.name || "";
-const renderHello = () => { $("#hello").textContent = settings.name ? `Hello, ${settings.name}` : "Hello"; };
+const renderHello = () => { $("#hello").textContent = settings.name ? `Hola, ${settings.name}` : "Hola"; };
 nameEl.addEventListener("change", () => { settings.name = nameEl.value.trim(); saveSettings(); renderHello(); }); renderHello();
-function renderStorageNote() { $("#storageNote").textContent = persistOK ? "" : "This browser is not letting the page save. Entries will be lost when you close it. Try opening the page in your normal browser, not a private window."; }
+function renderStorageNote() { $("#storageNote").textContent = persistOK ? "" : "Este navegador no deja guardar. Los registros se perderán al cerrarlo. Abre la página en tu navegador normal, no en una ventana privada."; }
 
 /* ---------- export / import ---------- */
-const COLS = [["Date", "date"], ["Time of day", "tod"], ["Left eye clarity (0-10)", "lc"], ["Right eye clarity (0-10)", "rc"], ["Vision change", "vision"], ["Eye pain when moving eye", "eyeMovePain"], ["Headache / pain level (0-10)", "pain"], ["Pain location", "loc"], ["Pain type", "type"], ["Pain duration (hours)", "dur"], ["Medication (name, dose, time)", "med"], ["Dizziness / nausea", "dizzyNausea"], ["Numbness / weakness / speech trouble", "numbWeak"], ["Memory lapses / odd smells / deja vu", "memory"], ["Sleep (hours)", "sleep"], ["Stress (0-10)", "stress"], ["Notes", "notes"], ["Red eye", "red"], ["Dizziness", "dizzy"], ["Nausea", "nausea"], ["Weakness", "weak"], ["Shaking", "shake"], ["Lack of dexterity", "dext"], ["Numbness / speech", "numb"]];
-const derived = e => Object.assign({}, e, { vision: many(e.vision).join("; ") || "None", loc: many(e.loc).join("; ") || "None", type: many(e.type).join("; ") || "None", shake: e.shake || "No", dext: e.dext || "No", dizzyNausea: e.dizzy === "Yes" || e.nausea === "Yes" ? "Yes" : "No", numbWeak: e.numb === "Yes" || e.weak === "Yes" ? "Yes" : "No" });
-const csv = () => [COLS.map(c => c[0]).concat("Flag").join(","), ...entries.slice().sort((a, b) => order(a).localeCompare(order(b))).map(e => COLS.map(([, k]) => derived(e)[k] ?? "").concat(flagsFor(e, entries).length ? "Tell your doctor" : "").map(v => /[",\n]/.test(String(v)) ? `"${String(v).replace(/"/g, '""')}"` : v).join(","))].join("\n");
+// Spanish headers on export; import also accepts the English headers of the original spreadsheet.
+const COLS = [["Fecha", "date"], ["Momento del día", "tod"], ["Claridad ojo izquierdo (0-10)", "lc"], ["Claridad ojo derecho (0-10)", "rc"], ["Cambios en la visión", "vision"], ["Dolor al mover el ojo", "eyeMovePain"], ["Dolor de cabeza / nivel de dolor (0-10)", "pain"], ["Ubicación del dolor", "loc"], ["Tipo de dolor", "type"], ["Duración del dolor (horas)", "dur"], ["Medicamento (nombre, dosis, hora)", "med"], ["Mareo / náuseas", "dizzyNausea"], ["Entumecimiento / debilidad / problemas para hablar", "numbWeak"], ["Lapsos de memoria / olores extraños / déjà vu", "memory"], ["Sueño (horas)", "sleep"], ["Estrés (0-10)", "stress"], ["Notas", "notes"], ["Ojo rojo", "red"], ["Mareo", "dizzy"], ["Náuseas", "nausea"], ["Debilidad", "weak"], ["Temblor", "shake"], ["Falta de destreza", "dext"], ["Entumecimiento / habla", "numb"]];
+const COLS_EN = { date: "Date", tod: "Time of day", lc: "Left eye clarity (0-10)", rc: "Right eye clarity (0-10)", vision: "Vision change", eyeMovePain: "Eye pain when moving eye", pain: "Headache / pain level (0-10)", loc: "Pain location", type: "Pain type", dur: "Pain duration (hours)", med: "Medication (name, dose, time)", dizzyNausea: "Dizziness / nausea", numbWeak: "Numbness / weakness / speech trouble", memory: "Memory lapses / odd smells / deja vu", sleep: "Sleep (hours)", stress: "Stress (0-10)", notes: "Notes", red: "Red eye", dizzy: "Dizziness", nausea: "Nausea", weak: "Weakness", shake: "Shaking", dext: "Lack of dexterity", numb: "Numbness / speech" };
+const derived = e => { const o = Object.assign({}, e, { vision: many(e.vision).map(L).join("; ") || L("None"), loc: many(e.loc).map(L).join("; ") || L("None"), type: many(e.type).map(L).join("; ") || L("None"), shake: e.shake || "No", dext: e.dext || "No", dizzyNausea: e.dizzy === "Yes" || e.nausea === "Yes" ? "Yes" : "No", numbWeak: e.numb === "Yes" || e.weak === "Yes" ? "Yes" : "No" });
+  for (const k of ["tod", "red", "eyeMovePain", "dizzy", "nausea", "weak", "shake", "dext", "numb", "memory", "dizzyNausea", "numbWeak"]) o[k] = L(o[k]);
+  return o; };
+const csv = () => [COLS.map(c => c[0]).concat("Alerta").join(","), ...entries.slice().sort((a, b) => order(a).localeCompare(order(b))).map(e => COLS.map(([, k]) => derived(e)[k] ?? "").concat(flagsFor(e, entries).length ? "Avisar al médico" : "").map(v => /[",\n]/.test(String(v)) ? `"${String(v).replace(/"/g, '""')}"` : v).join(","))].join("\n");
 async function offer(filename, data) {
   const out = $("#exportOut"); out.innerHTML = "";
   try { const type = filename.endsWith(".csv") ? "text/csv" : "application/json"; const file = new File([data], filename, { type });
     if (navigator.canShare && navigator.canShare({ files: [file] })) { try { await navigator.share({ files: [file], title: filename }); return true; } catch (e) { if (e.name === "AbortError") return false; } }
-    const a = h("a", { href: URL.createObjectURL(file), download: filename }); document.body.append(a); a.click(); setTimeout(() => { URL.revokeObjectURL(a.href); a.remove(); }, 1000); toast("Saved to Downloads."); return true; } catch {}
+    const a = h("a", { href: URL.createObjectURL(file), download: filename }); document.body.append(a); a.click(); setTimeout(() => { URL.revokeObjectURL(a.href); a.remove(); }, 1000); toast("Guardado en Descargas."); return true; } catch {}
   const ta = h("textarea", { class: "copybox", readonly: true }); ta.value = data;
-  out.append(h("p", { class: "muted" }, "Copy this and paste it into a file or your spreadsheet:"), ta, h("button", { class: "btn ghost", onclick: async () => { try { await navigator.clipboard.writeText(data); toast("Copied."); markBackup(true); } catch { ta.select(); } } }, "Copy"));
+  out.append(h("p", { class: "muted" }, "Copia esto y pégalo en un archivo o en tu hoja de cálculo:"), ta, h("button", { class: "btn ghost", onclick: async () => { try { await navigator.clipboard.writeText(data); toast("Copiado."); markBackup(true); } catch { ta.select(); } } }, "Copiar"));
 }
-$("#exportCsv").onclick = async () => entries.length ? markBackup(await offer(`symptom-log-${iso(new Date())}.csv`, csv())) : toast("Nothing to export yet.");
-$("#exportJson").onclick = async () => markBackup(await offer(`symptom-log-backup-${iso(new Date())}.json`, JSON.stringify({ entries, settings, photos: await photoDB.all() })));
+$("#exportCsv").onclick = async () => entries.length ? markBackup(await offer(`registro-sintomas-${iso(new Date())}.csv`, csv())) : toast("Todavía no hay nada para exportar.");
+$("#exportJson").onclick = async () => markBackup(await offer(`respaldo-registro-sintomas-${iso(new Date())}.json`, JSON.stringify({ entries, settings, photos: await photoDB.all() })));
 $("#importIn").onchange = async ev => {
   const file = ev.target.files[0]; ev.target.value = ""; if (!file) return;
   try {
     let rows = [];
     if (/\.json$/i.test(file.name)) { const j = JSON.parse(await file.text()); merge(j.entries || []); if (j.settings) Object.assign(settings, j.settings), saveSettings(); for (const p of j.photos || []) await photoDB.put(p); renderAll(); renderGallery(); return; }
     if (/\.csv$/i.test(file.name)) { await loadXLSX(); rows = XLSX.utils.sheet_to_json(XLSX.read(await file.text(), { type: "string" }).Sheets.Sheet1, { header: 1, raw: true }); }
-    else { await loadXLSX(); const wb = XLSX.read(await file.arrayBuffer(), { cellDates: true }); const ws = wb.Sheets["Daily log"] || wb.Sheets[wb.SheetNames[0]]; rows = XLSX.utils.sheet_to_json(ws, { header: 1, raw: true }); }
-    const hi = rows.findIndex(r => r && r[0] === "Date"); if (hi < 0) throw new Error("no header");
-    const head = rows[hi]; const idx = Object.fromEntries(COLS.map(([name, k]) => [k, head.indexOf(name)]));
+    else { await loadXLSX(); const wb = XLSX.read(await file.arrayBuffer(), { cellDates: true }); const ws = wb.Sheets["Daily log"] || wb.Sheets["Registro diario"] || wb.Sheets[wb.SheetNames[0]]; rows = XLSX.utils.sheet_to_json(ws, { header: 1, raw: true }); }
+    const hi = rows.findIndex(r => r && (r[0] === "Date" || r[0] === "Fecha")); if (hi < 0) throw new Error("no header");
+    const head = rows[hi]; const idx = Object.fromEntries(COLS.map(([name, k]) => [k, head.includes(name) ? head.indexOf(name) : head.indexOf(COLS_EN[k])]));
     const got = [];
     for (const r of rows.slice(hi + 1)) {
       if (!r || r[idx.date] == null || r[idx.date] === "") continue;
-      const v = k => idx[k] >= 0 ? r[idx[k]] : undefined;
+      const v = k => { const x = idx[k] >= 0 ? r[idx[k]] : undefined; return typeof x === "string" && k !== "notes" && k !== "med" ? x.split(/\s*;\s*/).map(UNL).join("; ") : x; };
       if (String(v("notes") || "").startsWith("EXAMPLE ROW")) continue;
       let d = v("date"); d = d instanceof Date ? iso(new Date(d.getTime() + d.getTimezoneOffset() * 6e4 * (d.getUTCHours() ? 0 : 1))) : typeof d === "number" ? iso(new Date(Math.round((d - 25569) * 864e5) + new Date().getTimezoneOffset() * 6e4)) : String(d).slice(0, 10);
       const n = k => v(k) === "" || v(k) == null ? null : +v(k), s = (k, def) => v(k) ? String(v(k)) : def;
       got.push({ id: uid(), date: d, tod: s("tod", "Morning"), lc: n("lc"), rc: n("rc"), vision: many(v("vision")), red: s("red", "None"), eyeMovePain: s("eyeMovePain", "No"), pain: n("pain") ?? 0, loc: many(v("loc")), type: many(v("type")), dur: n("dur"), med: s("med", ""), dizzy: s("dizzy", s("dizzyNausea", "No")), nausea: s("nausea", "No"), weak: s("weak", "No"), shake: s("shake", "No"), dext: s("dext", "No"), numb: s("numb", s("numbWeak", "No")), memory: s("memory", "No"), sleep: n("sleep"), stress: n("stress") ?? 0, notes: s("notes", "") });
     }
-    merge(got); toast(`Imported ${got.length} ${got.length === 1 ? "entry" : "entries"}.`);
-  } catch (e) { toast("That file did not look like your symptom tracker. Use the .xlsx with the “Daily log” sheet."); }
+    merge(got); toast(`Se importaron ${got.length} ${got.length === 1 ? "registro" : "registros"}.`);
+  } catch (e) { toast("Ese archivo no parece tu registro de síntomas. Usa el .xlsx con la hoja “Daily log”."); }
 };
 function merge(list) { const key = e => e.date + e.tod; const have = new Set(entries.map(key)); for (const e of list) if (!have.has(key(e))) entries.push(e); saveEntries(); renderAll(); }
 function loadXLSX() { return window.XLSX ? Promise.resolve() : new Promise((res, rej) => { const s = document.createElement("script"); s.src = "https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"; s.onload = res; s.onerror = rej; document.head.append(s); }); }
@@ -1082,7 +1095,7 @@ function guideSVG(withLabels = true) {
     s("circle", { class: "g", cx: G.eyeLX, cy: G.eyeY, r: 6 }), s("circle", { class: "g", cx: G.eyeRX, cy: G.eyeY, r: 6 }),
     s("line", { class: "g d", x1: 600, x2: 600, y1: 300, y2: 860 }),
     s("path", { class: "g d", d: "M90 120 C 90 560, 250 900, 600 900 C 950 900, 1110 560, 1110 120" }));
-  if (withLabels) { const t1 = s("text", { x: 150, y: G.browY - 12 }); t1.textContent = "brows"; const t2 = s("text", { x: G.eyeLX, y: G.eyeY + G.ry + 30, "text-anchor": "middle" }); t2.textContent = "your left eye"; const t3 = s("text", { x: G.eyeRX, y: G.eyeY + G.ry + 30, "text-anchor": "middle" }); t3.textContent = "your right eye"; svg.append(t1, t2, t3); }
+  if (withLabels) { const t1 = s("text", { x: 150, y: G.browY - 12 }); t1.textContent = "cejas"; const t2 = s("text", { x: G.eyeLX, y: G.eyeY + G.ry + 30, "text-anchor": "middle" }); t2.textContent = "tu ojo izquierdo"; const t3 = s("text", { x: G.eyeRX, y: G.eyeY + G.ry + 30, "text-anchor": "middle" }); t3.textContent = "tu ojo derecho"; svg.append(t1, t2, t3); }
   return svg;
 }
 $("#guidePreview").append(guideSVG());
@@ -1093,7 +1106,7 @@ async function openCamera() {
   if (!navigator.mediaDevices?.getUserMedia) { $("#camIn").click(); return; }
   try {
     stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: facing, width: { ideal: 1920 }, height: { ideal: 1440 } }, audio: false });
-  } catch { toast("Camera not available. Opening your phone's camera instead."); $("#camIn").click(); return; }
+  } catch { toast("Cámara no disponible. Abriendo la cámara del celular."); $("#camIn").click(); return; }
   const v = $("#camVideo"); v.srcObject = stream; v.style.transform = facing === "user" ? "scaleX(-1)" : "none";
   const last = photos[photos.length - 1]; const g = $("#camGhost"); g.hidden = !last; if (last) { g.src = last.data; g.style.transform = facing === "user" ? "scaleX(-1)" : "none"; }
   $("#photoHome").hidden = true; $("#camView").hidden = false; window.scrollTo(0, 0);
@@ -1116,7 +1129,7 @@ const cvs = $("#alignCanvas"), ctx = cvs.getContext("2d");
 async function startAlign(file) {
   const url = URL.createObjectURL(file);
   const img = new Image(); img.decoding = "async"; img.src = url; await img.decode().catch(() => {});
-  const iw = img.naturalWidth, ih = img.naturalHeight; if (!iw) { toast("Could not open that image."); return; }
+  const iw = img.naturalWidth, ih = img.naturalHeight; if (!iw) { toast("No se pudo abrir esa imagen."); return; }
   const base = Math.max(1200 / iw, 900 / ih);
   const last = photos[photos.length - 1];
   let ghost = null; if (last) { ghost = new Image(); ghost.src = last.data; ghost.onload = drawAlign; }
@@ -1157,17 +1170,17 @@ $("#savePhoto").onclick = async () => {
   const out = document.createElement("canvas"); out.width = 1200; out.height = 900; render(out.getContext("2d"), false);
   const now = new Date();
   const p = { id: uid(), date: iso(now), t: `${pad(now.getHours())}:${pad(now.getMinutes())}`, data: out.toDataURL("image/jpeg", .85), eye: form.pEye, redness: form.pEye === "None" ? null : form.pRed, note: $("#p-note").value.trim() };
-  await photoDB.put(p); endAlign(); await renderGallery(); toast("Photo saved.");
+  await photoDB.put(p); endAlign(); await renderGallery(); toast("Foto guardada.");
   if (returnToLog) { returnToLog = false; pendingPhotoId = p.id; if (p.eye !== "None") { form.red = p.eye; syncChips($("#f-red"), p.eye); } renderPhotoLink(); show("log"); }
 };
 async function renderGallery() {
   photos = await photoDB.all();
   const g = $("#gallery"); g.innerHTML = "";
-  $("#galleryHint").textContent = photos.length ? (photos.length > 1 ? "Tap two photos to compare them." : "Take another one tomorrow to start comparing.") : "No photos yet. Your first one will appear here.";
+  $("#galleryHint").textContent = photos.length ? (photos.length > 1 ? "Toca dos fotos para compararlas." : "Toma otra mañana para empezar a comparar.") : "Todavía no hay fotos. La primera aparecerá aquí.";
   [...photos].reverse().forEach(p => {
     const n = picked.indexOf(p.id);
-    g.append(h("button", { class: "thumb", "aria-pressed": String(n >= 0), "data-n": n >= 0 ? n + 1 : "", "aria-label": `Photo ${fmtDay(p.date)}`, onclick: () => { picked = n >= 0 ? picked.filter(x => x !== p.id) : picked.concat(p.id).slice(-2); renderGallery(); } },
-      h("img", { class: "mirror", src: p.data, alt: "" }), h("span", {}, fmtShort(p.date) + (p.eye && p.eye !== "None" ? ` · ${p.eye[0]} ${p.redness?.toLowerCase() || ""}` : ""))));
+    g.append(h("button", { class: "thumb", "aria-pressed": String(n >= 0), "data-n": n >= 0 ? n + 1 : "", "aria-label": `Foto del ${fmtDay(p.date)}`, onclick: () => { picked = n >= 0 ? picked.filter(x => x !== p.id) : picked.concat(p.id).slice(-2); renderGallery(); } },
+      h("img", { class: "mirror", src: p.data, alt: "" }), h("span", {}, fmtShort(p.date) + (p.eye && p.eye !== "None" ? ` · ${L(p.eye)[0]} ${L(p.redness || "").toLowerCase()}` : ""))));
   });
   $("#compareBtn").disabled = picked.length !== 2;
 }
@@ -1175,14 +1188,14 @@ $("#compareBtn").onclick = () => {
   const [a, b] = picked.map(id => photos.find(p => p.id === id)).sort((x, y) => (x.date + x.t).localeCompare(y.date + y.t));
   const cv = $("#compareView"); cv.innerHTML = "";
   // the image layer is mirrored, so the newer photo sits on top and its clip reads right-to-left
-  const box = h("div", { class: "frame wipe", style: "--x:50%" }, h("div", { class: "mirror", style: "position:absolute;inset:0" }, h("img", { src: a.data, alt: `Photo from ${fmtDay(a.date)}` }), h("img", { class: "top-img", src: b.data, alt: `Photo from ${fmtDay(b.date)}` })), h("div", { class: "bar" }),
+  const box = h("div", { class: "frame wipe", style: "--x:50%" }, h("div", { class: "mirror", style: "position:absolute;inset:0" }, h("img", { src: a.data, alt: `Foto del ${fmtDay(a.date)}` }), h("img", { class: "top-img", src: b.data, alt: `Foto del ${fmtDay(b.date)}` })), h("div", { class: "bar" }),
     h("span", { class: "tag", style: "left:8px" }, fmtShort(a.date)), h("span", { class: "tag", style: "right:8px" }, fmtShort(b.date)));
-  const slider = h("input", { type: "range", id: "wipe", min: 0, max: 100, value: 50, "aria-label": "Slide between photos" });
+  const slider = h("input", { type: "range", id: "wipe", min: 0, max: 100, value: 50, "aria-label": "Deslizar entre fotos" });
   slider.oninput = () => box.style.setProperty("--x", slider.value + "%");
   box.querySelector(".top-img").style.clipPath = "inset(0 var(--x) 0 0)";
-  const desc = p => `${fmtDay(p.date)} ${p.t}: ${p.eye && p.eye !== "None" ? `${p.eye.toLowerCase()} eye, ${p.redness?.toLowerCase()}` : "no redness noted"}${p.note ? `. ${p.note}` : ""}`;
-  const delBtn = h("button", { class: "linkbtn", style: "color:var(--ink-3)", onclick: () => { cv.innerHTML = ""; picked = []; renderGallery(); } }, "Close");
-  cv.append(h("div", { class: "section" }, h("h3", {}, "Compare"), box, slider, h("div", { class: "muted" }, desc(a), h("br"), desc(b)), delBtn));
+  const desc = p => `${fmtDay(p.date)} ${p.t}: ${p.eye && p.eye !== "None" ? `ojo ${L(p.eye).toLowerCase()}, ${L(p.redness || "").toLowerCase()}` : "sin enrojecimiento"}${p.note ? `. ${p.note}` : ""}`;
+  const delBtn = h("button", { class: "linkbtn", style: "color:var(--ink-3)", onclick: () => { cv.innerHTML = ""; picked = []; renderGallery(); } }, "Cerrar");
+  cv.append(h("div", { class: "section" }, h("h3", {}, "Comparar"), box, slider, h("div", { class: "muted" }, desc(a), h("br"), desc(b)), delBtn));
   cv.scrollIntoView({ behavior: "smooth", block: "start" });
 };
 
@@ -1196,7 +1209,7 @@ function show(tab) {
   try { sessionStorage.setItem("sel.tab", tab); } catch {}
   if (tab === "trends") renderTrends();
   if (tab === "summary") renderSummary();
-  if (tab === "summary") $("#sumBack").textContent = "‹ Back";
+  if (tab === "summary") $("#sumBack").textContent = "‹ Volver";
   window.scrollTo(0, 0);
 }
 $$("nav.tabs button").forEach(b => b.onclick = () => { if (b.dataset.tab === "photos" && A) return show("photos"); show(b.dataset.tab); });
@@ -1206,7 +1219,7 @@ $("#qPhoto").onclick = () => show("photos");
 $$("[data-go]").forEach(b => b.onclick = () => show(b.dataset.go));
 let rz; addEventListener("resize", () => { clearTimeout(rz); rz = setTimeout(() => { if (!$("#v-trends").hidden) renderTrends(); }, 150); });
 
-$("#todayLabel").textContent = new Date().toLocaleDateString(undefined, { weekday: "long", day: "numeric", month: "long" });
+$("#todayLabel").textContent = new Date().toLocaleDateString("es", { weekday: "long", day: "numeric", month: "long" });
 $$("[data-scale]").forEach(scaleField);
 $$("[data-yn]").forEach(ynGroup);
 if ("serviceWorker" in navigator) addEventListener("load", () => navigator.serviceWorker.register("sw.js").catch(() => {}));

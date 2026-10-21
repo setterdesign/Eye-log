@@ -1,7 +1,7 @@
 {
-  "name": "Symptom & Eye Log",
-  "short_name": "Eye Log",
-  "description": "Log symptoms, pain and eye photos. Data stays on this phone.",
+  "name": "Diario de síntomas y ojos",
+  "short_name": "Diario",
+  "description": "Registra síntomas, dolor y fotos de los ojos. Los datos se quedan en este teléfono.",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",
