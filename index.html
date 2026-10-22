@@ -326,6 +326,19 @@ nav.tabs button[aria-current="page"] svg { background: var(--panel); box-shadow:
 .scale:not(.vert) input[type=range]::-webkit-slider-thumb { -webkit-appearance: none; width: 28px; height: 28px; margin-top: -9px; border-radius: 50%; background: var(--accent); border: 5px solid var(--panel); box-shadow: var(--shadow-sm); }
 .scale:not(.vert) input[type=range]::-moz-range-track { height: 10px; border-radius: 999px; background: linear-gradient(to right, var(--accent) var(--p, 0%), transparent var(--p, 0%)); box-shadow: var(--inset); }
 .scale:not(.vert) input[type=range]::-moz-range-thumb { width: 18px; height: 18px; border-radius: 50%; background: var(--accent); border: 5px solid var(--panel); box-shadow: var(--shadow-sm); }
+/* quick episode: start / end with a running timer */
+.episode { gap: 12px; }
+.episode .lede2 { margin: 0; color: var(--ink-2); font-size: .92rem; }
+.episode .live { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+.episode .live b { display: block; font: 600 1rem var(--f-display); color: var(--ink); }
+.episode .ep-time { font: 700 1.5rem var(--f-data); color: var(--ink); }
+.episode .dot { display: inline-block; width: 10px; height: 10px; border-radius: 50%; background: var(--crit); margin-right: 8px; animation: epPulse 1.6s infinite; }
+@keyframes epPulse { 50% { opacity: .25; } }
+@media (prefers-reduced-motion: reduce) { .episode .dot { animation: none; } }
+.episode .btnrow .btn { flex: 1 1 140px; }
+.peak { display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px; }
+.peak .chip { padding: 0; min-height: 40px; }
+.episode input[type=time] { width: 100%; }
 </style>
 </head>
 <body>
@@ -342,6 +355,7 @@ nav.tabs button[aria-current="page"] svg { background: var(--panel); box-shadow:
       <div><h2 id="hello">Hola</h2><p>¿Cómo te sientes hoy?</p></div>
       <div class="meta"><span class="status" id="todayStatus"><i></i>Nada registrado hoy</span><span class="streak" id="streak"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2c1 4 5 6 5 11a5 5 0 0 1-10 0c0-2.5 1.2-4 2.5-5 0 2 1 3 2 3 0-3-1.5-5.5.5-9z"/></svg><span></span></span></div>
     </div>
+    <div class="section episode" id="episode"></div>
     <div class="navtiles">
       <button type="button" class="navtile" id="qPhoto"><svg viewBox="0 0 24 24"><path d="M4 8h3l2-3h6l2 3h3v11H4z"/><circle cx="12" cy="13" r="3.5"/></svg><span>Foto de ojos<small>Guiada, mismo encuadre</small></span></button>
       <button type="button" class="navtile" data-go="trends"><svg viewBox="0 0 24 24"><path d="M4 19h16M5 15l4-5 4 3 6-7"/></svg><span>Mis tendencias<small>Gráficas por día</small></span></button>
@@ -501,6 +515,7 @@ nav.tabs button[aria-current="page"] svg { background: var(--panel); box-shadow:
     <h2>Historial</h2>
     <p class="lede">Todos tus registros, del más reciente al más antiguo. Toca Editar para cambiar uno.</p>
     <div id="historyList"></div>
+    <div id="episodeList"></div>
 
     <div class="section" style="margin-top:22px">
       <h3>Tú</h3>
@@ -889,6 +904,17 @@ function renderSummary() {
   const tally = key => { const m = {}; inRange.filter(e => +e.pain > 0).forEach(e => many(e[key]).forEach(v => m[v] = (m[v] || 0) + 1)); return Object.entries(m).sort((a, b) => b[1] - a[1]).map(([v, n]) => `${L(v)} (${n})`).join(", ") || "–"; };
   out.append(h("div", { class: "section" }, h("h3", {}, "Patrón del dolor"),
     h("table", { class: "sumtable" }, h("tr", {}, h("td", {}, "Dónde"), h("td", {}, tally("loc"))), h("tr", {}, h("td", {}, "Tipo"), h("td", {}, tally("type"))))));
+  // quick episodes
+  const eps = episodes.filter(e => e.end && iso(new Date(e.start)) >= days[0].date).sort((a, b) => b.start - a.start);
+  if (eps.length) {
+    const kindRows = EP_KINDS.map(([k]) => [k, eps.filter(e => e.kind === k)]).filter(([, l]) => l.length).map(([k, l]) => {
+      const durs = l.map(e => e.end - e.start), peaks = l.map(e => e.peak).filter(v => v != null);
+      return h("tr", {}, h("td", {}, epName(k)), h("td", { class: "n" }, l.length), h("td", { class: "n" }, hm(durs.reduce((a, b) => a + b, 0) / durs.length)), h("td", { class: "n" }, hm(Math.max(...durs))), h("td", { class: "n" }, peaks.length ? (peaks.reduce((a, b) => a + b, 0) / peaks.length).toFixed(1) : "–"));
+    });
+    out.append(h("div", { class: "section" }, h("h3", {}, `Episodios (${eps.length})`),
+      h("table", { class: "sumtable" }, h("tr", {}, h("th", {}, "Tipo"), h("th", { style: "text-align:right" }, "Veces"), h("th", { style: "text-align:right" }, "Promedio"), h("th", { style: "text-align:right" }, "Más largo"), h("th", { style: "text-align:right" }, "Máx. prom.")), ...kindRows),
+      h("table", { class: "sumtable" }, ...eps.slice(0, 15).map(e => h("tr", {}, h("td", { style: "white-space:nowrap" }, fmtShort(iso(new Date(e.start)))), h("td", {}, `${epName(e.kind)}, ${clock(e.start)} a ${clock(e.end)}, duró ${hm(e.end - e.start)}${e.peak != null ? `, máximo ${e.peak}` : ""}${e.notes ? `. ${e.notes}` : ""}`))))));
+  }
   // medications
   const meds = {}; inRange.forEach(e => { const m = (e.med || "").trim(); if (m) { meds[m] = meds[m] || { n: 0, last: e.date }; meds[m].n++; if (e.date > meds[m].last) meds[m].last = e.date; } });
   const medRows = Object.entries(meds).sort((a, b) => b[1].n - a[1].n);
@@ -1059,12 +1085,12 @@ async function offer(filename, data) {
   out.append(h("p", { class: "muted" }, "Copia esto y pégalo en un archivo o en tu hoja de cálculo:"), ta, h("button", { class: "btn ghost", onclick: async () => { try { await navigator.clipboard.writeText(data); toast("Copiado."); markBackup(true); } catch { ta.select(); } } }, "Copiar"));
 }
 $("#exportCsv").onclick = async () => entries.length ? markBackup(await offer(`registro-sintomas-${iso(new Date())}.csv`, csv())) : toast("Todavía no hay nada para exportar.");
-$("#exportJson").onclick = async () => markBackup(await offer(`respaldo-registro-sintomas-${iso(new Date())}.json`, JSON.stringify({ entries, settings, photos: await photoDB.all() })));
+$("#exportJson").onclick = async () => markBackup(await offer(`respaldo-registro-sintomas-${iso(new Date())}.json`, JSON.stringify({ entries, settings, episodes, photos: await photoDB.all() })));
 $("#importIn").onchange = async ev => {
   const file = ev.target.files[0]; ev.target.value = ""; if (!file) return;
   try {
     let rows = [];
-    if (/\.json$/i.test(file.name)) { const j = JSON.parse(await file.text()); merge(j.entries || []); if (j.settings) Object.assign(settings, j.settings), saveSettings(); for (const p of j.photos || []) await photoDB.put(p); renderAll(); renderGallery(); return; }
+    if (/\.json$/i.test(file.name)) { const j = JSON.parse(await file.text()); merge(j.entries || []); if (j.settings) Object.assign(settings, j.settings), saveSettings(); if (Array.isArray(j.episodes)) { const ids = new Set(episodes.map(e => e.id)); episodes.push(...j.episodes.filter(e => e && e.id && !ids.has(e.id))); saveEpisodes(); } for (const p of j.photos || []) await photoDB.put(p); renderAll(); renderGallery(); return; }
     if (/\.csv$/i.test(file.name)) { await loadXLSX(); rows = XLSX.utils.sheet_to_json(XLSX.read(await file.text(), { type: "string" }).Sheets.Sheet1, { header: 1, raw: true }); }
     else { await loadXLSX(); const wb = XLSX.read(await file.arrayBuffer(), { cellDates: true }); const ws = wb.Sheets["Daily log"] || wb.Sheets["Registro diario"] || wb.Sheets[wb.SheetNames[0]]; rows = XLSX.utils.sheet_to_json(ws, { header: 1, raw: true }); }
     const hi = rows.findIndex(r => r && (r[0] === "Date" || r[0] === "Fecha")); if (hi < 0) throw new Error("no header");
@@ -1215,7 +1241,89 @@ function show(tab) {
 }
 $$("nav.tabs button").forEach(b => b.onclick = () => { if (b.dataset.tab === "photos" && A) return show("photos"); show(b.dataset.tab); });
 let tt; function toast(msg) { $$(".toast").forEach(t => t.remove()); const t = h("div", { class: "toast", role: "status" }, msg); document.body.append(t); clearTimeout(tt); tt = setTimeout(() => t.remove(), 2600); }
-function renderAll() { renderStreak(); renderTrends(); renderHistory(); renderTodayStatus(); renderWeek(); renderMedPicks(); renderBackupBanner(); $("#copyLast").hidden = !!editingId || !realEntries().length; }
+/* ---------- quick episodes: one tap when it starts, one when it ends ---------- */
+// Stored as { id, kind: "Pain" | "Eye", start, end (ms, null while running), peak (1-10 or null), notes }.
+let episodes = LS.get("sel.episodes", []);
+const saveEpisodes = () => { persistOK = LS.set("sel.episodes", episodes) && persistOK; renderStorageNote(); };
+const EP_KINDS = [["Pain", "Empezó un dolor"], ["Eye", "Empezó algo en los ojos"]];
+const epName = k => k === "Eye" ? "Episodio de ojos" : "Dolor";
+const hm = ms => { const m = Math.max(0, Math.round(ms / 6e4)); return m < 60 ? `${m} min` : `${Math.floor(m / 60)} h ${String(m % 60).padStart(2, "0")} min`; };
+const clock = t => new Date(t).toLocaleTimeString("es", { hour: "numeric", minute: "2-digit" });
+const timeVal = t => { const d = new Date(t); return `${pad(d.getHours())}:${pad(d.getMinutes())}`; };
+const atTime = (base, hhmm) => { const d = new Date(base); const [hh, mm] = hhmm.split(":").map(Number); d.setHours(hh, mm, 0, 0); return d.getTime(); };
+let epEnding = null, epPeak = null, epCancel = null, epTick;
+function startEpisode(kind) {
+  const e = { id: uid(), kind, start: Date.now(), end: null, peak: null, notes: "" };
+  episodes.push(e); saveEpisodes(); renderEpisode();
+  toast(`${epName(kind)}: empezó a las ${clock(e.start)}. Toca Terminó cuando pase.`);
+}
+function renderEpisode() {
+  const el = $("#episode"); el.innerHTML = ""; clearInterval(epTick);
+  const open = episodes.filter(e => !e.end).sort((a, b) => a.start - b.start);
+  el.append(h("div", { class: "eyebrow" }, h("span", { class: "ic" }, svgIcon("M12 7.5V12l3 2", true)), "Episodio rápido"));
+  const ending = epEnding && open.find(e => e.id === epEnding);
+  if (ending) {
+    const st = h("input", { type: "time", value: timeVal(ending.start), "aria-label": "Hora de inicio" });
+    const en = h("input", { type: "time", value: timeVal(Date.now()), "aria-label": "Hora de fin" });
+    const note = h("input", { type: "text", placeholder: "Qué estabas haciendo, qué ayudó…", "aria-label": "Nota" });
+    const peak = h("div", { class: "peak" });
+    for (let n = 1; n <= 10; n++) peak.append(h("button", { type: "button", class: "chip", "aria-pressed": String(epPeak === n), onclick: () => { epPeak = epPeak === n ? null : n; $$(".peak .chip").forEach((c, i) => c.setAttribute("aria-pressed", String(epPeak === i + 1))); } }, String(n)));
+    el.append(h("p", { class: "lede2" }, `${epName(ending.kind)} · duró ${hm(Date.now() - ending.start)} hasta ahora. Corrige las horas si tocaste tarde.`),
+      h("div", { class: "row2" }, h("div", { class: "field" }, h("span", { class: "lab" }, "Empezó"), st), h("div", { class: "field" }, h("span", { class: "lab" }, "Terminó"), en)),
+      h("div", { class: "field" }, h("span", { class: "lab" }, "¿Qué tan fuerte fue en su peor momento? (opcional)"), peak),
+      h("div", { class: "field" }, h("span", { class: "lab" }, "Nota (opcional)"), note),
+      h("div", { class: "btnrow" },
+        h("button", { type: "button", class: "btn", onclick: () => {
+          const start = atTime(ending.start, st.value || timeVal(ending.start));
+          let end = atTime(Date.now(), en.value || timeVal(Date.now()));
+          if (end <= start) return toast("La hora de fin tiene que ser después del inicio.");
+          if (end > Date.now() + 6e4) end = Date.now();
+          Object.assign(ending, { start, end, peak: epPeak, notes: note.value.trim() });
+          saveEpisodes(); epEnding = null; epPeak = null; renderAll();
+          toast(`Episodio guardado: duró ${hm(end - start)}.`);
+        } }, "Guardar episodio"),
+        h("button", { type: "button", class: "btn ghost", onclick: () => { epEnding = null; epPeak = null; renderEpisode(); } }, "Todavía no")));
+    return;
+  }
+  epEnding = null;
+  for (const e of open) {
+    const acts = epCancel === e.id
+      ? h("span", { class: "confirm" }, "¿Descartar?", h("button", { type: "button", class: "btn danger", style: "min-height:36px;padding:6px 12px", onclick: () => { episodes = episodes.filter(x => x.id !== e.id); saveEpisodes(); epCancel = null; renderEpisode(); } }, "Descartar"), h("button", { type: "button", class: "linkbtn", onclick: () => { epCancel = null; renderEpisode(); } }, "No"))
+      : h("button", { type: "button", class: "linkbtn", style: "color:var(--ink-3)", onclick: () => { epCancel = e.id; renderEpisode(); } }, "Lo toqué por error");
+    el.append(h("div", { class: "live" },
+      h("div", {}, h("b", {}, h("span", { class: "dot" }), `${epName(e.kind)} en curso`), h("span", { class: "hint" }, `desde las ${clock(e.start)}`)),
+      h("span", { class: "ep-time", "data-start": String(e.start) }, hm(Date.now() - e.start))),
+      h("div", { class: "btnrow" }, h("button", { type: "button", class: "btn", onclick: () => { epEnding = e.id; epPeak = null; renderEpisode(); } }, "Terminó")), acts);
+  }
+  const free = EP_KINDS.filter(([k]) => !open.some(e => e.kind === k));
+  if (!open.length) el.append(h("p", { class: "lede2" }, "Toca cuando empiece y otra vez cuando termine. La app cuenta cuánto duró."));
+  if (free.length) el.append(h("div", { class: "btnrow" }, ...free.map(([k, label]) => h("button", { type: "button", class: open.length ? "btn ghost" : "btn ghost", onclick: () => startEpisode(k) }, label))));
+  if (open.length) epTick = setInterval(() => $$(".ep-time").forEach(t => t.textContent = hm(Date.now() - +t.dataset.start)), 15000);
+}
+function svgIcon(d, clockFace) {
+  const NS = "http://www.w3.org/2000/svg", svg = document.createElementNS(NS, "svg"); svg.setAttribute("viewBox", "0 0 24 24");
+  if (clockFace) { const c = document.createElementNS(NS, "circle"); c.setAttribute("cx", 12); c.setAttribute("cy", 12); c.setAttribute("r", 8.5); svg.append(c); }
+  const p = document.createElementNS(NS, "path"); p.setAttribute("d", d); svg.append(p); return svg;
+}
+function renderEpisodeList() {
+  const el = $("#episodeList"); el.innerHTML = "";
+  const done = episodes.filter(e => e.end).sort((a, b) => b.start - a.start);
+  if (!done.length) return;
+  el.append(h("h3", { style: "margin-top:26px" }, "Episodios"));
+  for (const e of done.slice(0, 60)) {
+    const acts = confirmDel === e.id
+      ? h("span", { class: "confirm" }, "¿Borrar este episodio?", h("button", { class: "btn danger", style: "min-height:36px;padding:6px 12px", onclick: () => { episodes = episodes.filter(x => x.id !== e.id); saveEpisodes(); confirmDel = null; renderAll(); } }, "Borrar"), h("button", { class: "linkbtn", onclick: () => { confirmDel = null; renderEpisodeList(); } }, "Conservar"))
+      : h("button", { class: "linkbtn", style: "color:var(--ink-3)", onclick: () => { confirmDel = e.id; renderEpisodeList(); } }, "Borrar");
+    el.append(h("div", { class: "entry" },
+      h("div", { class: "top" }, h("span", { class: "when" }, fmtDay(iso(new Date(e.start))), " · ", h("span", { class: "hint" }, epName(e.kind)))),
+      h("div", { class: "nums" }, h("span", {}, `${clock(e.start)} a ${clock(e.end)}`), h("span", {}, `duró ${hm(e.end - e.start)}`), e.peak != null ? h("span", {}, `máximo ${e.peak}`) : null),
+      e.notes ? h("div", { style: "font-size:.92rem" }, e.notes) : null,
+      h("div", { class: "acts" }, acts)));
+  }
+}
+document.addEventListener("visibilitychange", () => { if (!document.hidden && !epEnding) renderEpisode(); });
+
+function renderAll() { renderStreak(); renderTrends(); renderHistory(); renderTodayStatus(); renderWeek(); renderMedPicks(); renderBackupBanner(); renderEpisode(); renderEpisodeList(); $("#copyLast").hidden = !!editingId || !realEntries().length; }
 $("#qPhoto").onclick = () => show("photos");
 $$("[data-go]").forEach(b => b.onclick = () => show(b.dataset.go));
 let rz; addEventListener("resize", () => { clearTimeout(rz); rz = setTimeout(() => { if (!$("#v-trends").hidden) renderTrends(); }, 150); });
