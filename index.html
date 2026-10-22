@@ -551,7 +551,8 @@ const fmtShort = s => parseISO(s).toLocaleDateString("es", { day: "numeric", mon
 const uid = () => Date.now().toString(36) + Math.random().toString(36).slice(2, 7);
 
 /* ---------- vocabulary (from symptom_tracker.xlsx) ---------- */
-const TOD = ["Morning", "Afternoon", "Evening", "Night"];
+const TOD = ["Morning", "Afternoon", "Night"];
+const TOD_ORDER = ["Morning", "Afternoon", "Evening", "Night"]; // older entries may say Evening
 const VISION = ["None", "Blurry", "Dim or washed-out colors", "Dark or missing spot", "Flashes or floaters", "Double vision"];
 const LOC = ["None", "Right temple", "Left temple", "Behind right eye", "Behind left eye", "Forehead", "Back of head", "Whole head"];
 const PTYPE = ["None", "Throbbing", "Pressure", "Stabbing", "Dull ache"];
@@ -631,7 +632,7 @@ function makeExamples() {
     const pain = spike ? 6 + Math.round(rnd() * 3) : Math.round(rnd() * 3 + (sleep < 6 ? 1 : 0));
     const lc = Math.max(3, Math.min(10, Math.round(7 - (spike ? 2 : 0) + rnd() * 2 - 1)));
     const red = spike || rnd() > .8 ? "Right" : "None";
-    out.push({ id: "ex" + i, example: true, date: iso(d), tod: rnd() > .3 ? "Morning" : "Evening", lc, rc: Math.round(9 + rnd()),
+    out.push({ id: "ex" + i, example: true, date: iso(d), tod: rnd() > .3 ? "Morning" : "Night", lc, rc: Math.round(9 + rnd()),
       vision: lc <= 5 ? (spike ? ["Blurry", "Dark or missing spot"] : ["Blurry"]) : [], red, eyeMovePain: spike ? "Yes" : "No", pain, loc: pain ? (spike ? ["Behind right eye", "Right temple"] : ["Right temple"]) : [],
       type: pain ? (spike ? ["Throbbing", "Pressure"] : ["Pressure"]) : [], dur: pain ? Math.round(rnd() * 4 * 2) / 2 + .5 : 0, med: spike ? "Paracetamol 500 mg" : "",
       dizzy: spike && rnd() > .4 ? "Yes" : "No", nausea: spike && rnd() > .5 ? "Yes" : "No", weak: "No", shake: spike && rnd() > .6 ? "Yes" : "No", dext: "No", numb: "No", memory: "No", sleep, stress: Math.round(2 + rnd() * 5 + (spike ? 1 : 0)), notes: spike ? "Ejemplo: peor después de mucho tiempo frente a la pantalla." : "" });
@@ -644,7 +645,7 @@ const shownEntries = () => entries.length ? entries : EXAMPLES;
 const usingExamples = () => entries.length === 0;
 
 /* ---------- flags (spreadsheet rule, applied to both eyes) ---------- */
-const order = e => e.date + String(TOD.indexOf(e.tod)).padStart(2, "0");
+const order = e => e.date + String(TOD_ORDER.indexOf(e.tod)).padStart(2, "0");
 function flagsFor(e, list) {
   const r = [];
   if (e.numb === "Yes") r.push("entumecimiento o problemas para hablar");
@@ -736,7 +737,7 @@ function resetForm(e, copied) {
   goStep(0);
   renderPhotoLink(); onFormChange();
 }
-const guessTOD = () => { const hr = new Date().getHours(); return hr < 12 ? "Morning" : hr < 18 ? "Afternoon" : hr < 22 ? "Evening" : "Night"; };
+const guessTOD = () => { const hr = new Date().getHours(); return hr < 12 ? "Morning" : hr < 18 ? "Afternoon" : "Night"; };
 function readForm() {
   const num = v => v === "" ? null : +v;
   return { id: editingId || uid(), date: $("#f-date").value, tod: form.tod, lc: form.lc, rc: form.rc, vision: form.vision.slice(), red: form.red, eyeMovePain: form.eyeMovePain,
